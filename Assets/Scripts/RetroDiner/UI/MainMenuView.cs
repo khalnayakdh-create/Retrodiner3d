@@ -217,13 +217,13 @@ namespace RetroDiner.UI
                     bool isToday = canClaim && d == today;
                     var cell = UIBuilder.Panel(content, "Day" + d, done ? UIBuilder.Mint : isToday ? UIBuilder.Gold : new Color(1f, 1f, 1f, 0.5f), null, false);
                     int col = (d - 1) % 4, row = (d - 1) / 4;
-                    UIBuilder.Place(cell.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(170f, 150f), new Vector2(row == 1 ? 95f + col * 185f : col * 185f, -row * 165f));
+                    UIBuilder.Place(cell.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(170f, 150f), new Vector2(row == 1 ? 95f + col * 185f : col * 185f, -70f - row * 165f));
                     var lbl = UIBuilder.Label(cell.transform, "Lbl", "Day " + d + "\n" + (r.coins > 0 ? r.coins + " c" : r.tokens > 0 ? r.tokens + " tok" : "boosters"), 26, UIBuilder.Dark);
                     UIBuilder.Stretch(lbl.rectTransform);
                     if (done) { var ok = UIBuilder.Label(cell.transform, "Done", "OK", 30, UIBuilder.Red); UIBuilder.Place(ok.rectTransform, new Vector2(1f, 1f), new Vector2(50f, 40f), new Vector2(-5f, -5f)); }
                 }
                 var freeze = UIBuilder.Label(content, "Freeze", "Streak freeze this week: " + (p.streakFreezesLeft > 0 ? "available" : "used"), 24, UIBuilder.Dark, TextAnchor.MiddleCenter, FontStyle.Normal);
-                UIBuilder.Place(freeze.rectTransform, new Vector2(0.5f, 0f), new Vector2(700f, 40f), new Vector2(0f, -10f));
+                UIBuilder.Place(freeze.rectTransform, new Vector2(0.5f, 0f), new Vector2(700f, 40f), new Vector2(0f, -30f));
             }, 1250f);
         }
 
@@ -326,9 +326,8 @@ namespace RetroDiner.UI
             float y = 320f;
             Func<string, Action, Color, Button> row = (label, act, color) =>
             {
-                var b = UIBuilder.Button(settingsPage, label, "", act, color, Popups.ButtonSprite(color), new Vector2(600f, 150f), 36, color == UIBuilder.Red ? Color.white : UIBuilder.Dark);
+                var b = UIBuilder.Button(settingsPage, label, label, act, color, Popups.ButtonSprite(color), new Vector2(600f, 150f), 36, color == UIBuilder.Red ? Color.white : UIBuilder.Dark);
                 UIBuilder.Place(b.image.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(600f, 150f), new Vector2(0f, y));
-                b.GetComponentInChildren<Text>().text = label;
                 y -= 140f;
                 return b;
             };

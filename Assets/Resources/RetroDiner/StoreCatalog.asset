@@ -1,0 +1,193 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 485431cbafebeea4484b999aa297910a, type: 3}
+  m_Name: StoreCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.StoreCatalog
+  offers:
+  - sku: rd3d_pantry_49
+    kind: 0
+    title: Executive Chef Pantry
+    subtitle: 6,000 Golden Tokens + 10 of every booster
+    priceLabel: $49.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 6000
+    coins: 0
+    spatula: 10
+    bell: 10
+    rewind: 10
+    extraPlate: 10
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_platter_8
+    kind: 0
+    title: Deluxe Jumbo Platter
+    subtitle: "1,000 Tokens + 3 boosters  \u2014 BEST VALUE"
+    priceLabel: $8.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 1000
+    coins: 0
+    spatula: 1
+    bell: 1
+    rewind: 1
+    extraPlate: 0
+    consumable: 1
+    highlight: 1
+    limitedHours: 0
+  - sku: rd3d_box_7
+    kind: 0
+    title: Medium Breakfast Box
+    subtitle: 700 Golden Tokens
+    priceLabel: $7.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 700
+    coins: 0
+    spatula: 0
+    bell: 0
+    rewind: 0
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_coffee_2
+    kind: 0
+    title: Small Coffee Bundle
+    subtitle: 250 Golden Tokens
+    priceLabel: $2.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 250
+    coins: 0
+    spatula: 0
+    bell: 0
+    rewind: 0
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_remove_ads
+    kind: 1
+    title: Remove Ads
+    subtitle: 'Remove forced ads. Keep bonus rewards.
+
+      +200 Tokens + 2 of each booster'
+    priceLabel: $4.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 200
+    coins: 0
+    spatula: 2
+    bell: 2
+    rewind: 2
+    extraPlate: 2
+    consumable: 0
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_early_bird
+    kind: 2
+    title: Grand Opening Early Bird
+    subtitle: "500 Tokens + 3 of each booster + Neon Sign\n600% value \u2014 first 48 hours only"
+    priceLabel: $0.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 500
+    coins: 0
+    spatula: 3
+    bell: 3
+    rewind: 3
+    extraPlate: 3
+    consumable: 0
+    highlight: 1
+    limitedHours: 48
+  - sku: rd3d_tip_jar_crack
+    kind: 3
+    title: Crack the Tip Jar
+    subtitle: Collect the tokens you earned (store rate $11.99)
+    priceLabel: $2.99
+    coinPrice: 0
+    tokenPrice: 0
+    tokens: 0
+    coins: 0
+    spatula: 0
+    bell: 0
+    rewind: 0
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_refill_spatula
+    kind: 4
+    title: Golden Spatula
+    subtitle: +1 Spatula
+    priceLabel: 
+    coinPrice: 150
+    tokenPrice: 15
+    tokens: 0
+    coins: 0
+    spatula: 1
+    bell: 0
+    rewind: 0
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_refill_bell
+    kind: 4
+    title: Order Up! Bell
+    subtitle: +1 Bell
+    priceLabel: 
+    coinPrice: 120
+    tokenPrice: 12
+    tokens: 0
+    coins: 0
+    spatula: 0
+    bell: 1
+    rewind: 0
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_refill_rewind
+    kind: 4
+    title: Rewind Coaster
+    subtitle: +1 Rewind
+    priceLabel: 
+    coinPrice: 100
+    tokenPrice: 10
+    tokens: 0
+    coins: 0
+    spatula: 0
+    bell: 0
+    rewind: 1
+    extraPlate: 0
+    consumable: 1
+    highlight: 0
+    limitedHours: 0
+  - sku: rd3d_refill_plate
+    kind: 4
+    title: Extra Plate
+    subtitle: +1 Extra Plate (pre-shift)
+    priceLabel: 
+    coinPrice: 200
+    tokenPrice: 20
+    tokens: 0
+    coins: 0
+    spatula: 0
+    bell: 0
+    rewind: 0
+    extraPlate: 1
+    consumable: 1
+    highlight: 0
+    limitedHours: 0

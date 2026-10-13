@@ -54,6 +54,7 @@ namespace RetroDiner.UI
 
             var panel = UIBuilder.Panel(overlay.transform, "Panel", panelSprite != null ? Color.white : UIBuilder.Cream, panelSprite, true);
             panel.preserveAspect = panelSprite != null;
+            if (panelSprite != null) panelHeight = 920f * panelSprite.rect.height / panelSprite.rect.width;   // keep the art's aspect
             UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(920f, panelHeight), new Vector2(0f, 40f));
             if (panelSprite == null)
             {

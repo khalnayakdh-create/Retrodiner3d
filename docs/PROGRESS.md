@@ -10,8 +10,13 @@
 - Difficulty pass after first playtest: steeper type/obstacle/window ramp from L4 (DECISIONS #18); docs/levels/*.json is the committed source of truth for the curve.
 - Level curve fix from the validator: with 3 item types a 7-slot tray can never lock, so levels 7+ now use 4+ types; `docs/validate_levels.py` is a Python mirror of LevelValidator for quick checks outside Unity (all 50 accepted).
 
+## 2026-10-13 — M5 meta layer (verified in Unity)
+- EconomyService (energy 5 hearts / 30-min regen, 7-day punch-card with one weekly streak freeze, daily jukebox spin, Tip Jar crack at 1,200 tokens, store purchases + booster refills, restore), AdPolicyService (interstitial caps: from L6, 1 per 3 level ends, 90 s apart, skipped after a rewarded ad or within 10 min of a purchase; banners on menu/level select only).
+- Store (bundle ladder from the bible: $49.99 anchor, $8.99 target, $7.99 decoy, $2.99 small, Remove Ads $4.99, Early Bird $0.99 for 48 h, Tip Jar crack when full, coin/token booster refills), Settings rows (Remove Ads, Restore Purchases), energy panel (refill 10 tokens / rewarded ad), pre-shift Extra Plate prompt from L7, out-of-booster offer (coins / tokens / ad), Double Coins rewarded on win, "Remove ads?" link after interstitials.
+- One global popup canvas (`Popups`) above HUD and menu; fake ads and all panels go through it.
+- Smoke-tested on the PC: store scroll, punch Day 1 (+50), spin (+25), Remove Ads (banner hidden, +200 tokens), settings. Fixed on the way: settings-row NRE, store content 100 px too wide, popup aspect with the gingham art.
+
 ## Next
 - Play L3–L12 by hand and tune belt speed / spacing / obstacle chances; replace the level-select grid with a path on the map art; verify cloche/napkin/burn/spill visuals at L8/L11/L15/L20.
-- M5: punch-card, energy regen, Tip Jar crack offer, Store stub + AdPolicy + Remove Ads pack.
 - M6: replay ring buffer, music loop, richer particles per item.
 - M7: pooling audit (UI flyers currently allocate), profiler pass, URP switch, Android build.

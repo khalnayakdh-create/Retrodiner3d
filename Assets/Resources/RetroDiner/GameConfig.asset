@@ -81,6 +81,12 @@ MonoBehaviour:
   continueClearItems: 3
   coinsBase: 50
   coinsPerStar: 25
+  storeCatalog: {fileID: 11400000, guid: 655961ef2dd688e4b82affe5c7afe6c1, type: 2}
+  adPolicy: {fileID: 11400000, guid: 43ae91e11f203404992e9d9328b70917, type: 2}
+  energyMax: 5
+  energyRegenMinutes: 30
+  energyRefillTokens: 10
+  tipJarCrackThreshold: 1200
   spatulaUnlockLevel: 4
   bellUnlockLevel: 5
   rewindUnlockLevel: 7

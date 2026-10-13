@@ -51,6 +51,7 @@ namespace RetroDiner.UI
             content = UIBuilder.Rect(viewport.transform, "Content");
             content.anchorMin = new Vector2(0f, 1f); content.anchorMax = new Vector2(1f, 1f); content.pivot = new Vector2(0.5f, 1f);
             content.anchoredPosition = Vector2.zero;
+            content.sizeDelta = Vector2.zero;
             var layout = content.gameObject.AddComponent<VerticalLayoutGroup>();
             layout.spacing = 18f; layout.padding = new RectOffset(0, 0, 10, 40);
             layout.childAlignment = TextAnchor.UpperCenter;
@@ -62,7 +63,7 @@ namespace RetroDiner.UI
             scroll.content = content; scroll.viewport = viewport.rectTransform;
             scroll.horizontal = false; scroll.vertical = true;
             scroll.movementType = ScrollRect.MovementType.Elastic;
-            scroll.scrollSensitivity = 40f;
+            scroll.scrollSensitivity = 90f;
 
             var backBtn = UIBuilder.Button(root, "Back", "BACK", () => onBack?.Invoke(), UIBuilder.Red, Popups.ButtonSprite(UIBuilder.Red), new Vector2(400f, 130f), 40);
             UIBuilder.Place(backBtn.image.rectTransform, new Vector2(0.5f, 0f), new Vector2(400f, 130f), new Vector2(0f, 110f));
