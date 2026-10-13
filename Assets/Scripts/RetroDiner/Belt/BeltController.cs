@@ -184,6 +184,14 @@ namespace RetroDiner.Belt
             if (item.Obstacle == ItemObstacle.Napkin) item.Untie();
         }
 
+        /// <summary>Put items back into the spawn queue (continue offer, stuck-belt recovery). Keeps the
+        /// multiples-of-3 invariant intact: nothing ever leaves the level except through a triplet.</summary>
+        public void Enqueue(IEnumerable<string> ids)
+        {
+            foreach (var id in ids) spawnQueue.Enqueue(id);
+            spawnCooldown = 0f;
+        }
+
         public void Freeze(float seconds) { freezeTimer = Mathf.Max(freezeTimer, seconds); }
 
         public void Rewind(float distance, float duration)

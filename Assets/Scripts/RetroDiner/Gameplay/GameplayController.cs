@@ -148,9 +148,41 @@ namespace RetroDiner.Gameplay
             }
             if (State == ShiftState.Playing || State == ShiftState.NearMiss)
             {
+                starvationCheck += Time.unscaledDeltaTime;
+                if (starvationCheck > 1f) { starvationCheck = 0f; EnsureBeltNotStarved(); }
                 hud.SetFreeze(belt.FreezeRemaining);
                 GameServices.Audio.SetMusicPitch(tickets != null && tickets.RemainingItemsTotal <= 3 ? 1.05f : 1f);
             }
+        }
+
+        float starvationCheck;
+
+        /// <summary>
+        /// Safety net: if the belt and its queue are both empty while orders are still open, the level
+        /// cannot be finished. Re-supply exactly what is needed (complete the tray's partial groups and
+        /// any open ticket) and log it, so a data bug degrades to a longer shift instead of a soft-lock.
+        /// </summary>
+        void EnsureBeltNotStarved()
+        {
+            if (belt.Items.Count > 0 || belt.QueuedCount > 0 || tickets == null || tickets.AllComplete) return;
+            var need = new List<string>();
+            var counted = new HashSet<string>();
+            foreach (var e in tray.Slots)
+            {
+                if (!counted.Add(e.id)) continue;
+                int mod = tray.CountOf(e.id) % 3;
+                if (mod != 0) for (int i = 0; i < 3 - mod; i++) need.Add(e.id);
+            }
+            foreach (var t in tickets.Active)
+            {
+                int covered = tray.CountOf(t.itemId) % 3 != 0 ? 1 : 0;   // the partial group above already completes one triple
+                for (int k = covered; k < t.remaining; k++) { need.Add(t.itemId); need.Add(t.itemId); need.Add(t.itemId); }
+            }
+            foreach (var t in tickets.Queued)
+                for (int k = 0; k < t.remaining; k++) { need.Add(t.itemId); need.Add(t.itemId); need.Add(t.itemId); }
+            if (need.Count == 0) return;
+            Debug.LogWarning("[Shift] Belt starved with open orders on level " + level.levelIndex + " — re-supplying " + need.Count + " items.");
+            belt.Enqueue(need);
         }
 
         // ------------------------------------------------------------------ taps
@@ -345,7 +377,12 @@ namespace RetroDiner.Gameplay
             GameServices.SaveProfile();
 
             tray.SetCapacity(cfg.trayCapacity + 1);
-            tray.RemoveLeastUseful(cfg.continueClearItems);
+            // "Clear 3 items": they go back to the kitchen (belt queue), never out of the level, so
+            // every type stays a multiple of 3 and the shift remains winnable.
+            var cleared = tray.RemoveLeastUseful(cfg.continueClearItems);
+            var ids = new List<string>(cleared.Count);
+            foreach (var e in cleared) ids.Add(e.id);
+            belt.Enqueue(ids);
             hud.Tray.SetCapacity(tray.Capacity);
             hud.Tray.Refresh(tray);
             hud.ClosePanel();

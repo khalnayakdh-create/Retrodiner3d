@@ -24,6 +24,7 @@ namespace RetroDiner.Rules
         public IReadOnlyList<Ticket> Active => active;
         public IReadOnlyList<Ticket> Completed => completed;
         public int QueuedCount => queue.Count;
+        public IEnumerable<Ticket> Queued => queue;
         public bool AllComplete => queue.Count == 0 && active.Count == 0;
 
         public TicketBoard(IEnumerable<TicketSpec> specs, int maxActive)
