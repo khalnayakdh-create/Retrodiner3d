@@ -128,6 +128,21 @@ namespace RetroDiner.UI
             Tween.Delay(seconds, () => { if (rt != null) UnityEngine.Object.Destroy(rt.gameObject); }, true);
         }
 
+        /// <summary>Cream wipe: fades to cream, runs <paramref name="atPeak"/>, fades back.</summary>
+        public static void Fade(Action atPeak, float half = 0.22f)
+        {
+            var cover = UIBuilder.Panel(Layer, "Fade", new Color(1f, 0.957f, 0.863f, 0f), null, true);
+            UIBuilder.Stretch(cover.rectTransform);
+            cover.transform.SetAsLastSibling();
+            Tween.To(half, t => { if (cover != null) { var c = cover.color; c.a = t; cover.color = c; } }, Ease.InQuad, () =>
+            {
+                atPeak?.Invoke();
+                if (cover != null) cover.transform.SetAsLastSibling();
+                Tween.To(half, t => { if (cover != null) { var c = cover.color; c.a = 1f - t; cover.color = c; } }, Ease.OutQuad,
+                    () => { if (cover != null) UnityEngine.Object.Destroy(cover.gameObject); }, true);
+            }, true);
+        }
+
         /// <summary>A thin stub banner at the bottom of a page (menu / level select only).</summary>
         public static Image Banner(Transform parent)
         {

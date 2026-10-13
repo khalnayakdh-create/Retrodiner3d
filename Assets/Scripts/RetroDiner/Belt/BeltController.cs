@@ -269,19 +269,21 @@ namespace RetroDiner.Belt
             var mr = go.AddComponent<MeshRenderer>();
             beltMaterial = new Material(PlaceholderMaterials.FindShader());
             beltMaterial.mainTexture = RollerTexture();
-            beltMaterial.mainTextureScale = new Vector2(1f, 1f);
+            beltMaterial.mainTextureScale = new Vector2(1.6f, 1f);
             beltMaterial.color = Color.white;
             if (beltMaterial.HasProperty("_BaseMap")) beltMaterial.SetTexture("_BaseMap", beltMaterial.mainTexture);
-            if (beltMaterial.HasProperty("_Metallic")) beltMaterial.SetFloat("_Metallic", 0.6f);
+            if (beltMaterial.HasProperty("_Metallic")) beltMaterial.SetFloat("_Metallic", 0.75f);
             if (beltMaterial.HasProperty("_Glossiness")) beltMaterial.SetFloat("_Glossiness", 0.55f);
             if (beltMaterial.HasProperty("_Smoothness")) beltMaterial.SetFloat("_Smoothness", 0.55f);
             mr.material = beltMaterial;
             mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             decor.Add(go);
 
-            // Chrome rails on each edge.
-            MakeRail(width * 0.5f + 0.06f, new Color(0.82f, 0.84f, 0.88f));
-            MakeRail(-(width * 0.5f + 0.06f), new Color(0.82f, 0.84f, 0.88f));
+            // Chrome rails on each edge, with a dark contact line underneath for depth.
+            MakeRail(width * 0.5f + 0.06f, new Color(0.86f, 0.88f, 0.92f), 0.09f, 0.03f);
+            MakeRail(-(width * 0.5f + 0.06f), new Color(0.86f, 0.88f, 0.92f), 0.09f, 0.03f);
+            MakeRail(width * 0.5f + 0.1f, new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
+            MakeRail(-(width * 0.5f + 0.1f), new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
 
             // Red vinyl base under the whole thing.
             var tb = Track.GetBounds();
@@ -290,18 +292,26 @@ namespace RetroDiner.Belt
             basePlate.transform.SetParent(transform, false);
             basePlate.transform.localPosition = new Vector3(tb.center.x, -0.25f, tb.center.z);
             basePlate.transform.localScale = new Vector3(tb.size.x + width + 0.8f, 0.2f, tb.size.z + width + 0.8f);
-            basePlate.GetComponent<Renderer>().material = PlaceholderMaterials.Get(new Color(0.84f, 0.15f, 0.24f));
+            basePlate.GetComponent<Renderer>().material = PlaceholderMaterials.Get(new Color(0.80f, 0.13f, 0.22f));
             decor.Add(basePlate);
+            // Chrome trim ring around the vinyl base.
+            var trim = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            Destroy(trim.GetComponent<Collider>());
+            trim.transform.SetParent(transform, false);
+            trim.transform.localPosition = new Vector3(tb.center.x, -0.33f, tb.center.z);
+            trim.transform.localScale = new Vector3(tb.size.x + width + 0.95f, 0.06f, tb.size.z + width + 0.95f);
+            trim.GetComponent<Renderer>().material = PlaceholderMaterials.Get(new Color(0.85f, 0.87f, 0.9f));
+            decor.Add(trim);
         }
 
-        void MakeRail(float offset, Color color)
+        void MakeRail(float offset, Color color, float width = 0.07f, float lift = 0.02f)
         {
             int n = Track.SampleCount;
             var lr = new GameObject("Rail").AddComponent<LineRenderer>();
             lr.transform.SetParent(transform, false);
             lr.positionCount = n;
             lr.loop = false;
-            lr.widthMultiplier = 0.07f;
+            lr.widthMultiplier = width;
             lr.material = PlaceholderMaterials.Get(color);
             lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             lr.useWorldSpace = false;
@@ -311,23 +321,37 @@ namespace RetroDiner.Belt
                 Vector3 p = Track.Sample(i);
                 acc += Vector3.Distance(prev, p); prev = p;
                 Vector3 side = Vector3.Cross(Vector3.up, Track.Tangent(acc)).normalized * offset;
-                lr.SetPosition(i, p + side + Vector3.up * 0.02f);
+                lr.SetPosition(i, p + side + Vector3.up * lift);
             }
             decor.Add(lr.gameObject);
         }
 
         static Texture2D rollerTex;
+        /// <summary>Chrome roller strip: each roller is a shaded cylinder with a specular line and a dark gap.</summary>
         static Texture2D RollerTexture()
         {
             if (rollerTex != null) return rollerTex;
-            const int w = 64, h = 8;
-            rollerTex = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat, filterMode = FilterMode.Bilinear };
+            const int w = 128, h = 32, roller = 16;
+            rollerTex = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat, filterMode = FilterMode.Bilinear, anisoLevel = 4 };
             var px = new Color[w * h];
+            var dark = new Color(0.16f, 0.17f, 0.19f);
+            var mid = new Color(0.55f, 0.57f, 0.62f);
+            var light = new Color(0.93f, 0.95f, 1f);
             for (int x = 0; x < w; x++)
             {
-                float f = Mathf.Abs(Mathf.Sin(x / (float)w * Mathf.PI * 4f));
-                var c = Color.Lerp(new Color(0.28f, 0.29f, 0.31f), new Color(0.72f, 0.74f, 0.78f), f);
-                for (int y = 0; y < h; y++) px[y * w + x] = c;
+                int i = x % roller;
+                float u = (i + 0.5f) / roller;              // 0..1 across one roller
+                float shade = Mathf.Sin(u * Mathf.PI);       // cylinder lambert
+                float spec = Mathf.Exp(-Mathf.Pow((u - 0.38f) * 7f, 2f));
+                Color c = Color.Lerp(dark, mid, shade);
+                c = Color.Lerp(c, light, spec * 0.85f);
+                if (i == 0 || i == roller - 1) c = dark * 0.8f;
+                for (int y = 0; y < h; y++)
+                {
+                    float v = y / (float)(h - 1);
+                    float edge = 1f - Mathf.Pow(Mathf.Abs(v - 0.5f) * 2f, 6f) * 0.35f;   // darker at the belt edges
+                    px[y * w + x] = new Color(c.r * edge, c.g * edge, c.b * edge, 1f);
+                }
             }
             rollerTex.SetPixels(px); rollerTex.Apply();
             return rollerTex;

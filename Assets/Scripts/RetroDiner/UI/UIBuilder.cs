@@ -93,6 +93,33 @@ namespace RetroDiner.UI
             return img;
         }
 
+        /// <summary>Rounded pill/card background (9-sliced procedural sprite).</summary>
+        public static Image Pill(Transform parent, string name, Color color, int radius = 24, bool raycast = false)
+        {
+            var img = Panel(parent, name, color, ProcSprites.Rounded(radius), raycast);
+            img.type = Image.Type.Sliced;
+            return img;
+        }
+
+        /// <summary>Soft drop shadow behind a rect (a second blurred-looking pill offset downward).</summary>
+        public static Image SoftShadow(RectTransform target, float offset = 10f, float alpha = 0.35f, int radius = 28)
+        {
+            var sh = Pill(target.parent, target.name + "_Shadow", new Color(0f, 0f, 0f, alpha), radius);
+            sh.rectTransform.anchorMin = target.anchorMin; sh.rectTransform.anchorMax = target.anchorMax; sh.rectTransform.pivot = target.pivot;
+            sh.rectTransform.sizeDelta = target.sizeDelta + new Vector2(8f, 8f);
+            sh.rectTransform.anchoredPosition = target.anchoredPosition + new Vector2(0f, -offset);
+            sh.transform.SetSiblingIndex(target.GetSiblingIndex());
+            return sh;
+        }
+
+        /// <summary>Gently pulses a RectTransform's scale forever (call-to-action buttons).</summary>
+        public static void Pulse(RectTransform rt, float amount = 0.04f, float period = 1.4f)
+        {
+            if (rt == null) return;
+            var p = rt.gameObject.AddComponent<PulseScale>();
+            p.amount = amount; p.period = period;
+        }
+
         public static Image Icon(Transform parent, string name, Sprite sprite, Color fallbackColor, Vector2 size)
         {
             var img = Panel(parent, name, sprite != null ? Color.white : fallbackColor, sprite, false);
@@ -149,10 +176,13 @@ namespace RetroDiner.UI
             btn.colors = colors;
             if (sprite == null)
             {
+                img.sprite = ProcSprites.Rounded(Mathf.Clamp((int)(size.y * 0.28f), 10, 60));
+                img.type = Image.Type.Sliced;
                 Shadow(img, 5f);
-                // A soft chrome rim for placeholder buttons.
-                var rim = Panel(img.transform, "Rim", new Color(1f, 1f, 1f, 0.22f), null, false);
-                Stretch(rim.rectTransform, 0, 0, 0, size.y * 0.5f);
+                // Glossy top highlight for code-drawn buttons.
+                var rim = Panel(img.transform, "Rim", new Color(1f, 1f, 1f, 0.18f), ProcSprites.Rounded(Mathf.Clamp((int)(size.y * 0.28f), 10, 60)), false);
+                rim.type = Image.Type.Sliced;
+                Stretch(rim.rectTransform, 4, 4, 4, size.y * 0.5f);
             }
             if (!string.IsNullOrEmpty(label))
             {
@@ -192,6 +222,19 @@ namespace RetroDiner.UI
             Vector3 baseScale = Vector3.one;
             rt.localScale = baseScale * (1f + amount);
             Tween.To(duration, t => { if (rt != null) rt.localScale = Vector3.LerpUnclamped(baseScale * (1f + amount), baseScale, t); }, Ease.OutBack, null, true);
+        }
+    }
+
+    /// <summary>Idle breathing scale for call-to-action elements.</summary>
+    public class PulseScale : MonoBehaviour
+    {
+        public float amount = 0.04f, period = 1.4f;
+        float t;
+        void Update()
+        {
+            t += Time.unscaledDeltaTime;
+            float s = 1f + Mathf.Sin(t / period * Mathf.PI * 2f) * amount;
+            transform.localScale = new Vector3(s, s, 1f);
         }
     }
 

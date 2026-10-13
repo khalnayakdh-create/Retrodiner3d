@@ -20,6 +20,7 @@ namespace RetroDiner.UI
         RectTransform[] slotRects = new RectTransform[0];
         Image[] slotIcons = new Image[0];
         Image[] slotBacks = new Image[0];
+        Image[] slotGlows = new Image[0];
         GameConfig cfg;
         int capacity;
         Func<string, ItemDefinition> lookup;
@@ -74,6 +75,7 @@ namespace RetroDiner.UI
             slotRects = new RectTransform[capacity];
             slotIcons = new Image[capacity];
             slotBacks = new Image[capacity];
+            slotGlows = new Image[capacity];
             float totalW = capacity * SlotSize + (capacity - 1) * SlotGap;
             float scale = Mathf.Min(1f, 1000f / totalW);
             float size = SlotSize * scale, gap = SlotGap * scale;
@@ -91,6 +93,10 @@ namespace RetroDiner.UI
                 UIBuilder.Place(back.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(size, size), new Vector2(startX + i * (size + gap), 0f));
                 slotRects[i] = back.rectTransform;
                 slotBacks[i] = back;
+                var glow = UIBuilder.Panel(back.transform, "Glow", new Color(1f, 0.85f, 0.3f, 0f), ProcSprites.Glow(128, 1.6f), false);
+                UIBuilder.Place(glow.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(size * 1.9f, size * 1.9f), Vector2.zero);
+                UIBuilder.Pulse(glow.rectTransform, 0.08f, 0.9f);
+                slotGlows[i] = glow;
                 var icon = UIBuilder.Panel(back.transform, "Icon", Color.white, null, false);
                 UIBuilder.Stretch(icon.rectTransform, 6, 6, 6, 6);
                 icon.preserveAspect = true;
@@ -125,6 +131,12 @@ namespace RetroDiner.UI
                     slotIcons[i].enabled = false;
                     slotBacks[i].color = hasArt ? new Color(0f, 0f, 0f, 0f) : new Color(0f, 0f, 0f, 0.22f);
                 }
+            }
+            // Pairs waiting for their third glow gold — the player's eye goes straight to what to look for.
+            for (int i = 0; i < capacity; i++)
+            {
+                bool pair = i < model.Count && model.CountOf(model.Slots[i].id) == 2;
+                var c = slotGlows[i].color; c.a = pair ? 0.75f : 0f; slotGlows[i].color = c;
             }
             // Warning tint when nearly full.
             float fill = model.Count / (float)model.Capacity;

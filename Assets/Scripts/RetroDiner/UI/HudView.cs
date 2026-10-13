@@ -44,6 +44,14 @@ namespace RetroDiner.UI
             vignette = UIBuilder.Panel(Root, "Vignette", new Color(0.9f, 0.1f, 0.1f, 0f), null, false);
             UIBuilder.Stretch(vignette.rectTransform);
 
+            // ---- depth scrims at the top and bottom of the belt band ----
+            var topScrim = UIBuilder.Panel(Root, "TopScrim", new Color(0.08f, 0.04f, 0.05f, 0.55f), ProcSprites.VerticalGradient(1f, 0f), false);
+            topScrim.rectTransform.anchorMin = new Vector2(0f, cfg.cameraViewportBand.y - 0.07f); topScrim.rectTransform.anchorMax = new Vector2(1f, cfg.cameraViewportBand.y + 0.02f);
+            topScrim.rectTransform.offsetMin = Vector2.zero; topScrim.rectTransform.offsetMax = Vector2.zero;
+            var bottomScrim = UIBuilder.Panel(Root, "BottomScrim", new Color(0.08f, 0.04f, 0.05f, 0.55f), ProcSprites.VerticalGradient(0f, 1f), false);
+            bottomScrim.rectTransform.anchorMin = new Vector2(0f, cfg.cameraViewportBand.x - 0.02f); bottomScrim.rectTransform.anchorMax = new Vector2(1f, cfg.cameraViewportBand.x + 0.06f);
+            bottomScrim.rectTransform.offsetMin = Vector2.zero; bottomScrim.rectTransform.offsetMax = Vector2.zero;
+
             // ---- order rail ----
             Tickets = Root.gameObject.AddComponent<TicketRailView>();
             Tickets.Build(Root, cfg, lookup);
@@ -64,13 +72,14 @@ namespace RetroDiner.UI
             top.anchorMin = new Vector2(0f, 1f); top.anchorMax = new Vector2(1f, 1f); top.pivot = new Vector2(0.5f, 1f);
             top.sizeDelta = new Vector2(0f, 140f); top.anchoredPosition = new Vector2(0f, -30f);
 
-            var levelPill = UIBuilder.Panel(top, "LevelPill", new Color(0.18f, 0.36f, 0.62f), null, false);
+            var levelPill = UIBuilder.Pill(top, "LevelPill", new Color(0.16f, 0.34f, 0.6f), 30);
             UIBuilder.Place(levelPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(230f, 80f), new Vector2(30f, 0f));
             UIBuilder.Outline(levelPill, UIBuilder.Chrome, 3f);
+            UIBuilder.Shadow(levelPill, 5f);
             levelText = UIBuilder.Label(levelPill.transform, "LevelText", "Level 1", 40, Color.white);
             UIBuilder.Stretch(levelText.rectTransform);
 
-            var barBack = UIBuilder.Panel(top, "StarBar", new Color(0.2f, 0.2f, 0.22f), null, false);
+            var barBack = UIBuilder.Pill(top, "StarBar", new Color(0.16f, 0.16f, 0.18f), 16);
             UIBuilder.Place(barBack.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(430f, 34f), new Vector2(-20f, 0f));
             UIBuilder.Outline(barBack, UIBuilder.Chrome, 3f);
             starFill = UIBuilder.Panel(barBack.transform, "Fill", new Color(0.36f, 0.8f, 0.3f), null, false);
@@ -188,6 +197,99 @@ namespace RetroDiner.UI
         }
 
         public void ShowFakeAd(string title, float seconds, Action onFinished) { Popups.FakeAd(title, seconds, onFinished); }
+
+        // ------------------------------------------------------------------ flourishes
+
+        /// <summary>Big centre banner (uses the neon banner art when present): "ORDER UP!", "NICE!", etc.</summary>
+        public void Flash(string text, float hold = 0.6f, Color? tint = null)
+        {
+            var sprite = ArtCatalog.Pick(cfg.shiftFinishedBanner, ArtCatalog.ShiftFinishedBanner);
+            var holder = UIBuilder.Rect(FlightLayer, "Flash");
+            UIBuilder.Place(holder, new Vector2(0.5f, 0.5f), new Vector2(760f, 260f), new Vector2(0f, 120f));
+            Image back;
+            if (sprite != null) { back = UIBuilder.Panel(holder, "Back", Color.white, sprite, false); back.preserveAspect = true; }
+            else { back = UIBuilder.Pill(holder, "Back", UIBuilder.Red, 40); UIBuilder.Outline(back, UIBuilder.Chrome, 5f); }
+            UIBuilder.Stretch(back.rectTransform);
+            var lbl = UIBuilder.Label(holder, "Text", text, 64, tint ?? UIBuilder.Cream);
+            UIBuilder.Stretch(lbl.rectTransform, 40, 20, 40, 20);
+            UIBuilder.Outline(lbl, UIBuilder.Dark, 4f);
+            holder.localScale = Vector3.zero;
+            Tween.Scale(holder, Vector3.one, 0.28f, Ease.OutBack, () =>
+            {
+                Tween.Delay(hold, () =>
+                {
+                    Tween.To(0.25f, t =>
+                    {
+                        if (holder == null) return;
+                        holder.localScale = Vector3.one * (1f + t * 0.3f);
+                        var c = lbl.color; c.a = 1f - t; lbl.color = c;
+                        var b = back.color; b.a = 1f - t; back.color = b;
+                    }, Ease.InQuad, () => { if (holder != null) Destroy(holder.gameObject); }, true);
+                }, true);
+            }, true);
+        }
+
+        /// <summary>Small rising text ("+3 tokens", "x2") at a screen position.</summary>
+        public void FloatText(Vector2 screen, string text, Color color, int size = 40)
+        {
+            var lbl = UIBuilder.Label(FlightLayer, "Float", text, size, color);
+            UIBuilder.Place(lbl.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(400f, 80f), UIBuilder.ScreenToLocal(FlightLayer, screen));
+            UIBuilder.Outline(lbl, UIBuilder.Dark, 3f);
+            var rt = lbl.rectTransform;
+            Vector2 start = rt.anchoredPosition;
+            rt.localScale = Vector3.one * 0.6f;
+            Tween.To(0.9f, t =>
+            {
+                if (rt == null) return;
+                rt.anchoredPosition = start + new Vector2(0f, 120f * t);
+                rt.localScale = Vector3.one * (0.6f + 0.5f * Tween.Evaluate(Ease.OutBack, Mathf.Min(1f, t * 3f)));
+                var c = lbl.color; c.a = t < 0.6f ? 1f : 1f - (t - 0.6f) / 0.4f; lbl.color = c;
+            }, Ease.Linear, () => { if (rt != null) Destroy(rt.gameObject); }, true);
+        }
+
+        /// <summary>Expanding ring where the finger tapped.</summary>
+        public void TapRipple(Vector2 screen, Color color)
+        {
+            var ring = UIBuilder.Panel(FlightLayer, "Ripple", color, ProcSprites.Ring(128, 9f), false);
+            UIBuilder.Place(ring.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(120f, 120f), UIBuilder.ScreenToLocal(FlightLayer, screen));
+            var rt = ring.rectTransform;
+            Tween.To(0.35f, t =>
+            {
+                if (rt == null) return;
+                rt.localScale = Vector3.one * (0.4f + 1.4f * t);
+                var c = ring.color; c.a = 1f - t; ring.color = c;
+            }, Ease.OutQuad, () => { if (rt != null) Destroy(rt.gameObject); }, true);
+        }
+
+        /// <summary>"SHIFT 12 · 3 ORDERS" slides in from the right, holds, slides out left.</summary>
+        public void LevelIntro(int level, int orders, Action done)
+        {
+            var holder = UIBuilder.Rect(FlightLayer, "Intro");
+            UIBuilder.Place(holder, new Vector2(0.5f, 0.5f), new Vector2(1080f, 230f), new Vector2(1300f, 140f));
+            var band = UIBuilder.Panel(holder, "Band", new Color(0.84f, 0.15f, 0.24f, 0.95f), null, false);
+            UIBuilder.Stretch(band.rectTransform);
+            var stripe = UIBuilder.Panel(holder, "Stripe", new Color(1f, 0.96f, 0.86f, 0.9f), null, false);
+            stripe.rectTransform.anchorMin = new Vector2(0f, 0f); stripe.rectTransform.anchorMax = new Vector2(1f, 0f);
+            stripe.rectTransform.pivot = new Vector2(0.5f, 0f); stripe.rectTransform.sizeDelta = new Vector2(0f, 10f); stripe.rectTransform.anchoredPosition = Vector2.zero;
+            var t1 = UIBuilder.Label(holder, "T1", "SHIFT " + level, 84, UIBuilder.Cream);
+            UIBuilder.Place(t1.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(1000f, 110f), new Vector2(0f, 35f));
+            UIBuilder.Outline(t1, UIBuilder.Dark, 4f);
+            var t2 = UIBuilder.Label(holder, "T2", orders + (orders == 1 ? " ORDER" : " ORDERS") + "  ·  ORDER UP!", 40, UIBuilder.Gold);
+            UIBuilder.Place(t2.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(1000f, 60f), new Vector2(0f, -50f));
+            UIBuilder.Outline(t2, UIBuilder.Dark, 3f);
+            GameServices.Audio.Play("bell", 0.6f, 1.2f);
+            Tween.AnchoredMove(holder, new Vector2(0f, 140f), 0.35f, Ease.OutCubic, () =>
+            {
+                Tween.Delay(0.75f, () =>
+                {
+                    Tween.AnchoredMove(holder, new Vector2(-1300f, 140f), 0.3f, Ease.InQuad, () =>
+                    {
+                        if (holder != null) Destroy(holder.gameObject);
+                        done?.Invoke();
+                    }, true);
+                }, true);
+            }, true);
+        }
 
         /// <summary>Star row used on the win panel.</summary>
         public void DecorateStars(RectTransform content, int earned)

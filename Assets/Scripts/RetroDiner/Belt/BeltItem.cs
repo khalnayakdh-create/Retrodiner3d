@@ -112,6 +112,18 @@ namespace RetroDiner.Belt
                 lgo.transform.localPosition = new Vector3(0f, worldSize * 0.55f, 0f);
             }
 
+            // Soft blob shadow on the belt surface.
+            var shadowGo = new GameObject("Shadow");
+            shadowGo.transform.SetParent(visualRoot, false);
+            var shadow = shadowGo.AddComponent<SpriteRenderer>();
+            shadow.sprite = UI.ProcSprites.Glow(64, 2.2f);
+            shadow.color = new Color(0f, 0f, 0f, 0.42f);
+            shadow.sortingOrder = -2;
+            shadowGo.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            shadowGo.transform.localPosition = new Vector3(0f, 0.005f, 0f);
+            float sw = worldSize * 0.95f / 0.64f;
+            shadowGo.transform.localScale = new Vector3(sw, sw * 0.55f, 1f);
+
             // Overlay sprite (cloche / napkin) drawn on top of the item.
             overlayObj = new GameObject("Overlay");
             overlayObj.transform.SetParent(visualRoot, false);
@@ -237,6 +249,7 @@ namespace RetroDiner.Belt
             if (visualRoot == null) return;
             float y = Mathf.Sin((time + bobSeed) * 3f) * 0.015f;
             var p = visualRoot.localPosition; p.y = y; visualRoot.localPosition = p;
+            if (sprite != null) sprite.transform.localRotation = billboardRotation * Quaternion.Euler(0f, 0f, Mathf.Sin((time + bobSeed) * 2.1f) * 2.5f);
         }
 
         public void ResetForPool()

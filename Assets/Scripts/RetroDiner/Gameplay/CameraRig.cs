@@ -15,9 +15,19 @@ namespace RetroDiner.Gameplay
             cfg = config;
             Cam.rect = new Rect(0f, cfg.cameraViewportBand.x, 1f, cfg.cameraViewportBand.y - cfg.cameraViewportBand.x);
             Cam.transform.rotation = Quaternion.Euler(cfg.cameraPitchDegrees, 0f, 0f);
+            baseFov = Cam.fieldOfView;
         }
 
         public Quaternion BillboardRotation => Quaternion.Euler(cfg.cameraPitchDegrees, 0f, 0f);
+
+        float baseFov = 50f;
+        /// <summary>Quick FOV punch-in on satisfying moments (triplet clears).</summary>
+        public void Punch(float amount = 2f, float duration = 0.22f)
+        {
+            if (Cam == null) return;
+            Cam.fieldOfView = baseFov - amount;
+            RetroDiner.Core.Tween.Float(baseFov - amount, baseFov, duration, v => { if (Cam != null) Cam.fieldOfView = v; }, RetroDiner.Core.Ease.OutQuad, null, true);
+        }
 
         public void Frame(Bounds bounds)
         {

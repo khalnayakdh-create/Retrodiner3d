@@ -78,41 +78,56 @@ namespace RetroDiner.UI
             UIBuilder.Stretch(menuPage);
 
             // currency + energy strip
-            var strip = UIBuilder.Panel(menuPage, "Currency", new Color(0f, 0f, 0f, 0.45f), null, false);
-            strip.rectTransform.anchorMin = new Vector2(0f, 1f); strip.rectTransform.anchorMax = new Vector2(1f, 1f);
-            strip.rectTransform.pivot = new Vector2(0.5f, 1f); strip.rectTransform.sizeDelta = new Vector2(0f, 110f); strip.rectTransform.anchoredPosition = new Vector2(0f, -40f);
-            var coinIcon = UIBuilder.Icon(strip.transform, "CoinIcon", ArtCatalog.Pick(cfg.coinIcon, ArtCatalog.Coin), UIBuilder.Gold, new Vector2(64f, 64f));
-            UIBuilder.Place(coinIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(64f, 64f), new Vector2(60f, 0f));
-            coinsText = UIBuilder.Label(strip.transform, "Coins", "0", 36, Color.white, TextAnchor.MiddleLeft);
-            UIBuilder.Place(coinsText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(200f, 80f), new Vector2(100f, 0f));
-            var tokenIcon = UIBuilder.Icon(strip.transform, "TokenIcon", ArtCatalog.Pick(cfg.tokenIcon, ArtCatalog.Token), UIBuilder.Purple, new Vector2(64f, 64f));
-            UIBuilder.Place(tokenIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(64f, 64f), new Vector2(330f, 0f));
-            tokensText = UIBuilder.Label(strip.transform, "Tokens", "0", 36, Color.white, TextAnchor.MiddleLeft);
-            UIBuilder.Place(tokensText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(200f, 80f), new Vector2(370f, 0f));
+            var strip = UIBuilder.Rect(menuPage, "Currency");
+            strip.anchorMin = new Vector2(0f, 1f); strip.anchorMax = new Vector2(1f, 1f);
+            strip.pivot = new Vector2(0.5f, 1f); strip.sizeDelta = new Vector2(0f, 110f); strip.anchoredPosition = new Vector2(0f, -40f);
+            var coinPill = UIBuilder.Pill(strip, "CoinPill", new Color(0.05f, 0.04f, 0.06f, 0.62f), 34);
+            UIBuilder.Place(coinPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(250f, 70f), new Vector2(40f, 0f));
+            var tokenPill = UIBuilder.Pill(strip, "TokenPill", new Color(0.05f, 0.04f, 0.06f, 0.62f), 34);
+            UIBuilder.Place(tokenPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(250f, 70f), new Vector2(310f, 0f));
+            var heartPill = UIBuilder.Pill(strip, "HeartPill", new Color(0.05f, 0.04f, 0.06f, 0.62f), 34);
+            UIBuilder.Place(heartPill.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(400f, 84f), new Vector2(-20f, 0f));
+            var coinIcon = UIBuilder.Icon(coinPill.transform, "CoinIcon", ArtCatalog.Pick(cfg.coinIcon, ArtCatalog.Coin), UIBuilder.Gold, new Vector2(64f, 64f));
+            UIBuilder.Place(coinIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(64f, 64f), new Vector2(34f, 0f));
+            coinsText = UIBuilder.Label(coinPill.transform, "Coins", "0", 36, Color.white, TextAnchor.MiddleLeft);
+            UIBuilder.Place(coinsText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(170f, 70f), new Vector2(74f, 0f));
+            var tokenIcon = UIBuilder.Icon(tokenPill.transform, "TokenIcon", ArtCatalog.Pick(cfg.tokenIcon, ArtCatalog.Token), UIBuilder.Purple, new Vector2(64f, 64f));
+            UIBuilder.Place(tokenIcon.rectTransform, new Vector2(0f, 0.5f), new Vector2(64f, 64f), new Vector2(34f, 0f));
+            tokensText = UIBuilder.Label(tokenPill.transform, "Tokens", "0", 36, Color.white, TextAnchor.MiddleLeft);
+            UIBuilder.Place(tokensText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(170f, 70f), new Vector2(74f, 0f));
 
             var heartSprite = ArtCatalog.Pick(cfg.heartIcon, ArtCatalog.Heart);
             for (int i = 0; i < hearts.Length; i++)
             {
-                hearts[i] = UIBuilder.Icon(strip.transform, "Heart" + i, heartSprite, UIBuilder.Red, new Vector2(44f, 44f));
-                UIBuilder.Place(hearts[i].rectTransform, new Vector2(1f, 0.5f), new Vector2(44f, 44f), new Vector2(-300f + i * 46f, 14f));
+                hearts[i] = UIBuilder.Icon(heartPill.transform, "Heart" + i, heartSprite, UIBuilder.Red, new Vector2(46f, 46f));
+                UIBuilder.Place(hearts[i].rectTransform, new Vector2(0f, 0.5f), new Vector2(46f, 46f), new Vector2(40f + i * 50f, 12f));
             }
-            energyTimerText = UIBuilder.Label(strip.transform, "EnergyTimer", "", 22, new Color(1f, 1f, 1f, 0.85f), TextAnchor.MiddleCenter, FontStyle.Normal);
-            UIBuilder.Place(energyTimerText.rectTransform, new Vector2(1f, 0.5f), new Vector2(240f, 30f), new Vector2(-208f, -28f));
-            var plusEnergy = UIBuilder.Button(strip.transform, "PlusEnergy", "+", ShowEnergyPanel, UIBuilder.Mint, null, new Vector2(54f, 54f), 36, UIBuilder.Dark);
-            UIBuilder.Place(plusEnergy.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(54f, 54f), new Vector2(-50f, 0f));
-            energyText = UIBuilder.Label(strip.transform, "EnergyText", "", 1, Color.clear);   // unused placeholder for API symmetry
+            energyTimerText = UIBuilder.Label(heartPill.transform, "EnergyTimer", "", 22, new Color(1f, 1f, 1f, 0.85f), TextAnchor.MiddleLeft, FontStyle.Normal);
+            UIBuilder.Place(energyTimerText.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(260f, 30f), new Vector2(20f, -26f));
+            var plusEnergy = UIBuilder.Button(heartPill.transform, "PlusEnergy", "+", ShowEnergyPanel, UIBuilder.Mint, ProcSprites.Circle(64), new Vector2(56f, 56f), 40, UIBuilder.Dark);
+            UIBuilder.Place(plusEnergy.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(56f, 56f), new Vector2(-40f, 0f));
+            energyText = UIBuilder.Label(heartPill.transform, "EnergyText", "", 1, Color.clear);
             energyText.gameObject.SetActive(false);
 
-            var title = UIBuilder.Label(menuPage, "Title", "RETRO DINER 3D", 96, UIBuilder.Cream);
-            UIBuilder.Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(1000f, 140f), new Vector2(0f, -260f));
+            var titleGlow = UIBuilder.Panel(menuPage, "TitleGlow", new Color(1f, 0.25f, 0.3f, 0.55f), ProcSprites.Glow(128, 2.5f), false);
+            UIBuilder.Place(titleGlow.rectTransform, new Vector2(0.5f, 1f), new Vector2(1300f, 520f), new Vector2(0f, -300f));
+            var titleShadow = UIBuilder.Label(menuPage, "TitleShadow", "RETRO DINER 3D", 100, new Color(0.35f, 0.02f, 0.08f, 0.9f));
+            UIBuilder.Place(titleShadow.rectTransform, new Vector2(0.5f, 1f), new Vector2(1000f, 140f), new Vector2(6f, -270f));
+            var title = UIBuilder.Label(menuPage, "Title", "RETRO DINER 3D", 100, UIBuilder.Cream);
+            UIBuilder.Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(1000f, 140f), new Vector2(0f, -262f));
             UIBuilder.Outline(title, UIBuilder.Red, 5f);
-            var sub = UIBuilder.Label(menuPage, "Sub", "ORDER UP!", 64, UIBuilder.Gold);
-            UIBuilder.Place(sub.rectTransform, new Vector2(0.5f, 1f), new Vector2(1000f, 100f), new Vector2(0f, -380f));
-            UIBuilder.Outline(sub, UIBuilder.Dark, 4f);
+            UIBuilder.Pulse(title.rectTransform, 0.015f, 2.2f);
+            var subPill = UIBuilder.Pill(menuPage, "SubPill", new Color(0.84f, 0.15f, 0.24f, 0.92f), 30);
+            UIBuilder.Place(subPill.rectTransform, new Vector2(0.5f, 1f), new Vector2(420f, 78f), new Vector2(0f, -382f));
+            UIBuilder.Outline(subPill, UIBuilder.Chrome, 3f);
+            UIBuilder.Shadow(subPill, 6f);
+            var sub = UIBuilder.Label(subPill.transform, "Sub", "ORDER UP!", 50, UIBuilder.Cream);
+            UIBuilder.Stretch(sub.rectTransform);
+            UIBuilder.Outline(sub, UIBuilder.Dark, 3f);
 
             // Tip jar widget (left) + punch card / spin (right)
-            var jarHolder = UIBuilder.Rect(menuPage, "TipJar");
-            UIBuilder.Place(jarHolder, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(240f, 300f), new Vector2(30f, 120f));
+            var jarHolder = UIBuilder.Pill(menuPage, "TipJar", new Color(0.05f, 0.04f, 0.06f, 0.55f), 34).rectTransform;
+            UIBuilder.Place(jarHolder, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(250f, 320f), new Vector2(26f, 120f));
             tipJarIcon = UIBuilder.Icon(jarHolder, "JarIcon", ArtCatalog.Pick(cfg.tipJar10, ArtCatalog.TipJar10), UIBuilder.Gold, new Vector2(170f, 170f));
             UIBuilder.Place(tipJarIcon.rectTransform, new Vector2(0.5f, 1f), new Vector2(170f, 170f), new Vector2(0f, -85f));
             tipJarText = UIBuilder.Label(jarHolder, "JarText", "", 26, Color.white);
@@ -121,13 +136,13 @@ namespace RetroDiner.UI
             crackButton = UIBuilder.Button(jarHolder, "Crack", "CRACK $2.99", ShowStore, UIBuilder.Gold, null, new Vector2(220f, 64f), 26, UIBuilder.Dark);
             UIBuilder.Place(crackButton.image.rectTransform, new Vector2(0.5f, 1f), new Vector2(220f, 64f), new Vector2(0f, -268f));
 
-            var punch = UIBuilder.Button(menuPage, "PunchCard", "DAILY\nPUNCH-CARD", ShowPunchCard, UIBuilder.Purple, null, new Vector2(230f, 110f), 28);
+            var punch = UIBuilder.Button(menuPage, "PunchCard", "DAILY\nPUNCH-CARD", ShowPunchCard, UIBuilder.Purple, null, new Vector2(240f, 112f), 28);
             UIBuilder.Place(punch.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(230f, 110f), new Vector2(-145f, 200f));
             punchBadge = UIBuilder.Label(punch.transform, "Badge", "!", 40, UIBuilder.Gold);
             UIBuilder.Place(punchBadge.rectTransform, new Vector2(1f, 1f), new Vector2(50f, 50f), new Vector2(0f, 0f));
             UIBuilder.Outline(punchBadge, UIBuilder.Dark, 3f);
 
-            var spin = UIBuilder.Button(menuPage, "Spin", "JUKEBOX\nSPIN", DailySpin, UIBuilder.Sky, null, new Vector2(230f, 110f), 28);
+            var spin = UIBuilder.Button(menuPage, "Spin", "JUKEBOX\nSPIN", DailySpin, UIBuilder.Sky, null, new Vector2(240f, 112f), 28);
             UIBuilder.Place(spin.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(230f, 110f), new Vector2(-145f, 60f));
             spinBadge = UIBuilder.Label(spin.transform, "Badge", "!", 40, UIBuilder.Gold);
             UIBuilder.Place(spinBadge.rectTransform, new Vector2(1f, 1f), new Vector2(50f, 50f), new Vector2(0f, 0f));
@@ -135,6 +150,7 @@ namespace RetroDiner.UI
 
             var play = UIBuilder.Button(menuPage, "Play", "PLAY", () => TryPlay(Mathf.Clamp(GameServices.Profile.highestLevelUnlocked, 1, cfg.LevelCount)), UIBuilder.Red, btnRed, new Vector2(600f, 190f), 64);
             UIBuilder.Place(play.image.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(600f, 190f), new Vector2(0f, -140f));
+            UIBuilder.Pulse(play.image.rectTransform, 0.035f, 1.3f);
 
             var levels = UIBuilder.Button(menuPage, "Levels", "LEVEL SELECT", ShowLevels, UIBuilder.Mint, btnMint, new Vector2(520f, 150f), 42, UIBuilder.Dark);
             UIBuilder.Place(levels.image.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(520f, 150f), new Vector2(0f, -330f));
@@ -268,14 +284,23 @@ namespace RetroDiner.UI
             UIBuilder.Place(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(1000f, 120f), new Vector2(0f, -140f));
             UIBuilder.Outline(title, UIBuilder.Dark, 4f);
 
-            levelGrid = UIBuilder.Rect(levelPage, "Grid");
-            UIBuilder.Place(levelGrid, new Vector2(0.5f, 0.5f), new Vector2(960f, 1300f), new Vector2(0f, 20f));
+            levelMap = levelPage.gameObject.AddComponent<LevelMapView>();
+            levelMap.Build(levelPage, cfg, TryPlay);
             var back = UIBuilder.Button(levelPage, "Back", "BACK", ShowMenu, UIBuilder.Red, btnRed, new Vector2(400f, 130f), 40);
             UIBuilder.Place(back.image.rectTransform, new Vector2(0.5f, 0f), new Vector2(400f, 130f), new Vector2(0f, 130f));
             levelBanner = Popups.Banner(levelPage);
         }
 
+        LevelMapView levelMap;
+
         void PopulateLevels()
+        {
+            levelMap.Populate();
+            Canvas.ForceUpdateCanvases();
+            levelMap.FocusCurrent();
+        }
+
+        void PopulateLevelsGridLegacy()
         {
             foreach (Transform c in levelGrid) Destroy(c.gameObject);
             int count = cfg.LevelCount;

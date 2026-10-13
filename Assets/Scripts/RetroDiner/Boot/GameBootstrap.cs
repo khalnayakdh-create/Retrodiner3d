@@ -130,13 +130,16 @@ namespace RetroDiner.Boot
             var menu = menuCanvas.gameObject.AddComponent<MainMenuView>();
             menu.Build(menuCanvas, cfg, controller.StartLevel);
 
-            controller.Setup(cfg, cam, rig, hud, belt, factory, menu, vfx, input);
+            var replay = beltGo.AddComponent<ReplayRecorder>();
+            replay.Setup(belt, cam, controller.Lookup, cfg.itemWorldSize, rig.BillboardRotation);
+            controller.Setup(cfg, cam, rig, hud, belt, factory, menu, vfx, input, replay);
 
             var fakeAds = GameServices.Ads as FakeAdService;
             if (fakeAds != null) fakeAds.ShowOverlay = hud.ShowFakeAd;
 
             hud.Root.gameObject.SetActive(false);
             menu.ShowMenu();
+            GameServices.Audio.StartMusic();
             Debug.Log("[Boot] Retro Diner 3D ready. Items: " + cfg.items.Length + ", levels: " + cfg.levels.Length);
         }
     }

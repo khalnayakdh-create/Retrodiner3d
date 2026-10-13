@@ -18,7 +18,6 @@ namespace RetroDiner.Audio
         int next;
 
         public bool SfxEnabled { get; set; } = true;
-        public bool MusicEnabled { get; set; } = true;
         public float SfxVolume = 0.9f;
 
         public AudioService(Transform parent, int poolSize = 10)
@@ -59,6 +58,111 @@ namespace RetroDiner.Audio
         }
 
         public void SetMusicPitch(float pitch) { music.pitch = pitch; }
+
+        bool musicEnabledField = true;
+        public bool MusicEnabled
+        {
+            get { return musicEnabledField; }
+            set { musicEnabledField = value; if (music != null) music.mute = !value; }
+        }
+
+        /// <summary>Starts the procedural rockabilly loop (built lazily on first call).</summary>
+        public void StartMusic()
+        {
+            if (music.clip == null) music.clip = BuildMusicLoop();
+            music.mute = !musicEnabledField;
+            if (!music.isPlaying) music.Play();
+        }
+
+        public void StopMusic() { if (music.isPlaying) music.Stop(); }
+
+        // ---------------- procedural music ----------------
+
+        /// <summary>
+        /// 8 bars of swung 12-bar-blues-style rockabilly in A at 128 BPM: walking bass, brushed hat,
+        /// backbeat snare and off-beat guitar stabs. ~15 s loop, mono, built once at startup.
+        /// </summary>
+        static AudioClip BuildMusicLoop()
+        {
+            const float bpm = 128f;
+            const int bars = 8;
+            float beat = 60f / bpm;
+            float barLen = beat * 4f;
+            float total = barLen * bars;
+            int n = Mathf.CeilToInt(total * SampleRate);
+            var data = new float[n];
+            var rng = new System.Random(7);
+
+            // Chord roots per bar (A blues: I I I I IV IV I I), in Hz for the bass octave.
+            float A = 55f, D = 73.42f;
+            float[] roots = { A, A, A, A, D, D, A, A };
+            // Walking pattern in semitones from the root: root, 3rd(maj), 5th, 6th / root, 6th, 5th, 3rd
+            int[][] walks = { new[] { 0, 4, 7, 9 }, new[] { 0, 9, 7, 4 } };
+
+            for (int bar = 0; bar < bars; bar++)
+            {
+                float root = roots[bar];
+                var walk = walks[bar % 2];
+                for (int b = 0; b < 4; b++)
+                {
+                    float t0 = bar * barLen + b * beat;
+                    float freq = root * Mathf.Pow(2f, walk[b] / 12f);
+                    AddTone(data, t0, beat * 0.95f, freq, 0.55f, 0.012f, 0.35f, 2);           // bass pluck
+                    AddNoise(data, t0, 0.025f, 0.10f, 0.001f, rng);                              // hat on the beat
+                    AddNoise(data, t0 + beat * 0.66f, 0.02f, 0.07f, 0.001f, rng);                // swung off-beat hat
+                    if (b == 1 || b == 3)
+                    {
+                        AddNoise(data, t0, 0.09f, 0.22f, 0.002f, rng);                           // brushed snare backbeat
+                        float g = root * 4f;                                                     // guitar stab two octaves up
+                        AddTone(data, t0 + beat * 0.66f, 0.12f, g, 0.10f, 0.003f, 0.08f, 1);
+                        AddTone(data, t0 + beat * 0.66f, 0.12f, g * Mathf.Pow(2f, 4f / 12f), 0.08f, 0.003f, 0.08f, 1);
+                        AddTone(data, t0 + beat * 0.66f, 0.12f, g * Mathf.Pow(2f, 7f / 12f), 0.08f, 0.003f, 0.08f, 1);
+                    }
+                }
+            }
+            // Soft clip + gentle fade at the loop seam so it repeats cleanly.
+            for (int i = 0; i < n; i++)
+            {
+                float v = data[i];
+                v = v / (1f + Mathf.Abs(v));
+                int edge = SampleRate / 50;
+                if (i < edge) v *= i / (float)edge;
+                if (i > n - edge) v *= (n - i) / (float)edge;
+                data[i] = v;
+            }
+            var clip = AudioClip.Create("RockabillyLoop", n, 1, SampleRate, false);
+            clip.SetData(data, 0);
+            return clip;
+        }
+
+        static void AddTone(float[] data, float start, float dur, float freq, float amp, float attack, float decay, int harmonics)
+        {
+            int i0 = Mathf.Max(0, (int)(start * SampleRate));
+            int i1 = Mathf.Min(data.Length, (int)((start + dur) * SampleRate));
+            for (int i = i0; i < i1; i++)
+            {
+                float t = (i - i0) / (float)SampleRate;
+                float env = Mathf.Clamp01(t / attack) * Mathf.Exp(-t / decay);
+                float v = Mathf.Sin(2f * Mathf.PI * freq * t);
+                if (harmonics >= 2) v += 0.35f * Mathf.Sin(2f * Mathf.PI * freq * 2f * t) + 0.12f * Mathf.Sin(2f * Mathf.PI * freq * 3f * t);
+                data[i] += v * env * amp;
+            }
+        }
+
+        static void AddNoise(float[] data, float start, float dur, float amp, float attack, System.Random rng)
+        {
+            int i0 = Mathf.Max(0, (int)(start * SampleRate));
+            int i1 = Mathf.Min(data.Length, (int)((start + dur) * SampleRate));
+            float last = 0f;
+            for (int i = i0; i < i1; i++)
+            {
+                float t = (i - i0) / (float)SampleRate;
+                float env = Mathf.Clamp01(t / attack) * (1f - t / dur);
+                float white = (float)(rng.NextDouble() * 2.0 - 1.0);
+                last = last * 0.6f + white * 0.4f;     // slight low-pass = brush feel
+                data[i] += last * env * amp;
+            }
+        }
 
         // ---------------- procedural clip bank ----------------
 

@@ -29,6 +29,8 @@ namespace RetroDiner.Gameplay
         Vfx vfx;
         TapInput input;
         CameraRig rig;
+        ReplayRecorder replay;
+        bool closeCall;
 
         LevelDefinition level;
         TrayModel tray;
@@ -43,10 +45,10 @@ namespace RetroDiner.Gameplay
         TweenHandle timeScaleTween;
 
         public void Setup(GameConfig config, Camera beltCamera, CameraRig cameraRig, HudView hudView, BeltController beltController,
-            ItemFactory itemFactory, MainMenuView mainMenu, Vfx effects, TapInput tapInput)
+            ItemFactory itemFactory, MainMenuView mainMenu, Vfx effects, TapInput tapInput, ReplayRecorder replayRecorder)
         {
             cfg = config; cam = beltCamera; rig = cameraRig; hud = hudView; belt = beltController; factory = itemFactory;
-            menu = mainMenu; vfx = effects; input = tapInput;
+            menu = mainMenu; vfx = effects; input = tapInput; replay = replayRecorder;
             defs.Clear();
             foreach (var d in cfg.items) if (d != null && !string.IsNullOrEmpty(d.id)) defs[d.id] = d;
             belt.ItemCharred += OnItemCharred;
@@ -65,8 +67,14 @@ namespace RetroDiner.Gameplay
 
         public void StartLevel(int index)
         {
+            if (cfg.GetLevel(index) == null) { GameEvents.RaiseToast("No level " + index); return; }
+            Popups.Fade(() => StartLevelNow(index));
+        }
+
+        void StartLevelNow(int index)
+        {
             level = cfg.GetLevel(index);
-            if (level == null) { GameEvents.RaiseToast("No level " + index); return; }
+            if (level == null) return;
             if (index != lastLevelIndex) { failsThisLevel = 0; lastLevelIndex = index; }
 
             KillTimeScaleTween();
@@ -106,7 +114,20 @@ namespace RetroDiner.Gameplay
             hud.SetTips(GameServices.Profile.tipJarTokens);
             hud.SetNearMiss(false);
             State = ShiftState.Playing;
-            OfferPreShiftExtraPlate();
+            if (replay != null) replay.Clear();
+            comboCount = 0;
+            closeCall = false;
+
+            // Intro banner, then the pre-shift Extra Plate pick, then the belt rolls.
+            belt.Running = false;
+            input.Enabled = false;
+            hud.LevelIntro(index, level.tickets != null ? level.tickets.Length : 0, () =>
+            {
+                if (State != ShiftState.Playing) return;
+                belt.Running = true;
+                input.Enabled = true;
+                OfferPreShiftExtraPlate();
+            });
         }
 
         /// <summary>Pre-shift pick: spend an owned Extra Plate for an 8th slot this shift (level 7+).</summary>
@@ -165,9 +186,12 @@ namespace RetroDiner.Gameplay
             Time.timeScale = 1f;
             State = ShiftState.None;
             hud.ClosePanel();
-            belt.ClearLevel();
-            hud.Root.gameObject.SetActive(false);
-            menu.ShowMenu();
+            Popups.Fade(() =>
+            {
+                belt.ClearLevel();
+                hud.Root.gameObject.SetActive(false);
+                menu.ShowMenu();
+            });
         }
 
         void Update()
@@ -240,6 +264,7 @@ namespace RetroDiner.Gameplay
                 return;
             }
             if (tray.IsFull) { hud.Shake(3f, 0.12f); return; }
+            hud.TapRipple(cam.WorldToScreenPoint(item.transform.position + Vector3.up * 0.3f), new Color(1f, 0.95f, 0.75f, 0.9f));
             PickItem(item);
         }
 
@@ -288,6 +313,9 @@ namespace RetroDiner.Gameplay
                     GameServices.Audio.Play("clear");
                     GameServices.Haptics.Play(HapticType.Medium);
                     hud.Shake(2f, 0.1f);
+                    rig.Punch(1.6f, 0.22f);
+                    comboCount++;
+                    if (comboCount >= 3 && comboCount % 3 == 0) hud.Flash(comboCount >= 9 ? "ON FIRE!" : comboCount >= 6 ? "GREAT!" : "NICE!", 0.35f);
                 }
                 else hud.Tray.Refresh(tray);
             });
@@ -327,6 +355,8 @@ namespace RetroDiner.Gameplay
             return ticket;
         }
 
+        int comboCount;
+
         void OnTripletLanded(Ticket ticket, bool completed, int railSlot)
         {
             if (ticket == null) return;
@@ -336,6 +366,9 @@ namespace RetroDiner.Gameplay
                 GameServices.Audio.Play("coin", 0.7f);
                 hud.SetTips(GameServices.Profile.tipJarTokens);
                 hud.Tickets.AnimateComplete(railSlot, tickets, null);
+                hud.Flash("ORDER UP!", 0.5f);
+                hud.FloatText(hud.Tickets.SlotScreenPosition(railSlot) + new Vector2(0f, -40f), "+" + cfg.tokensPerTicket + " tokens", UIBuilder.Gold, 36);
+                GameServices.Haptics.Play(HapticType.Heavy);
             }
             else
             {
@@ -371,6 +404,8 @@ namespace RetroDiner.Gameplay
             KillTimeScaleTween();
             timeScaleTween = Tween.Float(Time.timeScale, 1f, 0.25f, v => Time.timeScale = v, Ease.OutQuad, null, true);
             hud.SetNearMiss(false);
+            closeCall = true;
+            hud.Flash("CLOSE CALL!", 0.5f, UIBuilder.Gold);
             GameEvents.RaiseNearMissEnded();
         }
 
@@ -482,7 +517,18 @@ namespace RetroDiner.Gameplay
                     });
                 }, UIBuilder.Mint));
             buttons.Add(new PanelButton("NEXT SHIFT", NextLevel, UIBuilder.Red));
-            buttons.Add(new PanelButton(doubled ? "MENU" : "REPLAY", doubled ? (System.Action)ToMenu : Restart, UIBuilder.Gold));
+            if (replay != null && replay.HasFootage)
+                buttons.Add(new PanelButton(closeCall ? "SHARE CLOSE-CALL REPLAY" : "SHARE REPLAY", () =>
+                {
+                    Popups.Close();
+                    hud.Flash("REPLAY", 0.4f, UIBuilder.Sky);
+                    replay.PlayLast(true, () =>
+                    {
+                        if (replay.LastSavedFolder != null) GameServices.Share.ShareFile(replay.LastSavedFolder, "Retro Diner 3D — shift " + level.levelIndex);
+                        ShowWinPanel(stars, coins, doubled);
+                    });
+                }, UIBuilder.Sky));
+            buttons.Add(new PanelButton(doubled ? "MENU" : "PLAY AGAIN", doubled ? (System.Action)ToMenu : Restart, UIBuilder.Gold));
             hud.ShowPanel("SHIFT FINISHED!", "\n\n\n\n+" + coins + " coins" + (doubled ? "  (doubled!)" : "") + "\nTip jar: " + GameServices.Profile.tipJarTokens + " tokens", buttons, true, c => hud.DecorateStars(c, stars));
         }
 
