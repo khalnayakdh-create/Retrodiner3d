@@ -1,0 +1,287 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using RetroDiner.Core;
+using RetroDiner.Data;
+
+namespace RetroDiner.UI
+{
+    /// <summary>
+    /// Gameplay HUD: top bar (level, star bar, tip jar, pause), order rail, tray, booster bar,
+    /// near-miss vignette, toasts and all popup panels (pause / win / lose / continue / fake ad).
+    /// </summary>
+    public class HudView : MonoBehaviour
+    {
+        public TicketRailView Tickets { get; private set; }
+        public TrayView Tray { get; private set; }
+        public BoosterBarView Boosters { get; private set; }
+        public RectTransform FlightLayer { get; private set; }
+        public RectTransform Root { get; private set; }
+
+        Text levelText, tipsText, freezeText;
+        Image starFill;
+        Image[] stars = new Image[3];
+        Image vignette;
+        RectTransform panelLayer;
+        Text toastText;
+        RectTransform toastRect;
+        TweenHandle toastTween;
+        GameConfig cfg;
+        Sprite starFilledSprite, starEmptySprite, panelSprite, btnRed, btnMint, btnGold;
+        float vignetteTarget;
+
+        public void Build(Canvas canvas, GameConfig config, Func<string, ItemDefinition> lookup, Action onPause, Action<BoosterType> onBooster)
+        {
+            cfg = config;
+            Root = UIBuilder.Rect(canvas.transform, "HUD");
+            UIBuilder.Stretch(Root);
+
+            starFilledSprite = ArtCatalog.Pick(cfg.starFilled, ArtCatalog.StarFilled);
+            starEmptySprite = ArtCatalog.Pick(cfg.starEmpty, ArtCatalog.StarEmpty);
+            panelSprite = ArtCatalog.Pick(cfg.popupPanel, ArtCatalog.PopupPanel);
+            btnRed = ArtCatalog.Pick(cfg.buttonRed, ArtCatalog.ButtonRed);
+            btnMint = ArtCatalog.Pick(cfg.buttonMint, ArtCatalog.ButtonMint);
+            btnGold = ArtCatalog.Pick(cfg.buttonGold, ArtCatalog.ButtonGold);
+
+            // ---- vignette (below everything else in the HUD) ----
+            vignette = UIBuilder.Panel(Root, "Vignette", new Color(0.9f, 0.1f, 0.1f, 0f), null, false);
+            UIBuilder.Stretch(vignette.rectTransform);
+
+            // ---- order rail ----
+            Tickets = Root.gameObject.AddComponent<TicketRailView>();
+            Tickets.Build(Root, cfg, lookup);
+
+            // ---- tray ----
+            FlightLayer = UIBuilder.Rect(Root, "FlightLayer");
+            UIBuilder.Stretch(FlightLayer);
+            Tray = Root.gameObject.AddComponent<TrayView>();
+            Tray.Build(Root, FlightLayer, cfg, lookup);
+            FlightLayer.SetAsLastSibling();
+
+            // ---- boosters ----
+            Boosters = Root.gameObject.AddComponent<BoosterBarView>();
+            Boosters.Build(Root, cfg, onBooster);
+
+            // ---- top bar ----
+            var top = UIBuilder.Rect(Root, "TopBar");
+            top.anchorMin = new Vector2(0f, 1f); top.anchorMax = new Vector2(1f, 1f); top.pivot = new Vector2(0.5f, 1f);
+            top.sizeDelta = new Vector2(0f, 140f); top.anchoredPosition = new Vector2(0f, -30f);
+
+            var levelPill = UIBuilder.Panel(top, "LevelPill", new Color(0.18f, 0.36f, 0.62f), null, false);
+            UIBuilder.Place(levelPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(230f, 80f), new Vector2(30f, 0f));
+            UIBuilder.Outline(levelPill, UIBuilder.Chrome, 3f);
+            levelText = UIBuilder.Label(levelPill.transform, "LevelText", "Level 1", 40, Color.white);
+            UIBuilder.Stretch(levelText.rectTransform);
+
+            var barBack = UIBuilder.Panel(top, "StarBar", new Color(0.2f, 0.2f, 0.22f), null, false);
+            UIBuilder.Place(barBack.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(430f, 34f), new Vector2(-20f, 0f));
+            UIBuilder.Outline(barBack, UIBuilder.Chrome, 3f);
+            starFill = UIBuilder.Panel(barBack.transform, "Fill", new Color(0.36f, 0.8f, 0.3f), null, false);
+            starFill.rectTransform.anchorMin = new Vector2(0f, 0f); starFill.rectTransform.anchorMax = new Vector2(0f, 1f);
+            starFill.rectTransform.pivot = new Vector2(0f, 0.5f); starFill.rectTransform.anchoredPosition = Vector2.zero;
+            starFill.rectTransform.sizeDelta = new Vector2(0f, 0f);
+            float[] starX = { 0.4f, 0.7f, 1f };
+            for (int i = 0; i < 3; i++)
+            {
+                var st = UIBuilder.Panel(barBack.transform, "Star" + i, starEmptySprite != null ? Color.white : new Color(0.45f, 0.45f, 0.5f), starEmptySprite, false);
+                st.preserveAspect = true;
+                UIBuilder.Place(st.rectTransform, new Vector2(starX[i], 0.5f), new Vector2(76f, 76f), new Vector2(-10f, 6f));
+                stars[i] = st;
+            }
+
+            var jar = UIBuilder.Rect(top, "TipJar");
+            UIBuilder.Place(jar, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(150f, 110f), new Vector2(-150f, 0f));
+            var jarSprite = ArtCatalog.Pick(cfg.tipJar50, ArtCatalog.TipJar50);
+            var jarIcon = UIBuilder.Icon(jar, "JarIcon", jarSprite, UIBuilder.Gold, new Vector2(90f, 90f));
+            UIBuilder.Place(jarIcon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(90f, 90f), new Vector2(0f, 10f));
+            tipsText = UIBuilder.Label(jar, "Tips", "0", 32, Color.white);
+            UIBuilder.Place(tipsText.rectTransform, new Vector2(0.5f, 0f), new Vector2(150f, 40f), new Vector2(0f, 6f));
+            UIBuilder.Outline(tipsText, new Color(0f, 0f, 0f, 0.7f), 2f);
+
+            var pauseSprite = ArtCatalog.Pick(cfg.pauseButton, ArtCatalog.PauseButton);
+            var pauseBtn = UIBuilder.Button(top, "Pause", pauseSprite == null ? "II" : null, onPause, UIBuilder.Sky, pauseSprite, new Vector2(90f, 90f), 40);
+            UIBuilder.Place(pauseBtn.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(90f, 90f), new Vector2(-20f, 0f));
+
+            freezeText = UIBuilder.Label(Root, "FreezeText", "", 44, UIBuilder.Sky);
+            UIBuilder.Place(freezeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(600f, 80f), new Vector2(0f, 330f));
+            UIBuilder.Outline(freezeText, new Color(0f, 0f, 0f, 0.8f), 3f);
+            freezeText.gameObject.SetActive(false);
+
+            // ---- toast ----
+            toastRect = UIBuilder.Rect(Root, "Toast");
+            UIBuilder.Place(toastRect, new Vector2(0.5f, 0.5f), new Vector2(800f, 90f), new Vector2(0f, -250f));
+            var toastBack = UIBuilder.Panel(toastRect, "Back", new Color(0f, 0f, 0f, 0.7f), null, false);
+            UIBuilder.Stretch(toastBack.rectTransform);
+            toastText = UIBuilder.Label(toastRect, "Text", "", 36, Color.white);
+            UIBuilder.Stretch(toastText.rectTransform, 20, 0, 20, 0);
+            toastRect.gameObject.SetActive(false);
+
+            // ---- panel layer (always on top) ----
+            panelLayer = UIBuilder.Rect(Root, "Panels");
+            UIBuilder.Stretch(panelLayer);
+            panelLayer.SetAsLastSibling();
+
+            GameEvents.Toast += ShowToast;
+        }
+
+        void OnDestroy() { GameEvents.Toast -= ShowToast; }
+
+        void Update()
+        {
+            float a = vignette.color.a;
+            float target = vignetteTarget > 0f ? vignetteTarget * (0.55f + 0.45f * Mathf.Abs(Mathf.Sin(Time.unscaledTime * 6f))) : 0f;
+            a = Mathf.MoveTowards(a, target, Time.unscaledDeltaTime * 2f);
+            var c = vignette.color; c.a = a; vignette.color = c;
+        }
+
+        public void SetNearMiss(bool on) { vignetteTarget = on ? 0.45f : 0f; }
+
+        public void SetLevel(int index) { levelText.text = "Level " + index; }
+
+        public void SetTips(int tipJar) { tipsText.text = tipJar.ToString(); }
+
+        public void SetFreeze(float remaining)
+        {
+            bool on = remaining > 0f;
+            if (freezeText.gameObject.activeSelf != on) freezeText.gameObject.SetActive(on);
+            if (on) freezeText.text = "BELT PAUSED " + Mathf.CeilToInt(remaining) + "s";
+        }
+
+        /// <summary>progress 0..1 of ticket items done; starsEarnedPreview lights stars at 40/70/100%.</summary>
+        public void SetProgress(float progress)
+        {
+            starFill.rectTransform.sizeDelta = new Vector2(430f * Mathf.Clamp01(progress), 0f);
+            float[] th = { 0.4f, 0.7f, 1f };
+            for (int i = 0; i < 3; i++)
+            {
+                bool lit = progress >= th[i] - 0.001f;
+                if (starFilledSprite != null && starEmptySprite != null) stars[i].sprite = lit ? starFilledSprite : starEmptySprite;
+                else stars[i].color = lit ? UIBuilder.Gold : new Color(0.45f, 0.45f, 0.5f);
+            }
+        }
+
+        public void ShowToast(string message)
+        {
+            toastText.text = message;
+            toastRect.gameObject.SetActive(true);
+            toastRect.localScale = Vector3.one * 0.8f;
+            if (toastTween != null) toastTween.Kill();
+            Tween.Scale(toastRect, Vector3.one, 0.2f, Ease.OutBack, null, true);
+            toastTween = Tween.Delay(1.6f, () => { if (toastRect != null) toastRect.gameObject.SetActive(false); }, true);
+        }
+
+        public void Shake(float pixels = 2f, float duration = 0.1f)
+        {
+            Vector2 origin = Vector2.zero;
+            Tween.To(duration, t =>
+            {
+                if (Root == null) return;
+                float s = (1f - t) * pixels * 2f;
+                Root.anchoredPosition = origin + new Vector2(UnityEngine.Random.Range(-s, s), UnityEngine.Random.Range(-s, s));
+            }, Ease.Linear, () => { if (Root != null) Root.anchoredPosition = origin; }, true);
+        }
+
+        // ------------------------------------------------------------------ panels
+
+        public class PanelButton
+        {
+            public string label; public Action onClick; public Color color; public bool interactable = true;
+            public PanelButton(string label, Action onClick, Color color) { this.label = label; this.onClick = onClick; this.color = color; }
+        }
+
+        RectTransform currentPanel;
+
+        public void ClosePanel()
+        {
+            if (currentPanel != null) Destroy(currentPanel.gameObject);
+            currentPanel = null;
+        }
+
+        public RectTransform ShowPanel(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null)
+        {
+            ClosePanel();
+            var overlay = UIBuilder.Panel(panelLayer, "Overlay", new Color(0f, 0f, 0f, dim ? 0.55f : 0f), null, true);
+            UIBuilder.Stretch(overlay.rectTransform);
+            currentPanel = overlay.rectTransform;
+
+            var panel = UIBuilder.Panel(overlay.transform, "Panel", panelSprite != null ? Color.white : UIBuilder.Cream, panelSprite, true);
+            panel.preserveAspect = panelSprite != null;
+            UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(860f, 1080f), new Vector2(0f, 40f));
+            if (panelSprite == null)
+            {
+                UIBuilder.Shadow(panel, 10f);
+                UIBuilder.Outline(panel, UIBuilder.Chrome, 6f);
+                var header = UIBuilder.Panel(panel.transform, "Header", UIBuilder.Red, null, false);
+                header.rectTransform.anchorMin = new Vector2(0f, 1f); header.rectTransform.anchorMax = new Vector2(1f, 1f);
+                header.rectTransform.pivot = new Vector2(0.5f, 1f); header.rectTransform.sizeDelta = new Vector2(0f, 110f);
+                header.rectTransform.anchoredPosition = Vector2.zero;
+            }
+
+            var titleLbl = UIBuilder.Label(panel.transform, "Title", title, 56, panelSprite != null ? UIBuilder.Dark : Color.white);
+            titleLbl.rectTransform.anchorMin = new Vector2(0f, 1f); titleLbl.rectTransform.anchorMax = new Vector2(1f, 1f);
+            titleLbl.rectTransform.pivot = new Vector2(0.5f, 1f); titleLbl.rectTransform.sizeDelta = new Vector2(-80f, 110f);
+            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, -40f);
+            if (panelSprite == null) UIBuilder.Outline(titleLbl, new Color(0f, 0f, 0f, 0.5f), 2f);
+
+            var content = UIBuilder.Rect(panel.transform, "Content");
+            UIBuilder.Place(content.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(760f, 420f), new Vector2(0f, 120f));
+            if (!string.IsNullOrEmpty(body))
+            {
+                var bodyLbl = UIBuilder.Label(content, "Body", body, 38, UIBuilder.Dark, TextAnchor.UpperCenter, FontStyle.Normal);
+                UIBuilder.Stretch(bodyLbl.rectTransform);
+            }
+            decorate?.Invoke(content);
+
+            float y = -170f;
+            foreach (var b in buttons)
+            {
+                var sprite = b.color == UIBuilder.Red ? btnRed : b.color == UIBuilder.Mint ? btnMint : b.color == UIBuilder.Gold ? btnGold : null;
+                var btn = UIBuilder.Button(panel.transform, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, new Vector2(560f, 130f), 38, b.color == UIBuilder.Gold || b.color == UIBuilder.Mint ? UIBuilder.Dark : Color.white);
+                UIBuilder.Place(btn.image.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(560f, 130f), new Vector2(0f, y));
+                btn.interactable = b.interactable;
+                y -= 150f;
+            }
+
+            panel.rectTransform.localScale = Vector3.one * 0.7f;
+            Tween.Scale(panel.rectTransform, Vector3.one, 0.3f, Ease.OutBack, null, true);
+            return panel.rectTransform;
+        }
+
+        /// <summary>Full-screen fake ad with a countdown; used by FakeAdService.</summary>
+        public void ShowFakeAd(string title, float seconds, Action onFinished)
+        {
+            ClosePanel();
+            var overlay = UIBuilder.Panel(panelLayer, "FakeAd", new Color(0.05f, 0.05f, 0.08f, 0.97f), null, true);
+            UIBuilder.Stretch(overlay.rectTransform);
+            currentPanel = overlay.rectTransform;
+            var t = UIBuilder.Label(overlay.transform, "Title", title, 44, Color.white);
+            UIBuilder.Place(t.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 200f), new Vector2(0f, 120f));
+            var count = UIBuilder.Label(overlay.transform, "Count", "", 120, UIBuilder.Gold);
+            UIBuilder.Place(count.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(400f, 200f), new Vector2(0f, -80f));
+            var sub = UIBuilder.Label(overlay.transform, "Sub", "Real ad SDK is swapped in behind IAdService before soft launch.", 26, new Color(0.7f, 0.7f, 0.75f), TextAnchor.MiddleCenter, FontStyle.Normal);
+            UIBuilder.Place(sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 100f), new Vector2(0f, -260f));
+            Tween.To(seconds, p => { if (count != null) count.text = Mathf.CeilToInt(seconds * (1f - p)).ToString(); }, Ease.Linear, () =>
+            {
+                ClosePanel();
+                onFinished?.Invoke();
+            }, true);
+        }
+
+        /// <summary>Star row used on the win panel.</summary>
+        public void DecorateStars(RectTransform content, int earned)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                bool lit = i < earned;
+                var sp = lit ? starFilledSprite : starEmptySprite;
+                var st = UIBuilder.Panel(content, "WinStar" + i, sp != null ? Color.white : (lit ? UIBuilder.Gold : new Color(0.5f, 0.5f, 0.55f)), sp, false);
+                st.preserveAspect = true;
+                UIBuilder.Place(st.rectTransform, new Vector2(0.5f, 1f), new Vector2(150f, 150f), new Vector2((i - 1) * 170f, -60f + (i == 1 ? 20f : 0f)));
+                st.rectTransform.localScale = Vector3.zero;
+                var rt = st.rectTransform; float delay = 0.15f + i * 0.2f;
+                Tween.To(0.35f, p => { if (rt != null) rt.localScale = Vector3.one * Tween.Evaluate(Ease.OutBack, p); }, Ease.Linear, null, true, delay);
+            }
+        }
+    }
+}
