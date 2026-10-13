@@ -23,6 +23,8 @@ namespace RetroDiner.Meta
         public bool soundOn = true;
         public bool musicOn = true;
         public bool hapticsOn = true;
+        public bool reducedMotion = false;
+        public bool devMode = false;
         public bool introSpatula, introBell, introRewind;
         public string lastPunchCardDate = "";
         public int punchCardDay = 0;

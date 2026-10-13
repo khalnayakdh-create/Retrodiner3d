@@ -20,6 +20,8 @@ namespace RetroDiner.UI
         public RectTransform Root { get; private set; }
 
         Text levelText, tipsText, freezeText;
+        RectTransform tipJarRect;
+        int shownTips;
         Image starFill;
         Image[] stars = new Image[3];
         Image vignette;
@@ -36,6 +38,7 @@ namespace RetroDiner.UI
             cfg = config;
             Root = UIBuilder.Rect(canvas.transform, "HUD");
             UIBuilder.Stretch(Root);
+            Root.gameObject.AddComponent<SafeAreaFitter>();
 
             starFilledSprite = ArtCatalog.Pick(cfg.starFilled, ArtCatalog.StarFilled);
             starEmptySprite = ArtCatalog.Pick(cfg.starEmpty, ArtCatalog.StarEmpty);
@@ -67,46 +70,62 @@ namespace RetroDiner.UI
             Boosters = Root.gameObject.AddComponent<BoosterBarView>();
             Boosters.Build(Root, cfg, onBooster);
 
-            // ---- top bar ----
+            // ---- top bar: one chrome plate (ui/rd3d_ui_topbar_plate_v001 or procedural) holding
+            //      level pill · progress bar + stars · tip jar · pause ----
             var top = UIBuilder.Rect(Root, "TopBar");
             top.anchorMin = new Vector2(0f, 1f); top.anchorMax = new Vector2(1f, 1f); top.pivot = new Vector2(0.5f, 1f);
-            top.sizeDelta = new Vector2(0f, 140f); top.anchoredPosition = new Vector2(0f, -30f);
+            top.sizeDelta = new Vector2(-24f, 128f); top.anchoredPosition = new Vector2(0f, -16f);
 
-            var levelPill = UIBuilder.Pill(top, "LevelPill", new Color(0.16f, 0.34f, 0.6f), 30);
-            UIBuilder.Place(levelPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(230f, 80f), new Vector2(30f, 0f));
-            UIBuilder.Outline(levelPill, UIBuilder.Chrome, 3f);
-            UIBuilder.Shadow(levelPill, 5f);
-            levelText = UIBuilder.Label(levelPill.transform, "LevelText", "Level 1", 40, Color.white);
+            var plateSprite = ArtCatalog.Load("ui/rd3d_ui_topbar_plate_v001");
+            var plate = UIBuilder.Sliced(top, "Plate", plateSprite, Style.Chrome, 34, false);
+            UIBuilder.Stretch(plate.rectTransform);
+            if (plateSprite == null)
+            {
+                UIBuilder.Shadow(plate, 6f);
+                var plateInner = UIBuilder.Pill(plate.transform, "Inner", new Color(0.12f, 0.1f, 0.12f, 0.82f), 28);
+                UIBuilder.Stretch(plateInner.rectTransform, 7, 7, 7, 7);
+                var plateSheen = UIBuilder.Panel(plate.transform, "Sheen", new Color(1f, 1f, 1f, 0.16f), ProcSprites.Rounded(28), false);
+                plateSheen.type = Image.Type.Sliced;
+                UIBuilder.Stretch(plateSheen.rectTransform, 7, 7, 7, 64f);
+            }
+
+            var levelPill = UIBuilder.Pill(top, "LevelPill", Style.Cherry, 30);
+            UIBuilder.Place(levelPill.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(210f, 76f), new Vector2(22f, 0f));
+            UIBuilder.Outline(levelPill, Style.ChromeLight, 3f);
+            levelText = UIBuilder.Label(levelPill.transform, "LevelText", "Level 1", 36, Style.Cream);
             UIBuilder.Stretch(levelText.rectTransform);
 
-            var barBack = UIBuilder.Pill(top, "StarBar", new Color(0.16f, 0.16f, 0.18f), 16);
-            UIBuilder.Place(barBack.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(430f, 34f), new Vector2(-20f, 0f));
-            UIBuilder.Outline(barBack, UIBuilder.Chrome, 3f);
-            starFill = UIBuilder.Panel(barBack.transform, "Fill", new Color(0.36f, 0.8f, 0.3f), null, false);
+            var trackSprite = ArtCatalog.Load("ui/rd3d_ui_bar_track_v001");
+            var fillSprite = ArtCatalog.Load("ui/rd3d_ui_bar_fill_gold_v001");
+            var barBack = UIBuilder.Sliced(top, "StarBar", trackSprite, new Color(0.08f, 0.07f, 0.09f), 16, false);
+            UIBuilder.Place(barBack.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(400f, 34f), new Vector2(-60f, -6f));
+            if (trackSprite == null) UIBuilder.Outline(barBack, Style.ChromeShadow, 2f);
+            starFill = UIBuilder.Sliced(barBack.transform, "Fill", fillSprite, Style.Gold, 14, false);
             starFill.rectTransform.anchorMin = new Vector2(0f, 0f); starFill.rectTransform.anchorMax = new Vector2(0f, 1f);
-            starFill.rectTransform.pivot = new Vector2(0f, 0.5f); starFill.rectTransform.anchoredPosition = Vector2.zero;
-            starFill.rectTransform.sizeDelta = new Vector2(0f, 0f);
+            starFill.rectTransform.pivot = new Vector2(0f, 0.5f); starFill.rectTransform.anchoredPosition = new Vector2(3f, 0f);
+            starFill.rectTransform.sizeDelta = new Vector2(0f, -6f);
             float[] starX = { 0.4f, 0.7f, 1f };
             for (int i = 0; i < 3; i++)
             {
                 var st = UIBuilder.Panel(barBack.transform, "Star" + i, starEmptySprite != null ? Color.white : new Color(0.45f, 0.45f, 0.5f), starEmptySprite, false);
                 st.preserveAspect = true;
-                UIBuilder.Place(st.rectTransform, new Vector2(starX[i], 0.5f), new Vector2(76f, 76f), new Vector2(-10f, 6f));
+                UIBuilder.Place(st.rectTransform, new Vector2(starX[i], 0.5f), new Vector2(64f, 64f), new Vector2(-6f, 6f));
                 stars[i] = st;
             }
 
             var jar = UIBuilder.Rect(top, "TipJar");
-            UIBuilder.Place(jar, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(150f, 110f), new Vector2(-150f, 0f));
+            UIBuilder.Place(jar, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(150f, 110f), new Vector2(-118f, 0f));
             var jarSprite = ArtCatalog.Pick(cfg.tipJar50, ArtCatalog.TipJar50);
-            var jarIcon = UIBuilder.Icon(jar, "JarIcon", jarSprite, UIBuilder.Gold, new Vector2(90f, 90f));
-            UIBuilder.Place(jarIcon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(90f, 90f), new Vector2(0f, 10f));
-            tipsText = UIBuilder.Label(jar, "Tips", "0", 32, Color.white);
-            UIBuilder.Place(tipsText.rectTransform, new Vector2(0.5f, 0f), new Vector2(150f, 40f), new Vector2(0f, 6f));
+            var jarIcon = UIBuilder.Icon(jar, "JarIcon", jarSprite, Style.Gold, new Vector2(84f, 84f));
+            UIBuilder.Place(jarIcon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(84f, 84f), new Vector2(0f, 12f));
+            tipJarRect = jarIcon.rectTransform;
+            tipsText = UIBuilder.Label(jar, "Tips", "0", 30, Style.Cream);
+            UIBuilder.Place(tipsText.rectTransform, new Vector2(0.5f, 0f), new Vector2(150f, 36f), new Vector2(0f, 2f));
             UIBuilder.Outline(tipsText, new Color(0f, 0f, 0f, 0.7f), 2f);
 
             var pauseSprite = ArtCatalog.Pick(cfg.pauseButton, ArtCatalog.PauseButton);
-            var pauseBtn = UIBuilder.Button(top, "Pause", pauseSprite == null ? "II" : null, onPause, UIBuilder.Sky, pauseSprite, new Vector2(90f, 90f), 40);
-            UIBuilder.Place(pauseBtn.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(90f, 90f), new Vector2(-20f, 0f));
+            var pauseBtn = UIBuilder.Button(top, "Pause", pauseSprite == null ? "II" : null, onPause, Style.Teal, pauseSprite, new Vector2(84f, 84f), 36);
+            UIBuilder.Place(pauseBtn.image.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(84f, 84f), new Vector2(-16f, 0f));
 
             freezeText = UIBuilder.Label(Root, "FreezeText", "", 44, UIBuilder.Sky);
             UIBuilder.Place(freezeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(600f, 80f), new Vector2(0f, 330f));
@@ -144,7 +163,48 @@ namespace RetroDiner.UI
 
         public void SetLevel(int index) { levelText.text = "Level " + index; }
 
-        public void SetTips(int tipJar) { tipsText.text = tipJar.ToString(); }
+        public void SetTips(int tipJar) { shownTips = tipJar; tipsText.text = tipJar.ToString(); }
+
+        public Vector2 TipJarScreenPosition => tipJarRect != null ? UIBuilder.LocalToScreen(tipJarRect) : new Vector2(Screen.width - 100f, Screen.height - 60f);
+
+        /// <summary>13A: coins fly from a screen point into the Tip Jar; the counter ticks up to the authoritative
+        /// value as they land (reflects the actual award, never a guessed one).</summary>
+        public void CoinsToTipJar(Vector2 fromScreen, int actualTotal, int award)
+        {
+            int n = Mathf.Clamp(award, 1, 6);
+            Vector2 to = UIBuilder.ScreenToLocal(FlightLayer, TipJarScreenPosition);
+            Vector2 from = UIBuilder.ScreenToLocal(FlightLayer, fromScreen);
+            int startShown = shownTips;
+            if (Style.ReducedMotion)
+            {
+                SetTips(actualTotal);
+                UIBuilder.Punch(tipJarRect, 0.15f, 0.25f);
+                return;
+            }
+            for (int i = 0; i < n; i++)
+            {
+                var coin = UIBuilder.Panel(FlightLayer, "Coin", Style.Gold, ProcSprites.Circle(64), false);
+                UIBuilder.Place(coin.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(44f, 44f), from);
+                UIBuilder.Outline(coin, new Color(0.6f, 0.4f, 0.05f), 3f);
+                var rt = coin.rectTransform;
+                int idx = i;
+                Vector2 ctrl = (from + to) * 0.5f + new Vector2(UnityEngine.Random.Range(-120f, 120f), 160f + UnityEngine.Random.Range(0f, 120f));
+                Tween.To(0.45f, t =>
+                {
+                    if (rt == null) return;
+                    float u = 1f - t;
+                    rt.anchoredPosition = u * u * from + 2f * u * t * ctrl + t * t * to;
+                    rt.localScale = Vector3.one * (1f - 0.35f * t);
+                }, Ease.InOutQuad, () =>
+                {
+                    if (rt != null) Destroy(rt.gameObject);
+                    int shown = Mathf.RoundToInt(Mathf.Lerp(startShown, actualTotal, (idx + 1) / (float)n));
+                    SetTips(shown);
+                    if (tipJarRect != null) UIBuilder.Punch(tipJarRect, 0.12f, 0.18f);
+                    if (idx == n - 1) { SetTips(actualTotal); GameServices.Audio.Play("coin", 0.7f); }
+                }, true, 0.06f * i);
+            }
+        }
 
         public void SetFreeze(float remaining)
         {
@@ -156,7 +216,8 @@ namespace RetroDiner.UI
         /// <summary>progress 0..1 of ticket items done; starsEarnedPreview lights stars at 40/70/100%.</summary>
         public void SetProgress(float progress)
         {
-            starFill.rectTransform.sizeDelta = new Vector2(430f * Mathf.Clamp01(progress), 0f);
+            float w0 = starFill.rectTransform.sizeDelta.x, w1 = (400f - 6f) * Mathf.Clamp01(progress);
+            Tween.To(Style.ReducedMotion ? 0.05f : 0.3f, t => { if (starFill != null) starFill.rectTransform.sizeDelta = new Vector2(Mathf.Lerp(w0, w1, t), -6f); }, Ease.OutQuad, null, true);
             float[] th = { 0.4f, 0.7f, 1f };
             for (int i = 0; i < 3; i++)
             {
@@ -191,9 +252,9 @@ namespace RetroDiner.UI
 
         public void ClosePanel() { Popups.Close(); }
 
-        public RectTransform ShowPanel(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null)
+        public RectTransform ShowPanel(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null, float contentHeight = 10f)
         {
-            return Popups.Show(title, body, buttons, dim, decorate);
+            return Popups.Show(title, body, buttons, dim, decorate, contentHeight);
         }
 
         public void ShowFakeAd(string title, float seconds, Action onFinished) { Popups.FakeAd(title, seconds, onFinished); }
@@ -291,19 +352,29 @@ namespace RetroDiner.UI
             }, true);
         }
 
-        /// <summary>Star row used on the win panel.</summary>
-        public void DecorateStars(RectTransform content, int earned)
+        /// <summary>Win panel content: star row, reward line, tip-jar line. Content height ~250.</summary>
+        public void DecorateStars(RectTransform content, int earned, string rewardLine = null, string tipLine = null)
         {
             for (int i = 0; i < 3; i++)
             {
                 bool lit = i < earned;
                 var sp = lit ? starFilledSprite : starEmptySprite;
-                var st = UIBuilder.Panel(content, "WinStar" + i, sp != null ? Color.white : (lit ? UIBuilder.Gold : new Color(0.5f, 0.5f, 0.55f)), sp, false);
+                var st = UIBuilder.Panel(content, "WinStar" + i, sp != null ? Color.white : (lit ? Style.Gold : new Color(0.5f, 0.5f, 0.55f)), sp != null ? sp : ProcSprites.Circle(64), false);
                 st.preserveAspect = true;
-                UIBuilder.Place(st.rectTransform, new Vector2(0.5f, 1f), new Vector2(150f, 150f), new Vector2((i - 1) * 170f, -60f + (i == 1 ? 20f : 0f)));
+                UIBuilder.Place(st.rectTransform, new Vector2(0.5f, 1f), new Vector2(140f, 140f), new Vector2((i - 1) * 165f, -84f + (i == 1 ? 12f : 0f)));
                 st.rectTransform.localScale = Vector3.zero;
-                var rt = st.rectTransform; float delay = 0.15f + i * 0.2f;
-                Tween.To(0.35f, p => { if (rt != null) rt.localScale = Vector3.one * Tween.Evaluate(Ease.OutBack, p); }, Ease.Linear, null, true, delay);
+                var rt = st.rectTransform; float delay = Style.ReducedMotion ? 0f : 0.15f + i * 0.2f;
+                Tween.To(Style.ReducedMotion ? 0.12f : 0.35f, p => { if (rt != null) rt.localScale = Vector3.one * Tween.Evaluate(Ease.OutBack, p); }, Ease.Linear, null, true, delay);
+            }
+            if (!string.IsNullOrEmpty(rewardLine))
+            {
+                var r = UIBuilder.Label(content, "Reward", rewardLine, 44, Style.Cherry);
+                UIBuilder.Place(r.rectTransform, new Vector2(0.5f, 1f), new Vector2(800f, 60f), new Vector2(0f, -190f));
+            }
+            if (!string.IsNullOrEmpty(tipLine))
+            {
+                var t = UIBuilder.Label(content, "Tip", tipLine, 28, Style.Ink, TextAnchor.MiddleCenter, FontStyle.Normal);
+                UIBuilder.Place(t.rectTransform, new Vector2(0.5f, 1f), new Vector2(800f, 40f), new Vector2(0f, -236f));
             }
         }
     }

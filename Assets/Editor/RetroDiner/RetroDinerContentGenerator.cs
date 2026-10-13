@@ -60,6 +60,35 @@ namespace RetroDiner.EditorTools
 
         // ------------------------------------------------------------------ content
 
+        static bool relinkPending;
+
+        /// <summary>After a food texture is re-imported with a trimmed sprite rect its Sprite sub-asset changes
+        /// identity, so item icons are re-resolved by path (debounced; levels are untouched).</summary>
+        public static void RequestRelink()
+        {
+            if (relinkPending) return;
+            relinkPending = true;
+            EditorApplication.delayCall += () =>
+            {
+                relinkPending = false;
+                ArtCatalog.ClearCache();
+                int n = 0;
+                foreach (var spec in ContentLibrary.Items)
+                {
+                    var existing = AssetDatabase.LoadAssetAtPath<ItemDefinition>(ItemsRoot + "/Item_" + spec.id + ".asset");
+                    if (existing == null) continue;
+                    var fresh = ContentLibrary.CreateItem(spec);
+                    if (existing.icon != fresh.icon || existing.charredIcon != fresh.charredIcon)
+                    {
+                        existing.icon = fresh.icon; existing.charredIcon = fresh.charredIcon;
+                        EditorUtility.SetDirty(existing); n++;
+                    }
+                    Object.DestroyImmediate(fresh);
+                }
+                if (n > 0) { AssetDatabase.SaveAssets(); Debug.Log("[RetroDiner] Re-linked " + n + " item icon(s) after sprite trim."); }
+            };
+        }
+
         [MenuItem("Retro Diner/2. Generate Items + 50 Levels + GameConfig", false, 21)]
         public static void GenerateContent()
         {

@@ -177,6 +177,8 @@ namespace RetroDiner.Audio
             bank["pickup_tap"] = Tone("pickup_tap", 0.07f, t => Sine(990f, t) * Env(t, 0.07f, 0.002f));
             bank["pickup_plop"] = Tone("pickup_plop", 0.12f, t => Sine(300f - 600f * t, t) * Env(t, 0.12f, 0.005f));
             bank["clear"] = Tone("clear", 0.45f, t => (Sine(880f, t) * (t < 0.15f ? 1f : 0.3f) + Sine(1320f, t) * (t > 0.12f ? 1f : 0f)) * 0.5f * Env(t, 0.45f, 0.005f));
+            // 13A: soft filtered-noise swell for the tray->ticket flight (one per match), bell only on completion.
+            bank["whoosh"] = Tone("whoosh", 0.38f, t => { float w = Mathf.Sin(Mathf.PI * Mathf.Clamp01(t / 0.38f)); return (Noise(t) * 0.22f + Sine(220f + 380f * t, t) * 0.12f) * w * w; });
             bank["bell"] = Tone("bell", 0.8f, t => (Sine(1760f, t) + Sine(2640f, t) * 0.5f + Sine(4400f, t) * 0.2f) * 0.45f * Env(t, 0.8f, 0.002f));
             bank["open"] = Tone("open", 0.35f, t => (Sine(1500f, t) + Sine(2250f, t) * 0.5f) * 0.5f * Env(t, 0.35f, 0.002f));
             bank["untie"] = Tone("untie", 0.2f, t => Noise(t) * 0.5f * Env(t, 0.2f, 0.02f));

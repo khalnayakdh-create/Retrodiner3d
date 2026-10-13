@@ -25,17 +25,29 @@ namespace RetroDiner.UI
         public const float RefWidth = 1080f;
         public const float RefHeight = 1920f;
 
-        static Font font;
-        public static Font Font
+        static Font font, bodyFont, builtin;
+        static bool fontsProbed;
+
+        static void ProbeFonts()
         {
-            get
-            {
-                if (font != null) return font;
-                try { font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"); } catch { }
-                if (font == null) { try { font = Resources.GetBuiltinResource<Font>("Arial.ttf"); } catch { } }
-                return font;
-            }
+            if (fontsProbed) return;
+            fontsProbed = true;
+            // Licensed rounded display + readable body face, dropped into Assets/Resources/RetroDiner/Fonts by the artist.
+            font = Resources.Load<Font>("RetroDiner/Fonts/Fredoka-Bold");
+            if (font == null) font = Resources.Load<Font>("RetroDiner/Fonts/Fredoka-SemiBold");
+            bodyFont = Resources.Load<Font>("RetroDiner/Fonts/Nunito-SemiBold");
+            if (bodyFont == null) bodyFont = Resources.Load<Font>("RetroDiner/Fonts/Nunito-Bold");
+            try { builtin = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf"); } catch { }
+            if (builtin == null) { try { builtin = Resources.GetBuiltinResource<Font>("Arial.ttf"); } catch { } }
+            if (font == null) font = builtin;
+            if (bodyFont == null) bodyFont = builtin;
         }
+
+        /// <summary>Display face (titles, buttons, counts).</summary>
+        public static Font Font { get { ProbeFonts(); return font; } }
+        /// <summary>Supporting face (body copy, captions).</summary>
+        public static Font BodyFont { get { ProbeFonts(); return bodyFont; } }
+        public static bool HasCustomFonts { get { ProbeFonts(); return font != builtin; } }
 
         public static Canvas CreateCanvas(string name, int sortingOrder, RenderMode mode = RenderMode.ScreenSpaceOverlay, Camera cam = null, int layer = 5)
         {
@@ -133,7 +145,8 @@ namespace RetroDiner.UI
         {
             var rt = Rect(parent, name);
             var t = rt.gameObject.AddComponent<Text>();
-            t.font = Font;
+            t.font = style == FontStyle.Normal ? BodyFont : Font;
+            if (HasCustomFonts) style = FontStyle.Normal;   // weight comes from the face itself
             t.text = text;
             t.fontSize = size;
             t.color = color;
@@ -148,10 +161,21 @@ namespace RetroDiner.UI
 
         public static Outline Outline(Graphic g, Color color, float size = 2f)
         {
+            // Text gets a restrained outline (the heavy black ring was the main "disconnected label" problem).
+            if (g is Text) { size = Mathf.Min(size, 1.6f); color.a *= 0.7f; }
             var o = g.gameObject.AddComponent<Outline>();
             o.effectColor = color;
             o.effectDistance = new Vector2(size, -size);
             return o;
+        }
+
+        /// <summary>Sliced image from a 9-slice-authored sprite; falls back to a procedural pill.</summary>
+        public static Image Sliced(Transform parent, string name, Sprite nineSlice, Color fallbackColor, int fallbackRadius = 24, bool raycast = false)
+        {
+            if (nineSlice == null) return Pill(parent, name, fallbackColor, fallbackRadius, raycast);
+            var img = Panel(parent, name, Color.white, nineSlice, raycast);
+            img.type = nineSlice.border.sqrMagnitude > 0f ? Image.Type.Sliced : Image.Type.Simple;
+            return img;
         }
 
         public static Shadow Shadow(Graphic g, float size = 4f)

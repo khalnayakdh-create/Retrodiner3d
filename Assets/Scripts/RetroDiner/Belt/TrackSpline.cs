@@ -41,7 +41,19 @@ namespace RetroDiner.Belt
             Length = acc;
         }
 
-        public static TrackSpline FromShape(TrackShape shape, float radius)
+        /// <summary>Builds a shape; when targetLength > 0 the control points are scaled so every shape has the
+        /// same loop length (same travel distance and spacing, so difficulty does not depend on the shape).</summary>
+        public static TrackSpline FromShape(TrackShape shape, float radius, float targetLength = 0f)
+        {
+            var spline = FromShapeRaw(shape, radius);
+            if (targetLength <= 0f || spline.Length <= 0.01f) return spline;
+            float k = targetLength / spline.Length;
+            var pts = new Vector3[spline.ControlPoints.Length];
+            for (int i = 0; i < pts.Length; i++) pts[i] = spline.ControlPoints[i] * k;
+            return new TrackSpline(pts);
+        }
+
+        static TrackSpline FromShapeRaw(TrackShape shape, float radius)
         {
             var pts = new List<Vector3>();
             switch (shape)
@@ -61,7 +73,7 @@ namespace RetroDiner.Belt
                     for (int i = 0; i < n; i++)
                     {
                         float t = i / (float)n * Mathf.PI * 2f;
-                        pts.Add(new Vector3(radius * 0.62f * Mathf.Sin(2f * t), 0f, radius * 1.08f * Mathf.Cos(t)));
+                        pts.Add(new Vector3(radius * 0.8f * Mathf.Sin(2f * t), 0f, radius * 1.02f * Mathf.Cos(t)));   // wider lobes so the wide belt does not self-overlap at the crossing
                     }
                     break;
                 }

@@ -30,6 +30,6 @@ Global style: toy-like 3D render, cherry-red #DB3345 / deep red #8F2232 / mint #
 | C4 | ui/rd3d_logo_retro_diner_3d_v001.png | 2048x1024 alpha, text "RETRO DINER 3D" + ribbon "ORDER UP!" |
 | C5 | ui/rd3d_logo_tagline_v001.png | 1536x384 alpha, "Good Food, Brighter Days" |
 | C6 | fx/rd3d_fx_steam_puff_v001.png (512) + fx/rd3d_fx_sparkle_gold_v001.png (256) | alpha |
-| D | Fonts: Fredoka Bold/SemiBold, Nunito SemiBold/Bold (Google Fonts, OFL) → Assets/Fonts/ | ttf |
+| D | Fonts: Fredoka Bold/SemiBold, Nunito SemiBold/Bold (Google Fonts, OFL) → Assets/Resources/RetroDiner/Fonts/ (loaded by name: Fredoka-Bold, Nunito-SemiBold) | ttf |
 
 Kept as-is: all 7 foods (+charred), cloches, napkin, spills, currency, stars, pause/close/confirm, tip jars, confetti sheet, banner, menu + map backgrounds.

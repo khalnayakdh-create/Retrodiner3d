@@ -25,6 +25,9 @@ namespace RetroDiner.Data
         public int coinsBase = 50;
         public int coinsPerStar = 25;
 
+        [Header("Presentation")]
+        public bool showBuildLabel = false;
+
         [Header("Meta")]
         public StoreCatalog storeCatalog;
         public AdPolicy adPolicy;
@@ -44,13 +47,21 @@ namespace RetroDiner.Data
 
         [Header("Belt / Camera")]
         public float trackRadius = 2.6f;
-        public float itemWorldSize = 0.95f;
-        public float itemSpacing = 1.05f;
+        [Tooltip("All track shapes are scaled to this loop length (0 = leave each shape's natural length).")]
+        public float trackLength = 16f;
+        public float itemWorldSize = 1.1f;
+        public float itemSpacing = 1.3f;
+        [Tooltip("Belt surface width as a multiple of itemWorldSize.")]
+        public float beltWidthFactor = 1.45f;
         public float spillSpeedMultiplier = 1.8f;
-        [Range(10f, 80f)] public float cameraPitchDegrees = 35f;
+        [Range(10f, 80f)] public float cameraPitchDegrees = 38f;
+        [Tooltip("Vertical FOV; lower = less perspective so rear items stay readable.")]
+        [Range(15f, 70f)] public float cameraFov = 34f;
         public float cameraDistance = 10.5f;
+        [Tooltip("Fraction of the viewport width the conveyor silhouette should fill.")]
+        [Range(0.6f, 1f)] public float conveyorWidthFill = 0.92f;
         [Tooltip("Vertical screen band the belt camera renders into (viewport Y min/max).")]
-        public Vector2 cameraViewportBand = new Vector2(0.30f, 0.76f);
+        public Vector2 cameraViewportBand = new Vector2(0.27f, 0.75f);
 
         [Header("Optional art overrides (null = load from Resources/RetroDiner/Art or use placeholders)")]
         public Sprite gameplayBackground;

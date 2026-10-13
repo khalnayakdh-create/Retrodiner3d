@@ -15,6 +15,7 @@ namespace RetroDiner.Gameplay
             cfg = config;
             Cam.rect = new Rect(0f, cfg.cameraViewportBand.x, 1f, cfg.cameraViewportBand.y - cfg.cameraViewportBand.x);
             Cam.transform.rotation = Quaternion.Euler(cfg.cameraPitchDegrees, 0f, 0f);
+            Cam.fieldOfView = cfg.cameraFov;
             baseFov = Cam.fieldOfView;
         }
 
@@ -32,20 +33,21 @@ namespace RetroDiner.Gameplay
         public void Frame(Bounds bounds)
         {
             float pitch = cfg.cameraPitchDegrees * Mathf.Deg2Rad;
-            float vfov = Cam.fieldOfView * Mathf.Deg2Rad;
+            float vfov = baseFov * Mathf.Deg2Rad;
             float aspect = Cam.aspect;
             float tanV = Mathf.Tan(vfov * 0.5f);
             float tanH = tanV * aspect;
 
-            // Half-extents of the track plus one item of margin.
-            float halfW = bounds.extents.x + cfg.itemWorldSize;
-            float halfD = bounds.extents.z + cfg.itemWorldSize;
+            // Conveyor silhouette = track + belt + walls (~0.45 world units per side beyond the belt edge).
+            float wallOut = cfg.itemWorldSize * cfg.beltWidthFactor * 0.5f + 0.45f;
+            float halfW = (bounds.extents.x + wallOut) / Mathf.Clamp(cfg.conveyorWidthFill, 0.6f, 1f);
+            float halfD = bounds.extents.z + wallOut;
             // Depth foreshortens by sin(pitch); items stand up by ~cos(pitch) * itemSize.
-            float halfProjected = halfD * Mathf.Sin(pitch) + cfg.itemWorldSize * Mathf.Cos(pitch);
+            float halfProjected = halfD * Mathf.Sin(pitch) + cfg.itemWorldSize * Mathf.Cos(pitch) + 0.3f;
 
             float distW = halfW / tanH;
             float distH = halfProjected / tanV;
-            float distance = Mathf.Max(distW, distH, cfg.cameraDistance * 0.6f) * 1.08f;
+            float distance = Mathf.Max(distW, distH, cfg.cameraDistance * 0.5f);
 
             Vector3 center = new Vector3(bounds.center.x, 0f, bounds.center.z);
             Vector3 dir = Quaternion.Euler(cfg.cameraPitchDegrees, 0f, 0f) * Vector3.forward;

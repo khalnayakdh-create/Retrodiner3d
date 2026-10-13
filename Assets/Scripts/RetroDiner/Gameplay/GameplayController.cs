@@ -137,10 +137,11 @@ namespace RetroDiner.Gameplay
             if (level.levelIndex < cfg.rewindUnlockLevel || p.extraPlate <= 0) return;
             belt.Running = false;
             input.Enabled = false;
-            Popups.Show("EXTRA PLATE?", "Start this shift with an 8th tray slot?\n\nYou have " + p.extraPlate + " Extra Plate" + (p.extraPlate == 1 ? "" : "s") + ".",
+            int owned = p.extraPlate;
+            Popups.Show("EXTRA PLATE?", "Start this shift with an 8th tray slot.",
                 new List<PanelButton>
                 {
-                    new PanelButton("USE ONE", () =>
+                    new PanelButton("USE 1", () =>
                     {
                         p.AddBooster(BoosterType.ExtraPlate, -1);
                         GameServices.SaveProfile();
@@ -148,9 +149,9 @@ namespace RetroDiner.Gameplay
                         hud.Tray.SetCapacity(tray.Capacity);
                         hud.Tray.Refresh(tray);
                         ResumeAfterPreShift();
-                    }, UIBuilder.Gold),
-                    new PanelButton("NOT NOW", ResumeAfterPreShift, UIBuilder.Red),
-                }, true, null, 900f);
+                    }, Style.Teal),
+                    new PanelButton("NOT NOW", ResumeAfterPreShift, Style.Cherry) { secondary = true },
+                }, true, content => DecorateExtraPlate(content, owned), 300f);
         }
 
         void ResumeAfterPreShift()
@@ -159,6 +160,56 @@ namespace RetroDiner.Gameplay
             if (State != ShiftState.Playing) return;
             belt.Running = true;
             input.Enabled = true;
+        }
+
+        /// <summary>Extra Plate modal content: plate-stack illustration (ui/rd3d_illo_extra_plate_stack_v001 or
+        /// procedural plates), a 7 -> 8 slot diagram with the 8th slot highlighted, and the owned count line.</summary>
+        void DecorateExtraPlate(RectTransform content, int owned)
+        {
+            var illo = ArtCatalog.Load("ui/rd3d_illo_extra_plate_stack_v001");
+            var illoHolder = UIBuilder.Rect(content, "Illo");
+            UIBuilder.Place(illoHolder, new Vector2(0.5f, 1f), new Vector2(300f, 150f), new Vector2(0f, -78f));
+            if (illo != null)
+            {
+                var img = UIBuilder.Panel(illoHolder, "Plates", Color.white, illo, false);
+                img.preserveAspect = true;
+                UIBuilder.Stretch(img.rectTransform);
+            }
+            else
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    var plate = UIBuilder.Panel(illoHolder, "Plate" + i, Style.Cream, ProcSprites.Circle(128), false);
+                    UIBuilder.Place(plate.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(190f, 58f), new Vector2(0f, -40f + i * 26f));
+                    UIBuilder.Outline(plate, Style.ChromeShadow, 2f);
+                    var rim = UIBuilder.Panel(plate.transform, "Rim", Style.Cherry, ProcSprites.Ring(128, 6f), false);
+                    UIBuilder.Stretch(rim.rectTransform, 14, 4, 14, 4);
+                }
+                var shine = UIBuilder.Panel(illoHolder, "Shine", new Color(1f, 1f, 1f, 0.55f), ProcSprites.Glow(64, 1.2f), false);
+                UIBuilder.Place(shine.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(90f, 40f), new Vector2(-40f, 24f));
+            }
+
+            // 7 -> 8 slot diagram: eight small wells, the eighth gold with a "+1" tag.
+            var diagram = UIBuilder.Rect(content, "Diagram");
+            UIBuilder.Place(diagram, new Vector2(0.5f, 1f), new Vector2(760f, 70f), new Vector2(0f, -200f));
+            const float w = 74f, gap = 10f;
+            float startX = -(8 * w + 7 * gap) * 0.5f + w * 0.5f;
+            for (int i = 0; i < 8; i++)
+            {
+                bool extra = i == 7;
+                var well = UIBuilder.Pill(diagram, "Well" + i, extra ? Style.Gold : new Color(0.86f, 0.82f, 0.74f), 14);
+                UIBuilder.Place(well.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(w, 60f), new Vector2(startX + i * (w + gap), 0f));
+                UIBuilder.Outline(well, extra ? Style.Cherry : Style.ChromeShadow, extra ? 3f : 1.5f);
+                if (extra)
+                {
+                    var tag = UIBuilder.Label(well.transform, "Plus", "+1", 28, Style.Ink);
+                    UIBuilder.Stretch(tag.rectTransform);
+                    if (!Style.ReducedMotion) UIBuilder.Pulse(well.rectTransform, 0.06f, 0.9f);
+                }
+            }
+
+            var count = UIBuilder.Label(content, "Owned", "You have " + owned + " Extra Plate" + (owned == 1 ? "" : "s") + ".", 30, Style.Ink, TextAnchor.MiddleCenter, FontStyle.Normal);
+            UIBuilder.Place(count.rectTransform, new Vector2(0.5f, 1f), new Vector2(800f, 44f), new Vector2(0f, -268f));
         }
 
         void GrantBoosterIntros(int index)
@@ -308,9 +359,13 @@ namespace RetroDiner.Gameplay
                 if (res.triplet)
                 {
                     Vector2 target = ticket != null ? hud.Tickets.SlotScreenPosition(railSlot) : new Vector2(Screen.width * 0.5f, Screen.height + 120f);
-                    hud.Tray.FlyOutTriplet(clearedIdx, Lookup(clearedId), anyCharred, target, () => OnTripletLanded(ticket, completed, railSlot));
+                    // 13A: confirm -> staggered lift -> golden arc to the ticket icon. The model already resolved
+                    // the match; the view only reflects it. One whoosh at launch, one bell only on completion.
+                    hud.Tray.FlyOutTriplet(clearedIdx, Lookup(clearedId), anyCharred, target,
+                        () => OnTripletLanded(ticket, completed, railSlot),
+                        () => { if (ticket != null) hud.Tickets.Anticipate(railSlot, true); GameServices.Audio.Play("whoosh", 0.8f, Random.Range(0.95f, 1.05f)); });
                     hud.Tray.Refresh(tray);
-                    GameServices.Audio.Play("clear");
+                    GameServices.Audio.Play("clear", 0.8f);
                     GameServices.Haptics.Play(HapticType.Medium);
                     hud.Shake(2f, 0.1f);
                     rig.Punch(1.6f, 0.22f);
@@ -360,20 +415,27 @@ namespace RetroDiner.Gameplay
         void OnTripletLanded(Ticket ticket, bool completed, int railSlot)
         {
             if (ticket == null) return;
+            hud.Tickets.Anticipate(railSlot, false);
+            Vector2 iconScreen = hud.Tickets.SlotScreenPosition(railSlot);
             if (completed)
             {
+                // Full completion only: bar fills, checkmark, bounce, single bell, coins to the Tip Jar.
                 GameServices.Audio.Play("bell");
-                GameServices.Audio.Play("coin", 0.7f);
-                hud.SetTips(GameServices.Profile.tipJarTokens);
+                hud.Tray.SparkleAtScreen(iconScreen, Style.ReducedMotion ? 0 : 8);
                 hud.Tickets.AnimateComplete(railSlot, tickets, null);
+                hud.CoinsToTipJar(iconScreen, GameServices.Profile.tipJarTokens, cfg.tokensPerTicket);
                 hud.Flash("ORDER UP!", 0.5f);
-                hud.FloatText(hud.Tickets.SlotScreenPosition(railSlot) + new Vector2(0f, -40f), "+" + cfg.tokensPerTicket + " tokens", UIBuilder.Gold, 36);
-                GameServices.Haptics.Play(HapticType.Heavy);
+                hud.FloatText(iconScreen + new Vector2(0f, -40f), "+" + cfg.tokensPerTicket + " tokens", UIBuilder.Gold, 36);
+                // Bible: medium double-pulse when a triplet clears into a ticket.
+                GameServices.Haptics.Play(HapticType.Medium);
+                Tween.Delay(0.12f, () => GameServices.Haptics.Play(HapticType.Medium), true);
             }
             else
             {
-                hud.Tickets.Refresh(tickets);
-                hud.Tickets.Pulse(railSlot);
+                // Partial progress: icon pulse + small sparkle + count/progress animate to the authoritative value.
+                hud.Tickets.Arrive(railSlot, ticket, rt => hud.Tray.SparkleAtScreen(iconScreen, Style.ReducedMotion ? 0 : 4));
+                GameServices.Audio.Play("pickup_chime", 0.5f, 1.3f);
+                GameServices.Haptics.Play(HapticType.Light);
             }
         }
 
@@ -529,7 +591,8 @@ namespace RetroDiner.Gameplay
                     });
                 }, UIBuilder.Sky));
             buttons.Add(new PanelButton(doubled ? "MENU" : "PLAY AGAIN", doubled ? (System.Action)ToMenu : Restart, UIBuilder.Gold));
-            hud.ShowPanel("SHIFT FINISHED!", "\n\n\n\n+" + coins + " coins" + (doubled ? "  (doubled!)" : "") + "\nTip jar: " + GameServices.Profile.tipJarTokens + " tokens", buttons, true, c => hud.DecorateStars(c, stars));
+            hud.ShowPanel("SHIFT FINISHED!", "", buttons, true,
+                c => hud.DecorateStars(c, stars, "+" + coins + " coins" + (doubled ? "  (doubled!)" : ""), "Tip jar: " + GameServices.Profile.tipJarTokens + " tokens"), 260f);
         }
 
         /// <summary>Interstitial gate for Win/Lose screens: shows one only when AdPolicy allows, then continues.</summary>
@@ -708,7 +771,7 @@ namespace RetroDiner.Gameplay
                     });
                 }, UIBuilder.Mint));
             buttons.Add(new PanelButton("NOT NOW", resume, UIBuilder.Red));
-            Popups.Show("OUT OF " + Name(type).ToUpper(), "Grab one more " + offer.title + "?", buttons, true, null, 1150f);
+            Popups.Show("OUT OF " + Name(type).ToUpper(), "Grab one more " + offer.title + "?", buttons, true, null, 10f);
         }
 
         static string Name(BoosterType t)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RetroDiner.Core;
 using RetroDiner.Data;
+using RetroDiner.UI;
 
 namespace RetroDiner.Belt
 {
@@ -37,6 +38,7 @@ namespace RetroDiner.Belt
         float spacing;
         float spawnCooldown;
         Material beltMaterial;
+        float outSign = 1f;
         float scrollOffset;
 
         public event Action<BeltItem> ItemCharred;
@@ -55,7 +57,8 @@ namespace RetroDiner.Belt
             freezeTimer = 0f;
             rewindRemaining = 0f;
 
-            Track = TrackSpline.FromShape(lv.trackShape, cfg.trackRadius);
+            Track = TrackSpline.FromShape(lv.trackShape, cfg.trackRadius, cfg.trackLength);
+            widthScale = lv.trackShape == TrackShape.FigureEight ? 0.78f : 1f;   // keep the two lobes readable at the crossing
             BuildBeltMesh();
             BuildSpills();
 
@@ -141,7 +144,7 @@ namespace RetroDiner.Belt
             if (beltMaterial != null && move != 0f)
             {
                 scrollOffset += move * 0.5f;
-                beltMaterial.mainTextureOffset = new Vector2(-scrollOffset, 0f);
+                beltMaterial.mainTextureOffset = new Vector2(-scrollOffset * beltMaterial.mainTextureScale.x, 0f);
             }
 
             TrySpawn(dt);
@@ -232,66 +235,164 @@ namespace RetroDiner.Belt
 
         // ---------- visuals ----------
 
+        float widthScale = 1f;
+
         void BuildBeltMesh()
         {
-            float width = config.itemWorldSize * 1.25f;
+            // ---------------- the diner machine, layered ----------------
+            // belt surface (recessed, moving)  ->  dark recess walls  ->  bevelled chrome rims  ->
+            // cherry enamel sidewalls (outer + inner)  ->  teal counter inset in the centre  ->
+            // chassis, chrome legs, floor contact shadow.
+            // +side must mean "away from the track centre" whatever the loop's winding.
+            {
+                var tb0 = Track.GetBounds();
+                Vector3 p0 = Track.Sample(0);
+                Vector3 s0 = Vector3.Cross(Vector3.up, Track.Tangent(0f)).normalized;
+                outSign = Vector3.Distance(p0 + s0, tb0.center) > Vector3.Distance(p0 - s0, tb0.center) ? 1f : -1f;
+            }
+            float W = config.itemWorldSize * config.beltWidthFactor * widthScale;   // belt surface width
+            float half = W * 0.5f;
+            float rimTop = 0.14f, wallBottom = -0.5f;
+
+            // Belt surface.
+            var surface = Ribbon("BeltSurface", -half, half, 0f, 0f, true);
+            beltMaterial = new Material(PlaceholderMaterials.FindShader());
+            var tile = ArtCatalog.LoadTexture("env/rd3d_belt_surface_tile_512_v001");
+            beltMaterial.mainTexture = tile != null ? tile : SlatTexture();
+            if (tile != null) tile.wrapMode = TextureWrapMode.Repeat;
+            beltMaterial.mainTextureScale = new Vector2(tile != null ? 0.9f : 1.2f, 1f);
+            beltMaterial.color = Color.white;
+            if (beltMaterial.HasProperty("_BaseMap")) beltMaterial.SetTexture("_BaseMap", beltMaterial.mainTexture);
+            SetPbr(beltMaterial, 0.15f, 0.35f);
+            surface.GetComponent<MeshRenderer>().material = beltMaterial;
+
+            // Recess walls: short dark verticals just outside the surface, so the belt reads as sunk in.
+            var recessColor = new Color(0.12f, 0.1f, 0.11f);
+            Ribbon("RecessOuter", half + 0.02f, half + 0.02f, rimTop - 0.02f, 0f, false).GetComponent<MeshRenderer>().material = Mat(recessColor, 0.2f, 0.3f);
+            Ribbon("RecessInner", -(half + 0.02f), -(half + 0.02f), rimTop - 0.02f, 0f, false).GetComponent<MeshRenderer>().material = Mat(recessColor, 0.2f, 0.3f);
+
+            // Chrome rims: a flat cap ring on top of each wall + light and dark bevel lines.
+            float rimW = 0.2f;
+            Ribbon("RimOuter", half + 0.02f, half + 0.02f + rimW, rimTop, rimTop, false).GetComponent<MeshRenderer>().material = Mat(Style.Chrome, 0.45f, 0.85f);
+            Ribbon("RimInner", -(half + 0.02f + rimW), -(half + 0.02f), rimTop, rimTop, false).GetComponent<MeshRenderer>().material = Mat(Style.Chrome, 0.45f, 0.85f);
+            MakeRail(half + 0.02f + rimW * 0.5f, Style.ChromeLight, 0.06f, rimTop + 0.012f);
+            MakeRail(-(half + 0.02f + rimW * 0.5f), Style.ChromeLight, 0.06f, rimTop + 0.012f);
+            MakeRail(half + 0.02f + rimW, new Color(0.25f, 0.28f, 0.32f), 0.05f, rimTop - 0.01f);
+            MakeRail(-(half + 0.02f + rimW), new Color(0.25f, 0.28f, 0.32f), 0.05f, rimTop - 0.01f);
+
+            // Enamel sidewalls: outer and inner, cherry red with a deep-red lower band.
+            float wallOut = half + 0.02f + rimW, wallIn = -(half + 0.02f + rimW);
+            Ribbon("WallOuter", wallOut, wallOut, rimTop, wallBottom, false).GetComponent<MeshRenderer>().material = Mat(Style.Cherry, 0.1f, 0.75f);
+            Ribbon("WallInner", wallIn, wallIn, rimTop, wallBottom * 0.6f, false).GetComponent<MeshRenderer>().material = Mat(Style.Cherry, 0.1f, 0.75f);
+            MakeRail(wallOut + 0.005f, Style.DeepRed, 0.08f, wallBottom + 0.08f);     // shadow band at the foot of the wall
+            MakeRail(wallOut + 0.004f, new Color(1f, 0.6f, 0.62f, 1f), 0.035f, rimTop - 0.06f);  // enamel highlight just under the rim
+
+            // Centre counter inset: deep-teal recessed disc with a chrome ring and the optional badge.
+            var tb = Track.GetBounds();
+            Vector3 c = new Vector3(tb.center.x, 0f, tb.center.z);
+            float innerRx = Mathf.Max(0.3f, tb.extents.x - Mathf.Abs(wallIn) - 0.05f);
+            float innerRz = Mathf.Max(0.3f, tb.extents.z - Mathf.Abs(wallIn) - 0.05f);
+            decor.Add(MakePuck("CounterInset", c + Vector3.up * (wallBottom * 0.6f + 0.12f), innerRx * 0.98f, innerRz * 0.98f, 0.08f, Style.Teal, 0.1f, 0.5f));
+            decor.Add(MakePuck("CounterRing", c + Vector3.up * (wallBottom * 0.6f + 0.17f), innerRx * 0.75f, innerRz * 0.75f, 0.03f, Style.Chrome, 0.45f, 0.85f));
+            decor.Add(MakePuck("CounterTop", c + Vector3.up * (wallBottom * 0.6f + 0.18f), innerRx * 0.7f, innerRz * 0.7f, 0.03f, new Color(0.14f, 0.42f, 0.45f), 0.2f, 0.6f));
+            var badge = ArtCatalog.Load("env/rd3d_belt_center_badge_v001");
+            if (badge != null)
+            {
+                var bgo = new GameObject("CenterBadge");
+                bgo.transform.SetParent(transform, false);
+                bgo.transform.position = c + Vector3.up * (wallBottom * 0.6f + 0.2f);
+                bgo.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+                var sr = bgo.AddComponent<SpriteRenderer>(); sr.sprite = badge;
+                BeltItem.FitSprite(sr, Mathf.Min(innerRx, innerRz) * 0.8f);
+                decor.Add(bgo);
+            }
+
+            // Chassis + legs + floor shadow: the machine sits on something.
+            float rx = tb.extents.x + wallOut + 0.1f, rz = tb.extents.z + wallOut + 0.1f;
+            decor.Add(MakePuck("Chassis", c + Vector3.up * (wallBottom - 0.12f), rx * 0.92f, rz * 0.92f, 0.24f, Style.ChromeShadow * 0.75f, 0.5f, 0.4f));
+            decor.Add(MakePuck("ChassisTrim", c + Vector3.up * (wallBottom - 0.01f), rx * 0.96f, rz * 0.96f, 0.05f, Style.Chrome, 0.45f, 0.85f));
+            float floorY = wallBottom - 0.95f;
+            for (int i = 0; i < 4; i++)
+            {
+                float a = (i + 0.5f) / 4f * Mathf.PI * 2f;
+                var leg = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                Destroy(leg.GetComponent<Collider>());
+                leg.transform.SetParent(transform, false);
+                leg.transform.localPosition = c + new Vector3(Mathf.Cos(a) * rx * 0.62f, (wallBottom - 0.24f + floorY) * 0.5f, Mathf.Sin(a) * rz * 0.62f);
+                leg.transform.localScale = new Vector3(0.26f, (wallBottom - 0.24f - floorY) * 0.5f, 0.26f);
+                leg.GetComponent<Renderer>().material = Mat(Style.Chrome, 0.45f, 0.8f);
+                decor.Add(leg);
+            }
+            var shadowGo = new GameObject("FloorShadow");
+            shadowGo.transform.SetParent(transform, false);
+            shadowGo.transform.position = c + Vector3.up * (floorY + 0.01f);
+            shadowGo.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            var shadow = shadowGo.AddComponent<SpriteRenderer>();
+            shadow.sprite = UI.ProcSprites.Glow(128, 1.4f);
+            shadow.color = new Color(0f, 0f, 0f, 0.5f);
+            shadow.sortingOrder = -5;
+            shadowGo.transform.localScale = new Vector3(rx * 2.4f / 1.28f, rz * 2.4f / 1.28f, 1f);
+            decor.Add(shadowGo);
+        }
+
+        /// <summary>A ribbon along the track between two side offsets and two heights (flat when y0 == y1, vertical when offsets match).</summary>
+        GameObject Ribbon(string name, float off0, float off1, float y0, float y1, bool scrollUv)
+        {
             int n = Track.SampleCount;
-            var verts = new Vector3[n * 2];
-            var uvs = new Vector2[n * 2];
-            var tris = new int[(n - 1) * 6];
+            // Front and back faces get their own vertices so RecalculateNormals never averages opposite
+            // normals to zero (which renders black).
+            var verts = new Vector3[n * 4];
+            var uvs = new Vector2[n * 4];
+            var tris = new int[(n - 1) * 12];
             float acc = 0f;
             Vector3 prev = Track.Sample(0);
             for (int i = 0; i < n; i++)
             {
                 Vector3 p = Track.Sample(i);
                 acc += Vector3.Distance(prev, p); prev = p;
-                Vector3 tan = Track.Tangent(acc);
-                Vector3 side = Vector3.Cross(Vector3.up, tan).normalized * (width * 0.5f);
-                verts[i * 2] = p - side;
-                verts[i * 2 + 1] = p + side;
-                uvs[i * 2] = new Vector2(acc, 0f);
-                uvs[i * 2 + 1] = new Vector2(acc, 1f);
+                Vector3 side = Vector3.Cross(Vector3.up, Track.Tangent(acc)).normalized * outSign;
+                Vector3 a = p + side * off0 + Vector3.up * y0;
+                Vector3 b = p + side * off1 + Vector3.up * y1;
+                float u = scrollUv ? acc : i / (float)n;
+                verts[i * 2] = a; verts[i * 2 + 1] = b;
+                verts[n * 2 + i * 2] = a; verts[n * 2 + i * 2 + 1] = b;
+                uvs[i * 2] = new Vector2(u, 0f); uvs[i * 2 + 1] = new Vector2(u, 1f);
+                uvs[n * 2 + i * 2] = new Vector2(u, 0f); uvs[n * 2 + i * 2 + 1] = new Vector2(u, 1f);
             }
             for (int i = 0; i < n - 1; i++)
             {
-                int b = i * 2, t = i * 6;
+                int b = i * 2, t = i * 12, k = n * 2 + i * 2;
                 tris[t] = b; tris[t + 1] = b + 2; tris[t + 2] = b + 1;
                 tris[t + 3] = b + 1; tris[t + 4] = b + 2; tris[t + 5] = b + 3;
+                tris[t + 6] = k; tris[t + 7] = k + 1; tris[t + 8] = k + 2;
+                tris[t + 9] = k + 1; tris[t + 10] = k + 3; tris[t + 11] = k + 2;
             }
-            var mesh = new Mesh { name = "BeltRibbon" };
+            var mesh = new Mesh { name = name };
             mesh.vertices = verts; mesh.uv = uvs; mesh.triangles = tris;
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
-
-            var go = new GameObject("BeltRibbon");
+            var go = new GameObject(name);
             go.transform.SetParent(transform, false);
-            go.transform.localPosition = new Vector3(0f, -0.02f, 0f);
             go.AddComponent<MeshFilter>().mesh = mesh;
             var mr = go.AddComponent<MeshRenderer>();
-            beltMaterial = new Material(PlaceholderMaterials.FindShader());
-            beltMaterial.mainTexture = RollerTexture();
-            beltMaterial.mainTextureScale = new Vector2(1.6f, 1f);
-            beltMaterial.color = Color.white;
-            if (beltMaterial.HasProperty("_BaseMap")) beltMaterial.SetTexture("_BaseMap", beltMaterial.mainTexture);
-            if (beltMaterial.HasProperty("_Metallic")) beltMaterial.SetFloat("_Metallic", 0.75f);
-            if (beltMaterial.HasProperty("_Glossiness")) beltMaterial.SetFloat("_Glossiness", 0.55f);
-            if (beltMaterial.HasProperty("_Smoothness")) beltMaterial.SetFloat("_Smoothness", 0.55f);
-            mr.material = beltMaterial;
             mr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             decor.Add(go);
+            return go;
+        }
 
-            // Chrome rails on each edge, with a dark contact line underneath for depth.
-            MakeRail(width * 0.5f + 0.06f, new Color(0.86f, 0.88f, 0.92f), 0.09f, 0.03f);
-            MakeRail(-(width * 0.5f + 0.06f), new Color(0.86f, 0.88f, 0.92f), 0.09f, 0.03f);
-            MakeRail(width * 0.5f + 0.1f, new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
-            MakeRail(-(width * 0.5f + 0.1f), new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
+        static Material Mat(Color c, float metallic, float smooth)
+        {
+            var m = new Material(PlaceholderMaterials.FindShader());
+            m.color = c;
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", c);
+            SetPbr(m, metallic, smooth);
+            return m;
+        }
 
-            // Red vinyl base + chrome trim + dark underside: smooth 64-segment pucks (primitives show facets).
-            var tb = Track.GetBounds();
-            float rx = (tb.size.x + width + 0.8f) * 0.5f, rz = (tb.size.z + width + 0.8f) * 0.5f;
-            Vector3 c = new Vector3(tb.center.x, 0f, tb.center.z);
-            decor.Add(MakePuck("VinylBase", c + Vector3.down * 0.25f, rx, rz, 0.2f, new Color(0.80f, 0.13f, 0.22f), 0.25f, 0.5f));
-            decor.Add(MakePuck("ChromeTrim", c + Vector3.down * 0.33f, rx + 0.08f, rz + 0.08f, 0.06f, new Color(0.85f, 0.87f, 0.9f), 0.9f, 0.85f));
-            decor.Add(MakePuck("Underside", c + Vector3.down * 0.62f, rx * 0.8f, rz * 0.8f, 0.5f, new Color(0.12f, 0.08f, 0.09f), 0.2f, 0.3f));
+        static void SetPbr(Material m, float metallic, float smooth)
+        {
+            if (m.HasProperty("_Metallic")) m.SetFloat("_Metallic", metallic);
+            if (m.HasProperty("_Glossiness")) m.SetFloat("_Glossiness", smooth);
+            if (m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness", smooth);
         }
 
         GameObject MakePuck(string name, Vector3 center, float rx, float rz, float height, Color color, float metallic, float smooth)
@@ -356,41 +457,40 @@ namespace RetroDiner.Belt
             {
                 Vector3 p = Track.Sample(i);
                 acc += Vector3.Distance(prev, p); prev = p;
-                Vector3 side = Vector3.Cross(Vector3.up, Track.Tangent(acc)).normalized * offset;
+                Vector3 side = Vector3.Cross(Vector3.up, Track.Tangent(acc)).normalized * offset * outSign;
                 lr.SetPosition(i, p + side + Vector3.up * lift);
             }
             decor.Add(lr.gameObject);
         }
 
-        static Texture2D rollerTex;
-        /// <summary>Chrome roller strip: each roller is a shaded cylinder with a specular line and a dark gap.</summary>
-        static Texture2D RollerTexture()
+        static Texture2D slatTex;
+        /// <summary>Broad, readable belt slats (not thin roller lines): dark rubber with soft edge highlights.</summary>
+        static Texture2D SlatTexture()
         {
-            if (rollerTex != null) return rollerTex;
-            const int w = 128, h = 32, roller = 16;
-            rollerTex = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat, filterMode = FilterMode.Bilinear, anisoLevel = 4 };
+            if (slatTex != null) return slatTex;
+            const int w = 256, h = 64, slat = 64;
+            slatTex = new Texture2D(w, h, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat, filterMode = FilterMode.Trilinear, anisoLevel = 8 };
             var px = new Color[w * h];
-            var dark = new Color(0.16f, 0.17f, 0.19f);
-            var mid = new Color(0.55f, 0.57f, 0.62f);
-            var light = new Color(0.93f, 0.95f, 1f);
+            var baseC = new Color(0.17f, 0.17f, 0.19f);
+            var hi = new Color(0.36f, 0.37f, 0.4f);
+            var gap = new Color(0.07f, 0.06f, 0.07f);
             for (int x = 0; x < w; x++)
             {
-                int i = x % roller;
-                float u = (i + 0.5f) / roller;              // 0..1 across one roller
-                float shade = Mathf.Sin(u * Mathf.PI);       // cylinder lambert
-                float spec = Mathf.Exp(-Mathf.Pow((u - 0.38f) * 7f, 2f));
-                Color c = Color.Lerp(dark, mid, shade);
-                c = Color.Lerp(c, light, spec * 0.85f);
-                if (i == 0 || i == roller - 1) c = dark * 0.8f;
+                int i = x % slat;
+                float u = (i + 0.5f) / slat;
+                float edge = Mathf.Exp(-Mathf.Pow((u - 0.08f) * 9f, 2f)) * 0.9f;      // highlight on the leading edge
+                float shade = 1f - 0.25f * Mathf.Pow(u, 2f);                         // falls off toward the trailing edge
+                Color c = Color.Lerp(baseC * shade, hi, edge);
+                if (i < 3 || i > slat - 4) c = gap;
                 for (int y = 0; y < h; y++)
                 {
-                    float v = y / (float)(h - 1);
-                    float edge = 1f - Mathf.Pow(Mathf.Abs(v - 0.5f) * 2f, 6f) * 0.35f;   // darker at the belt edges
-                    px[y * w + x] = new Color(c.r * edge, c.g * edge, c.b * edge, 1f);
+                    float v = Mathf.Abs(y / (float)(h - 1) - 0.5f) * 2f;
+                    float side = 1f - Mathf.Pow(v, 8f) * 0.5f;
+                    px[y * w + x] = new Color(c.r * side, c.g * side, c.b * side, 1f);
                 }
             }
-            rollerTex.SetPixels(px); rollerTex.Apply();
-            return rollerTex;
+            slatTex.SetPixels(px); slatTex.Apply();
+            return slatTex;
         }
 
         void BuildSpills()

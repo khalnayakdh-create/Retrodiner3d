@@ -101,6 +101,49 @@ namespace RetroDiner.UI
             return s;
         }
 
+        /// <summary>Red-and-white gingham tile (modal headers). Tiles seamlessly.</summary>
+        public static Sprite Gingham(int cell = 24, bool tileable = true)
+        {
+            string key = "gingham" + cell;
+            Sprite s;
+            if (cache.TryGetValue(key, out s)) return s;
+            int size = cell * 4;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Repeat };
+            var px = new Color[size * size];
+            Color red = new Color(0.86f, 0.2f, 0.27f), cream = new Color(1f, 0.94f, 0.81f), mix = new Color(0.93f, 0.57f, 0.54f);
+            for (int y = 0; y < size; y++)
+                for (int x = 0; x < size; x++)
+                {
+                    bool cx = (x / cell) % 2 == 0, cy = (y / cell) % 2 == 0;
+                    px[y * size + x] = cx && cy ? red : (cx || cy) ? mix : cream;
+                }
+            tex.SetPixels(px); tex.Apply();
+            s = Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), 100f, 0, SpriteMeshType.FullRect);
+            cache[key] = s;
+            return s;
+        }
+
+        /// <summary>Horizontal chrome sheen: light-dark-light bands, for rims and plates.</summary>
+        public static Sprite Sheen(int height = 64)
+        {
+            string key = "sheen" + height;
+            Sprite s;
+            if (cache.TryGetValue(key, out s)) return s;
+            var tex = new Texture2D(4, height, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color[4 * height];
+            for (int y = 0; y < height; y++)
+            {
+                float t = y / (float)(height - 1);
+                float v = 0.55f + 0.45f * Mathf.Pow(Mathf.Sin(t * Mathf.PI), 0.6f) * (t > 0.5f ? 1f : 0.8f) + (t > 0.78f ? 0.15f : 0f);
+                v = Mathf.Clamp01(v);
+                for (int x = 0; x < 4; x++) px[y * 4 + x] = new Color(v, v, v * 1.03f, 1f);
+            }
+            tex.SetPixels(px); tex.Apply();
+            s = Sprite.Create(tex, new Rect(0, 0, 4, height), new Vector2(0.5f, 0.5f), 100f);
+            cache[key] = s;
+            return s;
+        }
+
         /// <summary>Vertical gradient strip (top alpha → bottom alpha), for vignettes and scrims.</summary>
         public static Sprite VerticalGradient(float topAlpha, float bottomAlpha, int height = 64)
         {

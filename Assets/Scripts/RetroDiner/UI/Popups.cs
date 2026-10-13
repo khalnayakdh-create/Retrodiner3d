@@ -9,20 +9,21 @@ namespace RetroDiner.UI
 {
     public class PanelButton
     {
-        public string label; public Action onClick; public Color color; public bool interactable = true;
+        public string label; public Action onClick; public Color color; public bool interactable = true; public bool secondary;
         public PanelButton(string label, Action onClick, Color color) { this.label = label; this.onClick = onClick; this.color = color; }
     }
 
     /// <summary>
-    /// One global popup layer (its own canvas above HUD and menu) so panels, fake ads and the
-    /// energy/booster offers look the same wherever they are opened from. Only one popup at a time.
+    /// One global popup layer above HUD and menu. Modal frames are content-driven: cream body, bevelled
+    /// chrome edge, a short gingham header (procedural, or ui/rd3d_ui_modal_frame_v002 when present),
+    /// one uniform dim layer behind, a 200 ms fade/scale with no long overshoot, and click-through blocked.
     /// </summary>
     public static class Popups
     {
         public static RectTransform Layer { get; private set; }
         static RectTransform current;
         static GameConfig cfg;
-        static Sprite panelSprite, btnRed, btnMint, btnGold;
+        static Sprite frameSprite, btnRed, btnMint, btnGold, btnGreen;
 
         public static bool IsOpen => current != null;
 
@@ -31,10 +32,12 @@ namespace RetroDiner.UI
             cfg = config;
             Layer = UIBuilder.Rect(canvas.transform, "PopupLayer");
             UIBuilder.Stretch(Layer);
-            panelSprite = ArtCatalog.Pick(cfg.popupPanel, ArtCatalog.PopupPanel);
+            Layer.gameObject.AddComponent<SafeAreaFitter>();
+            frameSprite = ArtCatalog.Load("ui/rd3d_ui_modal_frame_v002");
             btnRed = ArtCatalog.Pick(cfg.buttonRed, ArtCatalog.ButtonRed);
             btnMint = ArtCatalog.Pick(cfg.buttonMint, ArtCatalog.ButtonMint);
             btnGold = ArtCatalog.Pick(cfg.buttonGold, ArtCatalog.ButtonGold);
+            btnGreen = ArtCatalog.Load("ui/rd3d_ui_button_green_v001");
         }
 
         public static void Close()
@@ -43,59 +46,123 @@ namespace RetroDiner.UI
             current = null;
         }
 
-        public static Sprite ButtonSprite(Color c) => c == UIBuilder.Red ? btnRed : c == UIBuilder.Mint ? btnMint : c == UIBuilder.Gold ? btnGold : null;
+        public static Sprite ButtonSprite(Color c)
+        {
+            if (c == UIBuilder.Red || c == Style.Cherry) return btnRed;
+            if (c == UIBuilder.Mint || c == Style.Mint) return btnMint;
+            if (c == UIBuilder.Gold || c == Style.Gold) return btnGold;
+            if (c == Style.Teal) return btnGreen;
+            return null;
+        }
 
-        public static RectTransform Show(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null, float panelHeight = 1150f)
+        /// <summary>Content-driven modal. Height = header + content + buttons; width ~86% of the safe viewport.</summary>
+        public static RectTransform Show(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null, float contentHeight = 320f, float width = 930f)
         {
             Close();
-            var overlay = UIBuilder.Panel(Layer, "Overlay", new Color(0f, 0f, 0f, dim ? 0.55f : 0f), null, true);
+            var overlay = UIBuilder.Panel(Layer, "Overlay", new Color(0.1f, 0.05f, 0.06f, dim ? 0.6f : 0f), null, true);
             UIBuilder.Stretch(overlay.rectTransform);
             current = overlay.rectTransform;
 
-            var panel = UIBuilder.Panel(overlay.transform, "Panel", panelSprite != null ? Color.white : UIBuilder.Cream, panelSprite, true);
-            panel.preserveAspect = panelSprite != null;
-            if (panelSprite != null) panelHeight = 920f * panelSprite.rect.height / panelSprite.rect.width;   // keep the art's aspect
-            UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(920f, panelHeight), new Vector2(0f, 40f));
-            if (panelSprite == null)
+            const float header = 96f, pad = 26f, btnH = 118f, btnGap = 18f, bodyPad = 20f;
+            int n = buttons != null ? buttons.Count : 0;
+            float bodyH = string.IsNullOrEmpty(body) ? 0f : 90f;
+            float panelH = header + bodyPad + bodyH + contentHeight + pad + n * (btnH + btnGap) + pad;
+            float maxH = UIBuilder.RefHeight * 0.78f;
+            if (panelH > maxH) { contentHeight -= (panelH - maxH); panelH = maxH; }
+
+            var holder = UIBuilder.Rect(overlay.transform, "Panel");
+            UIBuilder.Place(holder, new Vector2(0.5f, 0.5f), new Vector2(width, panelH), new Vector2(0f, 30f));
+
+            var shadow = UIBuilder.Pill(holder, "Shadow", new Color(0f, 0f, 0f, 0.4f), 44);
+            UIBuilder.Stretch(shadow.rectTransform, -4, -8, -4, -22);
+
+            Image panel;
+            if (frameSprite != null)
             {
-                UIBuilder.Shadow(panel, 10f);
-                UIBuilder.Outline(panel, UIBuilder.Chrome, 6f);
-                var header = UIBuilder.Panel(panel.transform, "Header", UIBuilder.Red, null, false);
-                header.rectTransform.anchorMin = new Vector2(0f, 1f); header.rectTransform.anchorMax = new Vector2(1f, 1f);
-                header.rectTransform.pivot = new Vector2(0.5f, 1f); header.rectTransform.sizeDelta = new Vector2(0f, 110f);
-                header.rectTransform.anchoredPosition = Vector2.zero;
+                panel = UIBuilder.Sliced(holder, "Frame", frameSprite, Style.Cream, 40, true);
+                UIBuilder.Stretch(panel.rectTransform);
+            }
+            else
+            {
+                var edge = UIBuilder.Pill(holder, "Edge", Style.Chrome, 40, true);
+                UIBuilder.Stretch(edge.rectTransform);
+                var edgeSheen = UIBuilder.Panel(edge.transform, "Sheen", new Color(1f, 1f, 1f, 0.15f), ProcSprites.Rounded(40), false); edgeSheen.type = Image.Type.Sliced;
+                UIBuilder.Stretch(edgeSheen.rectTransform, 0, 0, 0, panelH * 0.5f);
+                panel = UIBuilder.Pill(holder, "Body", Style.Cream, 34, true);
+                UIBuilder.Stretch(panel.rectTransform, 8, 8, 8, 8);
+                var gingham = UIBuilder.Panel(panel.transform, "Header", Color.white, ProcSprites.Gingham(22), false);
+                gingham.type = Image.Type.Tiled;
+                gingham.rectTransform.anchorMin = new Vector2(0f, 1f); gingham.rectTransform.anchorMax = new Vector2(1f, 1f);
+                gingham.rectTransform.pivot = new Vector2(0.5f, 1f); gingham.rectTransform.sizeDelta = new Vector2(0f, header); gingham.rectTransform.anchoredPosition = Vector2.zero;
+                var headerMask = gingham.gameObject.AddComponent<Mask>(); headerMask.showMaskGraphic = true;
+                var headerRound = UIBuilder.Panel(panel.transform, "HeaderRound", Style.Cream, ProcSprites.Rounded(34), false);   // keeps the top corners rounded
+                headerRound.type = Image.Type.Sliced; headerRound.fillCenter = false;
+                UIBuilder.Stretch(headerRound.rectTransform, -1, -1, -1, -1);
+                var divider = UIBuilder.Panel(panel.transform, "Divider", Style.Chrome, null, false);
+                divider.rectTransform.anchorMin = new Vector2(0f, 1f); divider.rectTransform.anchorMax = new Vector2(1f, 1f);
+                divider.rectTransform.pivot = new Vector2(0.5f, 1f); divider.rectTransform.sizeDelta = new Vector2(0f, 4f); divider.rectTransform.anchoredPosition = new Vector2(0f, -header);
+                for (int r = 0; r < 4; r++)
+                {
+                    var rivet = UIBuilder.Panel(panel.transform, "Rivet" + r, Style.ChromeLight, ProcSprites.Circle(32), false);
+                    UIBuilder.Place(rivet.rectTransform, new Vector2(r % 2 == 0 ? 0f : 1f, r < 2 ? 1f : 0f), new Vector2(14f, 14f), new Vector2(r % 2 == 0 ? 18f : -18f, r < 2 ? -18f : 18f));
+                }
             }
 
-            var titleLbl = UIBuilder.Label(panel.transform, "Title", title, 56, Color.white);
+            // Cherry ribbon behind the title so it reads on the gingham header.
+            var ribbon = UIBuilder.Pill(holder, "TitleRibbon", Style.Cherry, 30);
+            UIBuilder.Place(ribbon.rectTransform, new Vector2(0.5f, 1f), new Vector2(Mathf.Clamp(title.Length * 30f + 120f, 360f, width - 120f), 70f), new Vector2(0f, -header * 0.5f - 4f));
+            UIBuilder.Outline(ribbon, Style.ChromeLight, 3f);
+            UIBuilder.Shadow(ribbon, 4f);
+            var titleLbl = UIBuilder.Label(holder, "Title", title, 46, Style.Cream);
             titleLbl.rectTransform.anchorMin = new Vector2(0f, 1f); titleLbl.rectTransform.anchorMax = new Vector2(1f, 1f);
-            titleLbl.rectTransform.pivot = new Vector2(0.5f, 1f); titleLbl.rectTransform.sizeDelta = new Vector2(-80f, 110f);
-            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, panelSprite != null ? -80f : -40f);
-            UIBuilder.Outline(titleLbl, new Color(0f, 0f, 0f, 0.6f), 3f);
+            titleLbl.rectTransform.pivot = new Vector2(0.5f, 1f); titleLbl.rectTransform.sizeDelta = new Vector2(-60f, header);
+            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, -4f);
+            var tsh = titleLbl.gameObject.AddComponent<Shadow>(); tsh.effectColor = new Color(0.3f, 0.05f, 0.08f, 0.9f); tsh.effectDistance = new Vector2(2f, -2.5f);
 
-            var content = UIBuilder.Rect(panel.transform, "Content");
-            UIBuilder.Place(content, new Vector2(0.5f, 0.5f), new Vector2(760f, 420f), new Vector2(0f, 120f));
+            float y = -(header + 8f + bodyPad);
             if (!string.IsNullOrEmpty(body))
             {
-                var bodyLbl = UIBuilder.Label(content, "Body", body, 38, UIBuilder.Dark, TextAnchor.UpperCenter, FontStyle.Normal);
-                UIBuilder.Stretch(bodyLbl.rectTransform);
+                var bodyLbl = UIBuilder.Label(holder, "Body", body, 34, Style.Ink, TextAnchor.UpperCenter, FontStyle.Normal);
+                bodyLbl.rectTransform.anchorMin = new Vector2(0f, 1f); bodyLbl.rectTransform.anchorMax = new Vector2(1f, 1f);
+                bodyLbl.rectTransform.pivot = new Vector2(0.5f, 1f); bodyLbl.rectTransform.sizeDelta = new Vector2(-90f, bodyH);
+                bodyLbl.rectTransform.anchoredPosition = new Vector2(0f, y);
+                y -= bodyH;
             }
+            var content = UIBuilder.Rect(holder, "Content");
+            content.anchorMin = new Vector2(0f, 1f); content.anchorMax = new Vector2(1f, 1f); content.pivot = new Vector2(0.5f, 1f);
+            content.sizeDelta = new Vector2(-70f, contentHeight); content.anchoredPosition = new Vector2(0f, y);
             decorate?.Invoke(content);
+            y -= contentHeight + pad;
 
-            float y = panelSprite != null ? -120f : -170f;
             if (buttons != null)
                 foreach (var b in buttons)
                 {
                     var sprite = ButtonSprite(b.color);
-                    Vector2 bsize = sprite != null ? new Vector2(600f, 180f) : new Vector2(560f, 130f);
-                    var btn = UIBuilder.Button(panel.transform, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, bsize, 36, b.color == UIBuilder.Gold || b.color == UIBuilder.Mint ? UIBuilder.Dark : Color.white);
-                    UIBuilder.Place(btn.image.rectTransform, new Vector2(0.5f, 0.5f), bsize, new Vector2(0f, y));
+                    float h = b.secondary ? btnH * 0.85f : btnH;
+                    var btn = UIBuilder.Button(holder, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, new Vector2(sprite != null ? 620f : 580f, sprite != null ? h * 1.35f : h), b.secondary ? 32 : (b.label.Length > 16 ? 30 : b.label.Length > 11 ? 36 : 40),
+                        b.color == UIBuilder.Gold || b.color == UIBuilder.Mint || b.color == Style.Gold || b.color == Style.Mint ? Style.Ink : Color.white);
+                    btn.image.rectTransform.anchorMin = new Vector2(0.5f, 1f); btn.image.rectTransform.anchorMax = new Vector2(0.5f, 1f);
+                    btn.image.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    btn.image.rectTransform.anchoredPosition = new Vector2(0f, y);
                     btn.interactable = b.interactable;
-                    y -= 150f;
+                    if (b.secondary) { var cg = btn.gameObject.AddComponent<CanvasGroup>(); cg.alpha = 0.88f; }
+                    y -= h + btnGap;
                 }
 
-            panel.rectTransform.localScale = Vector3.one * 0.7f;
-            Tween.Scale(panel.rectTransform, Vector3.one, 0.3f, Ease.OutBack, null, true);
-            return panel.rectTransform;
+            // Appearance: 200 ms fade + scale, no long overshoot; unscaled so it animates while gameplay is paused.
+            var cg2 = holder.gameObject.AddComponent<CanvasGroup>();
+            cg2.alpha = 0f;
+            holder.localScale = Vector3.one * 0.92f;
+            Tween.To(Style.ModalIn, t =>
+            {
+                if (holder == null) return;
+                cg2.alpha = t;
+                holder.localScale = Vector3.one * Mathf.Lerp(0.92f, 1f, Tween.Evaluate(Ease.OutCubic, t));
+            }, Ease.Linear, null, true);
+            overlay.color = new Color(0.1f, 0.05f, 0.06f, 0f);
+            float dimA = dim ? 0.6f : 0f;
+            Tween.To(Style.ModalIn, t => { if (overlay != null) overlay.color = new Color(0.1f, 0.05f, 0.06f, dimA * t); }, Ease.Linear, null, true);
+            return holder;
         }
 
         /// <summary>Full-screen fake ad with a countdown; used by FakeAdService.</summary>
@@ -107,7 +174,7 @@ namespace RetroDiner.UI
             current = overlay.rectTransform;
             var t = UIBuilder.Label(overlay.transform, "Title", title, 44, Color.white);
             UIBuilder.Place(t.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 200f), new Vector2(0f, 120f));
-            var count = UIBuilder.Label(overlay.transform, "Count", "", 120, UIBuilder.Gold);
+            var count = UIBuilder.Label(overlay.transform, "Count", "", 120, Style.Gold);
             UIBuilder.Place(count.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(400f, 200f), new Vector2(0f, -80f));
             var sub = UIBuilder.Label(overlay.transform, "Sub", "Real ad SDK is swapped in behind IAdService before soft launch.", 26, new Color(0.7f, 0.7f, 0.75f), TextAnchor.MiddleCenter, FontStyle.Normal);
             UIBuilder.Place(sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 100f), new Vector2(0f, -260f));
@@ -131,6 +198,7 @@ namespace RetroDiner.UI
         /// <summary>Cream wipe: fades to cream, runs <paramref name="atPeak"/>, fades back.</summary>
         public static void Fade(Action atPeak, float half = 0.22f)
         {
+            if (Style.ReducedMotion) half = 0.1f;
             var cover = UIBuilder.Panel(Layer, "Fade", new Color(1f, 0.957f, 0.863f, 0f), null, true);
             UIBuilder.Stretch(cover.rectTransform);
             cover.transform.SetAsLastSibling();
