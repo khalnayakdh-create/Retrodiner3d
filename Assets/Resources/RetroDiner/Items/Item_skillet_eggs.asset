@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Skillet Eggs
   placeholderColor: {r: 0.2, g: 0.2, b: 0.22, a: 1}
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: 051dbf35363d49b43aada0eee2b0672e, type: 3}
-  charredIcon: {fileID: 21300000, guid: 7885c1d7cb9820d41bd32fac45f47963, type: 3}
+  icon: {fileID: -6928106837366239630, guid: 051dbf35363d49b43aada0eee2b0672e, type: 3}
+  charredIcon: {fileID: 1514855081612561073, guid: 7885c1d7cb9820d41bd32fac45f47963, type: 3}
   canBurn: 1
   pickupSfx: {fileID: 0}
   pickupSfxKey: pickup_clink

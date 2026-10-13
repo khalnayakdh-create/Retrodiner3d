@@ -32,7 +32,8 @@ namespace RetroDiner.UI
         Func<string, ItemDefinition> lookup;
         Sprite frameSprite, checkSprite, trackSprite, fillSprite;
 
-        const float CardW = 262f, CardH = 236f, Gap = 34f;
+        const float CardW = 262f, Gap = 34f;
+        float CardH = 236f;   // 279 with the clipboard art (900x960 incl. the clip)
 
         public void Build(Transform parent, GameConfig config, Func<string, ItemDefinition> defLookup)
         {
@@ -42,6 +43,10 @@ namespace RetroDiner.UI
             checkSprite = ArtCatalog.Load("ui/rd3d_ui_check_stamp_v001");
             trackSprite = ArtCatalog.Load("ui/rd3d_ui_bar_track_v001");
             fillSprite = ArtCatalog.Load("ui/rd3d_ui_bar_fill_green_v001");
+            bool art = frameSprite != null;
+            CardH = art ? CardW * 960f / 900f : 236f;
+            // With the clipboard art the body sits under the clip (top ~26 % of the card) and has its own track.
+            float bodyY = art ? -34f : 0f;
 
             root = UIBuilder.Rect(parent, "OrderRail");
             UIBuilder.Place(root, new Vector2(0.5f, 1f), new Vector2(1080f, 300f), new Vector2(0f, Style.TicketRailY));
@@ -61,9 +66,11 @@ namespace RetroDiner.UI
                 c.glow = UIBuilder.Panel(holder, "Glow", new Color(1f, 0.85f, 0.35f, 0f), ProcSprites.Glow(128, 1.6f), false);
                 UIBuilder.Place(c.glow.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(CardW * 1.7f, CardH * 1.8f), Vector2.zero);
 
-                if (frameSprite != null)
+                if (art)
                 {
-                    c.back = UIBuilder.Sliced(holder, "Frame", frameSprite, Style.Cream, 26, false);
+                    // The clip must not stretch, so the frame is drawn whole at the card's aspect.
+                    c.back = UIBuilder.Panel(holder, "Frame", Color.white, frameSprite, false);
+                    c.back.preserveAspect = true;
                     UIBuilder.Stretch(c.back.rectTransform);
                 }
                 else
@@ -95,18 +102,19 @@ namespace RetroDiner.UI
 
                 c.icon = UIBuilder.Panel(holder, "Icon", Color.white, null, false);
                 c.icon.preserveAspect = true;
-                UIBuilder.Place(c.icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(128f, 128f), new Vector2(24f, 18f));
+                UIBuilder.Place(c.icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(128f, 128f), new Vector2(24f, bodyY + 18f));
 
                 c.count = UIBuilder.Label(holder, "Count", "3", 62, Style.Ink, TextAnchor.MiddleCenter);
-                UIBuilder.Place(c.count.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(74f, 80f), new Vector2(18f, 26f));
+                UIBuilder.Place(c.count.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(74f, 80f), new Vector2(18f, bodyY + 26f));
                 c.caption = UIBuilder.Label(holder, "Caption", "left", 20, new Color(0.22f, 0.15f, 0.11f, 0.75f), TextAnchor.MiddleCenter, FontStyle.Normal);
-                UIBuilder.Place(c.caption.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(74f, 26f), new Vector2(18f, -14f));
+                UIBuilder.Place(c.caption.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(74f, 26f), new Vector2(18f, bodyY - 14f));
 
                 // Inset progress well + fill.
                 c.well = trackSprite != null ? UIBuilder.Sliced(holder, "Well", trackSprite, new Color(0.2f, 0.2f, 0.22f), 10, false)
                                              : UIBuilder.Pill(holder, "Well", new Color(0.16f, 0.17f, 0.19f, 0.9f), 10);
-                UIBuilder.Place(c.well.rectTransform, new Vector2(0.5f, 0f), new Vector2(CardW - 58f, 22f), new Vector2(0f, 28f));
+                UIBuilder.Place(c.well.rectTransform, new Vector2(0.5f, 0f), new Vector2(art ? CardW - 72f : CardW - 58f, art ? 18f : 22f), new Vector2(0f, art ? 19f : 28f));
                 if (trackSprite == null) UIBuilder.Outline(c.well, new Color(1f, 1f, 1f, 0.25f), 1.5f);
+                if (art) c.well.color = new Color(1f, 1f, 1f, 0f);   // the clipboard art already has the track; only the fill is drawn
                 c.fill = fillSprite != null ? UIBuilder.Sliced(c.well.transform, "Fill", fillSprite, new Color(0.35f, 0.78f, 0.35f), 8, false)
                                             : UIBuilder.Pill(c.well.transform, "Fill", new Color(0.38f, 0.8f, 0.4f), 8);
                 c.fill.rectTransform.anchorMin = new Vector2(0f, 0f); c.fill.rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -115,7 +123,7 @@ namespace RetroDiner.UI
 
                 c.check = UIBuilder.Panel(holder, "Check", checkSprite != null ? Color.white : new Color(0.2f, 0.75f, 0.3f), checkSprite != null ? checkSprite : ProcSprites.Circle(128), false);
                 c.check.preserveAspect = true;
-                UIBuilder.Place(c.check.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(120f, 120f), new Vector2(24f, 18f));
+                UIBuilder.Place(c.check.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(120f, 120f), new Vector2(24f, bodyY + 18f));
                 if (checkSprite == null)
                 {
                     UIBuilder.Outline(c.check, Style.ChromeLight, 3f);
@@ -134,7 +142,7 @@ namespace RetroDiner.UI
             return UIBuilder.LocalToScreen(cards[railSlot].icon.rectTransform);
         }
 
-        public float FillWidth => CardW - 58f - 6f;
+        public float FillWidth => (frameSprite != null ? CardW - 72f : CardW - 58f) - 6f;
 
         public void Refresh(TicketBoard board)
         {

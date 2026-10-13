@@ -52,6 +52,11 @@ namespace RetroDiner.UI
 
             if (frameSprite != null)
             {
+                // The chrome frame art has an open centre: a brushed-steel inner panel sits behind it.
+                var inner = UIBuilder.Pill(root, "Inner", new Color(0.52f, 0.57f, 0.62f), 28);
+                UIBuilder.Stretch(inner.rectTransform, 12, 12, 12, 12);
+                var innerShade = UIBuilder.Panel(inner.transform, "Shade", new Color(0f, 0f, 0f, 0.25f), ProcSprites.VerticalGradient(1f, 0f), false);
+                UIBuilder.Stretch(innerShade.rectTransform); innerShade.sprite = ProcSprites.Rounded(28); innerShade.type = Image.Type.Sliced; innerShade.color = new Color(0f, 0f, 0f, 0.18f);
                 frame = UIBuilder.Sliced(root, "Frame", frameSprite, Style.Chrome, 38, false);
                 UIBuilder.Stretch(frame.rectTransform);
             }

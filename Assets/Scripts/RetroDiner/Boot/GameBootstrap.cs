@@ -54,14 +54,14 @@ namespace RetroDiner.Boot
             bgCam.nearClipPlane = 0.1f; bgCam.farClipPlane = 50f;
 
             var bgCanvas = UIBuilder.CreateCanvas("BackgroundCanvas", 0, RenderMode.ScreenSpaceCamera, bgCam, BackgroundLayer);
-            var bgSprite = ArtCatalog.Pick(cfg.gameplayBackground, ArtCatalog.GameplayBackground);
+            var bgSprite = ArtCatalog.GameplayBackground != null ? ArtCatalog.GameplayBackground : cfg.gameplayBackground;   // newest pack first
             var bg = UIBuilder.Panel(bgCanvas.transform, "GameplayBackground", bgSprite != null ? Color.white : new Color(0.55f, 0.16f, 0.2f), bgSprite, false);
             UIBuilder.Stretch(bg.rectTransform);
             if (bgSprite != null)
             {
                 var fit = bg.gameObject.AddComponent<AspectRatioFitter>();
                 fit.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
-                fit.aspectRatio = 1080f / 1920f;
+                fit.aspectRatio = bgSprite.rect.width / Mathf.Max(1f, bgSprite.rect.height);
             }
             else
             {

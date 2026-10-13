@@ -135,7 +135,7 @@ namespace RetroDiner.UI
             {
                 var logo = UIBuilder.Panel(menuPage, "Logo", Color.white, logoSprite, false);
                 logo.preserveAspect = true;
-                UIBuilder.Place(logo.rectTransform, new Vector2(0.5f, 1f), new Vector2(960f, 420f), new Vector2(0f, -330f));
+                UIBuilder.Place(logo.rectTransform, new Vector2(0.5f, 1f), new Vector2(880f, 400f), new Vector2(0f, -300f));
                 if (!Style.ReducedMotion) UIBuilder.Pulse(logo.rectTransform, 0.012f, 2.4f);
             }
             else

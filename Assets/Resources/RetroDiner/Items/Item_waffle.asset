@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Belgian Waffle
   placeholderColor: {r: 0.93, g: 0.78, b: 0.42, a: 1}
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: 2dc074c5e50555a4d9a3113cbe98fbda, type: 3}
+  icon: {fileID: 6930773665211320447, guid: 2dc074c5e50555a4d9a3113cbe98fbda, type: 3}
   charredIcon: {fileID: 0}
   canBurn: 0
   pickupSfx: {fileID: 0}

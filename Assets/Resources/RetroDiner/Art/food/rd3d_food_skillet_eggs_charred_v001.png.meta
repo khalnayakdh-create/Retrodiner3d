@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -154,23 +154,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rd3d_food_skillet_eggs_charred_v001_0
+      name: rd3d_food_skillet_eggs_charred_v001
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1254
-        height: 1254
+        x: 70
+        y: 59
+        width: 1147
+        height: 1147
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f59dd2ff6a85929a0800000000000000
-      internalID: -6257372732985583265
+      spriteID: 1ba46b1bba8d50510800000000000000
+      internalID: 1514855081612561073
       vertices: []
       indices: 
       edges: []
@@ -188,9 +188,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      rd3d_food_skillet_eggs_charred_v001: 1514855081612561073
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData: 
+  userData: trim:70,59,1147,1147
   assetBundleName: 
   assetBundleVariant: 

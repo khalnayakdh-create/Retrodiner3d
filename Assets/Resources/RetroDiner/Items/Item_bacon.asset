@@ -16,8 +16,8 @@ MonoBehaviour:
   displayName: Wavy Bacon
   placeholderColor: {r: 0.7, g: 0.25, b: 0.18, a: 1}
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: 0b3e52f09892dcc4b90526e38c1c285d, type: 3}
-  charredIcon: {fileID: 21300000, guid: c9e25d78e76a42d41869400c40196e1b, type: 3}
+  icon: {fileID: -2408439530983073572, guid: 0b3e52f09892dcc4b90526e38c1c285d, type: 3}
+  charredIcon: {fileID: 5085244815339368705, guid: c9e25d78e76a42d41869400c40196e1b, type: 3}
   canBurn: 1
   pickupSfx: {fileID: 0}
   pickupSfxKey: pickup_snap

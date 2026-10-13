@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Coffee Mug
   placeholderColor: {r: 0.84, g: 0.15, b: 0.24, a: 1}
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: b8ee7bd018dcfe8469d2ab3ad3f4eb88, type: 3}
+  icon: {fileID: -5175902812158020840, guid: b8ee7bd018dcfe8469d2ab3ad3f4eb88, type: 3}
   charredIcon: {fileID: 0}
   canBurn: 0
   pickupSfx: {fileID: 0}

@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -154,23 +154,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rd3d_obstacle_ketchup_spill_v001_0
+      name: rd3d_obstacle_ketchup_spill_v001
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1254
-        height: 1254
+        x: 39
+        y: 31
+        width: 1188
+        height: 1188
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 7e578af71884d3920800000000000000
-      internalID: 2971611050164123111
+      spriteID: 4ddacb808020e1fe0800000000000000
+      internalID: -1216532615813878316
       vertices: []
       indices: 
       edges: []
@@ -188,9 +188,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      rd3d_obstacle_ketchup_spill_v001: -1216532615813878316
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData: 
+  userData: trim:39,31,1188,1188
   assetBundleName: 
   assetBundleVariant: 

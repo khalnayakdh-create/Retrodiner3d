@@ -54,8 +54,21 @@ namespace RetroDiner.EditorTools
                     copied++;
                 }
             }
+            // Fonts: the art pack drops TTFs in Assets/Fonts; UIBuilder loads them from Resources by name.
+            string fontSrc = Path.Combine(Application.dataPath, "Fonts");
+            string fontDst = Path.Combine(projectRoot, "Assets/Resources/RetroDiner/Fonts");
+            int fonts = 0;
+            if (Directory.Exists(fontSrc))
+            {
+                Directory.CreateDirectory(fontDst);
+                foreach (var ttf in Directory.GetFiles(fontSrc, "*.ttf"))
+                {
+                    string dest = Path.Combine(fontDst, Path.GetFileName(ttf));
+                    if (!File.Exists(dest) || File.GetLastWriteTimeUtc(ttf) > File.GetLastWriteTimeUtc(dest)) { File.Copy(ttf, dest, true); fonts++; }
+                }
+            }
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            Debug.Log("[RetroDiner] Art import done. Copied " + copied + " PNGs into " + ArtRoot);
+            Debug.Log("[RetroDiner] Art import done. Copied " + copied + " PNGs into " + ArtRoot + (fonts > 0 ? " and " + fonts + " font(s) into Resources/RetroDiner/Fonts" : ""));
         }
 
         // ------------------------------------------------------------------ content

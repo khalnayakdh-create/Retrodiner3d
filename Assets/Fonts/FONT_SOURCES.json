@@ -1,0 +1,30 @@
+[
+  {
+    "family": "Fredoka",
+    "weight": 600,
+    "filename": "Fredoka-SemiBold.ttf",
+    "source_url": "https://fonts.gstatic.com/s/fredoka/v17/X7nP4b87HvSqjb_WIi2yDCRwoQ_k7367_B-i2yQag0-mac3OLyX8EemP.ttf",
+    "license_file": "Fredoka-OFL.txt"
+  },
+  {
+    "family": "Fredoka",
+    "weight": 700,
+    "filename": "Fredoka-Bold.ttf",
+    "source_url": "https://fonts.gstatic.com/s/fredoka/v17/X7nP4b87HvSqjb_WIi2yDCRwoQ_k7367_B-i2yQag0-mac3OFiX8EemP.ttf",
+    "license_file": "Fredoka-OFL.txt"
+  },
+  {
+    "family": "Nunito",
+    "weight": 600,
+    "filename": "Nunito-SemiBold.ttf",
+    "source_url": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDGUmdTQ3ig.ttf",
+    "license_file": "Nunito-OFL.txt"
+  },
+  {
+    "family": "Nunito",
+    "weight": 700,
+    "filename": "Nunito-Bold.ttf",
+    "source_url": "https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDFwmdTQ3ig.ttf",
+    "license_file": "Nunito-OFL.txt"
+  }
+]

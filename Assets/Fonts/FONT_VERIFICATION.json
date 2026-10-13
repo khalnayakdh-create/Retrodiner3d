@@ -1,0 +1,42 @@
+[
+  {
+    "filename": "Fredoka-Bold.ttf",
+    "weight": 700,
+    "static": true,
+    "font_names": [
+      "Fredoka Light",
+      "Bold"
+    ],
+    "sha256": "e2e0c6b63b1af1abfc0a0e38689563b4687b8bb2262347194eb4254f351bbb8b"
+  },
+  {
+    "filename": "Fredoka-SemiBold.ttf",
+    "weight": 600,
+    "static": true,
+    "font_names": [
+      "Fredoka Light",
+      "SemiBold"
+    ],
+    "sha256": "29bea9015db7cc42c7ca741b5a59ed6afe192377595b969c1caab572ff832965"
+  },
+  {
+    "filename": "Nunito-Bold.ttf",
+    "weight": 700,
+    "static": true,
+    "font_names": [
+      "Nunito ExtraLight",
+      "Bold"
+    ],
+    "sha256": "2ff1544d575cd14d3fa7f71ee5349b7f9f609c95d123d92864342d70ce9a89d1"
+  },
+  {
+    "filename": "Nunito-SemiBold.ttf",
+    "weight": 600,
+    "static": true,
+    "font_names": [
+      "Nunito ExtraLight",
+      "SemiBold"
+    ],
+    "sha256": "c4243c91b03b2b2f2553c76a2fcf4f2df7095125125be23445397937ee56e6b7"
+  }
+]

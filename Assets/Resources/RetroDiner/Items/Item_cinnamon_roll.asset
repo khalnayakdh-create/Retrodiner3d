@@ -16,7 +16,7 @@ MonoBehaviour:
   displayName: Cinnamon Roll
   placeholderColor: {r: 0.85, g: 0.6, b: 0.38, a: 1}
   prefab: {fileID: 0}
-  icon: {fileID: 21300000, guid: 99cdc68fb1f9e2c459d389632e1a8b6f, type: 3}
+  icon: {fileID: 7725917080692025591, guid: 99cdc68fb1f9e2c459d389632e1a8b6f, type: 3}
   charredIcon: {fileID: 0}
   canBurn: 0
   pickupSfx: {fileID: 0}

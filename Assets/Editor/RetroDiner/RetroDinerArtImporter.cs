@@ -15,18 +15,27 @@ namespace RetroDiner.EditorTools
             if (!p.Contains("/Resources/RetroDiner/Art/")) return;
             var imp = (TextureImporter)assetImporter;
             bool sheet = p.Contains("sheet_4x4");
-            bool background = p.Contains("/backgrounds/");
+            bool background = p.Contains("/backgrounds/") || p.Contains("/env/");
 
             imp.textureType = TextureImporterType.Sprite;
             imp.spriteImportMode = sheet ? SpriteImportMode.Multiple : SpriteImportMode.Single;
             imp.spritePixelsPerUnit = 1024f;
             imp.mipmapEnabled = false;
-            imp.alphaIsTransparency = !background;
+            imp.alphaIsTransparency = !(p.Contains("/backgrounds/") || p.Contains("equirect") || p.Contains("belt_surface_tile"));
             imp.sRGBTexture = true;
             imp.maxTextureSize = background ? 2048 : (p.Contains("/food/") || p.Contains("/obstacles/") || p.Contains("/boosters/") || p.Contains("/currency/") ? 512 : 1024);
             imp.textureCompression = TextureImporterCompression.Compressed;
             imp.spritePivot = new Vector2(0.5f, 0.5f);
-            imp.wrapMode = TextureWrapMode.Clamp;
+            imp.wrapMode = p.Contains("belt_surface_tile") ? TextureWrapMode.Repeat : TextureWrapMode.Clamp;
+            if (p.Contains("belt_surface_tile")) { imp.textureType = TextureImporterType.Default; imp.mipmapEnabled = true; }
+
+            // 9-slice borders for frames, bars, chips and buttons (measured on the PNG's visible bounds).
+            string file = System.IO.Path.GetFileNameWithoutExtension(p);
+            if (p.Contains("/ui/") && (file.Contains("_frame_") || file.Contains("_chip_") || file.Contains("_bar_") || file.Contains("_button_") || file.Contains("topbar_plate") || file.Contains("popup_panel")))
+            {
+                Vector4 border;
+                if (MeasureBorder(assetPath, file, out border)) imp.spriteBorder = border;
+            }
 
             // Food/obstacle art that was trimmed by OnPostprocessTexture keeps its single tight rect.
             if (!sheet && imp.userData != null && imp.userData.StartsWith("trim:"))
@@ -71,6 +80,34 @@ namespace RetroDiner.EditorTools
                 imp.spritesheet = metas;
 #pragma warning restore 618
             }
+        }
+
+        /// <summary>Border = transparent padding + a fixed fraction of the visible size, so corners stay crisp and
+        /// only the plain centre stretches. Units are source pixels (Unity scales them with the texture).</summary>
+        static bool MeasureBorder(string path, string file, out Vector4 border)
+        {
+            border = Vector4.zero;
+            var src = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            try { if (!src.LoadImage(System.IO.File.ReadAllBytes(path))) return false; } catch { return false; }
+            int w = src.width, h = src.height;
+            Color32[] px = src.GetPixels32();
+            Object.DestroyImmediate(src);
+            int minX = w, minY = h, maxX = -1, maxY = -1;
+            for (int y = 0; y < h; y += 2)
+                for (int x = 0; x < w; x += 2)
+                    if (px[y * w + x].a > 100)
+                    {
+                        if (x < minX) minX = x; if (x > maxX) maxX = x;
+                        if (y < minY) minY = y; if (y > maxY) maxY = y;
+                    }
+            if (maxX < 0) return false;
+            int cw = maxX - minX + 1, ch = maxY - minY + 1;
+            bool bar = file.Contains("_bar_") || file.Contains("_chip_") || file.Contains("topbar_plate");
+            float frac = bar ? 0.48f : file.Contains("_button_") ? 0.46f : 0.3f;
+            float r = Mathf.Min(cw, ch) * frac;
+            // x = left, y = bottom, z = right, w = top (Unity's texture origin is bottom-left; GetPixels32 too).
+            border = new Vector4(minX + r, minY + r, (w - 1 - maxX) + r, (h - 1 - maxY) + r);
+            return true;
         }
 
         /// <summary>Food is the hero: trim empty margins so every dish fills its tray well / ticket icon at the

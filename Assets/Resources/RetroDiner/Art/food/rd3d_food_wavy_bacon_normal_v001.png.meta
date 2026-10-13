@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -154,23 +154,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: rd3d_food_wavy_bacon_normal_v001_0
+      name: rd3d_food_wavy_bacon_normal_v001
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1254
-        height: 1254
+        x: 33
+        y: 25
+        width: 1189
+        height: 1189
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 92e84d2d89cafc160800000000000000
-      internalID: 7048041714230267433
+      spriteID: cd8debcc101839ed0800000000000000
+      internalID: -2408439530983073572
       vertices: []
       indices: 
       edges: []
@@ -188,9 +188,10 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      rd3d_food_wavy_bacon_normal_v001: -2408439530983073572
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  userData: 
+  userData: trim:33,25,1189,1189
   assetBundleName: 
   assetBundleVariant: 

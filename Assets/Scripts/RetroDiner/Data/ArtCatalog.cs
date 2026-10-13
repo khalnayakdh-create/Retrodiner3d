@@ -93,7 +93,7 @@ namespace RetroDiner.Data
         // ----- fx / backgrounds -----
         public static Sprite ShiftFinishedBanner => Load("fx/rd3d_fx_shift_finished_banner_blank_v001");
         public static Texture2D ConfettiSheet => LoadTexture("fx/rd3d_fx_confetti_sparkles_sheet_4x4_v001");
-        public static Sprite GameplayBackground => Load("backgrounds/rd3d_bg_gameplay_diner_interior_1080x1920_v001");
+        public static Sprite GameplayBackground => Load("backgrounds/rd3d_bg_gameplay_diner_interior_v002_1080x2340") ?? Load("backgrounds/rd3d_bg_gameplay_diner_interior_v002_1080x1920") ?? Load("backgrounds/rd3d_bg_gameplay_diner_interior_1080x1920_v001");
         public static Sprite MainMenuBackground => Load("backgrounds/rd3d_bg_main_menu_diner_dusk_1080x1920_v001");
         public static Sprite LevelSelectBackground => Load("backgrounds/rd3d_bg_level_select_roadside_map_1080x1920_v001");
 
