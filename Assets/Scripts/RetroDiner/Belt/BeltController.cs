@@ -285,23 +285,59 @@ namespace RetroDiner.Belt
             MakeRail(width * 0.5f + 0.1f, new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
             MakeRail(-(width * 0.5f + 0.1f), new Color(0.08f, 0.06f, 0.07f), 0.12f, -0.03f);
 
-            // Red vinyl base under the whole thing.
+            // Red vinyl base + chrome trim + dark underside: smooth 64-segment pucks (primitives show facets).
             var tb = Track.GetBounds();
-            var basePlate = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Destroy(basePlate.GetComponent<Collider>());
-            basePlate.transform.SetParent(transform, false);
-            basePlate.transform.localPosition = new Vector3(tb.center.x, -0.25f, tb.center.z);
-            basePlate.transform.localScale = new Vector3(tb.size.x + width + 0.8f, 0.2f, tb.size.z + width + 0.8f);
-            basePlate.GetComponent<Renderer>().material = PlaceholderMaterials.Get(new Color(0.80f, 0.13f, 0.22f));
-            decor.Add(basePlate);
-            // Chrome trim ring around the vinyl base.
-            var trim = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            Destroy(trim.GetComponent<Collider>());
-            trim.transform.SetParent(transform, false);
-            trim.transform.localPosition = new Vector3(tb.center.x, -0.33f, tb.center.z);
-            trim.transform.localScale = new Vector3(tb.size.x + width + 0.95f, 0.06f, tb.size.z + width + 0.95f);
-            trim.GetComponent<Renderer>().material = PlaceholderMaterials.Get(new Color(0.85f, 0.87f, 0.9f));
-            decor.Add(trim);
+            float rx = (tb.size.x + width + 0.8f) * 0.5f, rz = (tb.size.z + width + 0.8f) * 0.5f;
+            Vector3 c = new Vector3(tb.center.x, 0f, tb.center.z);
+            decor.Add(MakePuck("VinylBase", c + Vector3.down * 0.25f, rx, rz, 0.2f, new Color(0.80f, 0.13f, 0.22f), 0.25f, 0.5f));
+            decor.Add(MakePuck("ChromeTrim", c + Vector3.down * 0.33f, rx + 0.08f, rz + 0.08f, 0.06f, new Color(0.85f, 0.87f, 0.9f), 0.9f, 0.85f));
+            decor.Add(MakePuck("Underside", c + Vector3.down * 0.62f, rx * 0.8f, rz * 0.8f, 0.5f, new Color(0.12f, 0.08f, 0.09f), 0.2f, 0.3f));
+        }
+
+        GameObject MakePuck(string name, Vector3 center, float rx, float rz, float height, Color color, float metallic, float smooth)
+        {
+            const int seg = 64;
+            var verts = new List<Vector3>(); var norms = new List<Vector3>(); var tris = new List<int>();
+            // top cap
+            verts.Add(new Vector3(0f, height * 0.5f, 0f)); norms.Add(Vector3.up);
+            for (int i = 0; i < seg; i++)
+            {
+                float a = i / (float)seg * Mathf.PI * 2f;
+                verts.Add(new Vector3(Mathf.Cos(a) * rx, height * 0.5f, Mathf.Sin(a) * rz)); norms.Add(Vector3.up);
+            }
+            for (int i = 0; i < seg; i++) { tris.Add(0); tris.Add(1 + (i + 1) % seg); tris.Add(1 + i); }
+            // side
+            int sideStart = verts.Count;
+            for (int i = 0; i <= seg; i++)
+            {
+                float a = i / (float)seg * Mathf.PI * 2f;
+                Vector3 n = new Vector3(Mathf.Cos(a) / rx, 0f, Mathf.Sin(a) / rz).normalized;
+                verts.Add(new Vector3(Mathf.Cos(a) * rx, height * 0.5f, Mathf.Sin(a) * rz)); norms.Add(n);
+                verts.Add(new Vector3(Mathf.Cos(a) * rx, -height * 0.5f, Mathf.Sin(a) * rz)); norms.Add(n);
+            }
+            for (int i = 0; i < seg; i++)
+            {
+                int t = sideStart + i * 2;
+                tris.Add(t); tris.Add(t + 1); tris.Add(t + 2);
+                tris.Add(t + 1); tris.Add(t + 3); tris.Add(t + 2);
+            }
+            var mesh = new Mesh { name = name };
+            mesh.SetVertices(verts); mesh.SetNormals(norms); mesh.SetTriangles(tris, 0);
+            mesh.RecalculateBounds();
+            var go = new GameObject(name);
+            go.transform.SetParent(transform, false);
+            go.transform.localPosition = center;
+            go.AddComponent<MeshFilter>().mesh = mesh;
+            var r = go.AddComponent<MeshRenderer>();
+            var m = new Material(PlaceholderMaterials.FindShader());
+            m.color = color;
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", color);
+            if (m.HasProperty("_Metallic")) m.SetFloat("_Metallic", metallic);
+            if (m.HasProperty("_Glossiness")) m.SetFloat("_Glossiness", smooth);
+            if (m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness", smooth);
+            r.material = m;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            return go;
         }
 
         void MakeRail(float offset, Color color, float width = 0.07f, float lift = 0.02f)

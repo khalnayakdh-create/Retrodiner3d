@@ -21,7 +21,7 @@ namespace RetroDiner.Gameplay
         public const float Seconds = 6f;
         const int MaxItems = 24;
 
-        struct Snap { public int key; public string id; public Vector3 pos; public float scale; public bool charred; public bool cloche; }
+        struct Snap { public string id; public Vector3 pos; public float scale; public bool charred; public bool cloche; }
         class Frame { public readonly Snap[] items = new Snap[MaxItems]; public int count; public float time; }
 
         Frame[] frames;
@@ -69,7 +69,7 @@ namespace RetroDiner.Gameplay
                 if (it == null || !it.gameObject.activeSelf) continue;
                 f.items[f.count++] = new Snap
                 {
-                    key = it.GetInstanceID(), id = it.Definition.id, pos = it.transform.position,
+                    id = it.Definition.id, pos = it.transform.position,
                     scale = it.transform.localScale.x, charred = it.IsCharred, cloche = it.Obstacle == ItemObstacle.Cloche
                 };
             }

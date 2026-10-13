@@ -16,7 +16,15 @@
 - One global popup canvas (`Popups`) above HUD and menu; fake ads and all panels go through it.
 - Smoke-tested on the PC: store scroll, punch Day 1 (+50), spin (+25), Remove Ads (banner hidden, +200 tokens), settings. Fixed on the way: settings-row NRE, store content 100 px too wide, popup aspect with the gingham art.
 
+## 2026-10-13 — M6 juice + polish pass (verified in Unity)
+- Procedural UI sprite kit (`ProcSprites`: rounded 9-slice, circle, glow, ring, gradient) → pills, cards, halos everywhere without new art.
+- Menu: neon-glow layered title, pill currency/energy strip, Tip Jar card, pulsing PLAY. Level select is now a serpentine **map path** with dashed connectors, stars under nodes and a pulsing halo on the current shift (scrolls to it).
+- Belt: shaded chrome rollers with specular line, double rails with dark contact line, smooth 64-segment vinyl base + chrome trim + underside, blob shadows and idle sway on dishes, depth scrims above/below the belt band.
+- Feel: tap ripple, FOV punch + shake on every triplet, gold pair-glow on tray slots, "ORDER UP!" neon banner + floating "+3 tokens" on ticket completion, NICE!/GREAT!/ON FIRE! combo flashes, "CLOSE CALL!" when a near-miss is saved, level-intro banner ("SHIFT 13 · 3 ORDERS"), cream wipe between menu and shift.
+- Audio: procedural rockabilly loop (swung walking bass, brushed hat, backbeat snare, off-beat guitar stabs; 8 bars at 128 BPM) with the existing +5 % tempo lift near the end of a shift. Music toggle wired.
+- Replay: `ReplayRecorder` keeps the last 6 s of belt snapshots at 30 Hz (fixed arrays, no per-frame allocation); "SHARE REPLAY" on the win screen plays it back with ghost sprites over the belt while dumping a half-res PNG sequence to `persistentDataPath/replays/<timestamp>/`, then calls `IShareService` (stub). Close-call replays are labelled.
+- Unity 6000.6 nit: `Object.GetInstanceID()` is obsolete-as-error there; not needed, removed.
+
 ## Next
 - Play L3–L12 by hand and tune belt speed / spacing / obstacle chances; replace the level-select grid with a path on the map art; verify cloche/napkin/burn/spill visuals at L8/L11/L15/L20.
-- M6: replay ring buffer, music loop, richer particles per item.
-- M7: pooling audit (UI flyers currently allocate), profiler pass, URP switch, Android build.
+- M7: pooling audit (UI flyers/float texts allocate), profiler pass on an Android build, URP switch, Addressables for levels, APK + Xcode project. Optional: MP4 replay via Unity Recorder (editor) or a native encoder plugin.
