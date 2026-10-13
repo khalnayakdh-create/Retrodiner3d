@@ -62,8 +62,9 @@ namespace RetroDiner.Data
             // Belt speed: 0.8 -> 1.0 by level 5, then up to 1.6x by level 50.
             lv.beltSpeed = index <= 5 ? Mathf.Lerp(0.5f, 1.0f, (index - 1) / 4f) : Mathf.Lerp(1.0f, 1.6f, (index - 5) / 45f);
 
-            // Type count: 1,2,3 teach; 3 until 10; 4 until 20; 5 until 35; 6 after.
-            int typeCount = index == 1 ? 1 : index == 2 ? 2 : index <= 10 ? 3 : index <= 20 ? 4 : index <= 35 ? 5 : 6;
+            // Type count: 1,2,3 teach; 3 until 6; 4 from 7 (with 3 types a 7-slot tray can never lock,
+            // so real difficulty starts at 4); 5 from 15; 6 from 31.
+            int typeCount = index == 1 ? 1 : index == 2 ? 2 : index <= 6 ? 3 : index <= 14 ? 4 : index <= 30 ? 5 : 6;
             var ids = new List<string>();
             foreach (var it in Items) ids.Add(it.id);
             if (index > 3) rng.Shuffle(ids); else { /* teaching levels use pancakes, eggs, coffee in order */ }
@@ -71,7 +72,7 @@ namespace RetroDiner.Data
 
             // Ticket triples: 1,2,3 for teach levels then grow to 16.
             int ticketTriples = index <= 3 ? index : Mathf.RoundToInt(Mathf.Lerp(3f, 16f, t));
-            int ticketCount = index <= 3 ? index : Mathf.Clamp(Mathf.RoundToInt(Mathf.Lerp(3f, 6f, t)), 1, typeCount + 2);
+            int ticketCount = index <= 3 ? index : Mathf.Clamp(Mathf.RoundToInt(Mathf.Lerp(3f, 6f, t)), 1, typeCount);
             var tickets = new List<TicketSpec>();
             for (int i = 0; i < ticketCount; i++)
                 tickets.Add(new TicketSpec { itemId = lv.itemPool[i % lv.itemPool.Length], count = 0 });
