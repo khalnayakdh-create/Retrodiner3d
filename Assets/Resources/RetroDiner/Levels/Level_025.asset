@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 25
   trackShape: 1
-  beltSpeed: 1.2666667
+  beltSpeed: 1.3111111
   itemPool:
   - cinnamon_roll
   - pancakes
   - milkshake
   - skillet_eggs
   - waffle
+  - bacon
   tickets:
   - itemId: milkshake
     count: 2
@@ -30,60 +31,69 @@ MonoBehaviour:
     count: 3
   - itemId: skillet_eggs
     count: 2
-  fillerTriples: 6
+  fillerTriples: 9
   maxItemsOnBelt: 12
   obstacles:
-    clocheChance: 0.20816328
-    napkinPairChance: 0.1289796
+    clocheChance: 0.21795918
+    napkinPairChance: 0.13877551
     spillSegments: 1
     burnEnabled: 1
-    loopsToChar: 3
+    loopsToChar: 2
   stars:
     freeSlotsForTwoStars: 3
   seed: 198975
   spawnList:
+  - bacon
+  - cinnamon_roll
+  - bacon
+  - bacon
+  - skillet_eggs
+  - pancakes
+  - skillet_eggs
+  - milkshake
+  - pancakes
+  - cinnamon_roll
+  - pancakes
+  - bacon
+  - bacon
+  - pancakes
+  - pancakes
+  - pancakes
+  - cinnamon_roll
+  - milkshake
+  - skillet_eggs
+  - milkshake
+  - bacon
+  - skillet_eggs
+  - cinnamon_roll
+  - skillet_eggs
   - milkshake
   - milkshake
-  - pancakes
-  - cinnamon_roll
-  - pancakes
-  - pancakes
-  - skillet_eggs
   - skillet_eggs
   - skillet_eggs
   - cinnamon_roll
   - cinnamon_roll
+  - skillet_eggs
+  - skillet_eggs
   - cinnamon_roll
+  - cinnamon_roll
+  - milkshake
+  - skillet_eggs
+  - skillet_eggs
   - waffle
-  - pancakes
-  - skillet_eggs
   - cinnamon_roll
-  - cinnamon_roll
-  - pancakes
-  - cinnamon_roll
-  - skillet_eggs
-  - pancakes
-  - pancakes
-  - pancakes
   - milkshake
-  - cinnamon_roll
+  - milkshake
   - waffle
-  - milkshake
-  - milkshake
-  - skillet_eggs
-  - milkshake
-  - skillet_eggs
   - waffle
+  - cinnamon_roll
   - milkshake
   - cinnamon_roll
-  - pancakes
+  - milkshake
+  - milkshake
   - milkshake
   - skillet_eggs
   - pancakes
   - pancakes
-  - pancakes
-  - pancakes
-  - pancakes
-  - skillet_eggs
-  - milkshake
+  - cinnamon_roll
   - pancakes

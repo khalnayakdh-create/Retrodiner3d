@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 45
   trackShape: 0
-  beltSpeed: 1.5333333
+  beltSpeed: 1.6222223
   itemPool:
   - bacon
   - cinnamon_roll
@@ -22,6 +22,7 @@ MonoBehaviour:
   - skillet_eggs
   - milkshake
   - coffee_mug
+  - pancakes
   tickets:
   - itemId: waffle
     count: 3
@@ -35,11 +36,11 @@ MonoBehaviour:
     count: 2
   - itemId: cinnamon_roll
     count: 3
-  fillerTriples: 12
-  maxItemsOnBelt: 14
+  fillerTriples: 15
+  maxItemsOnBelt: 12
   obstacles:
-    clocheChance: 0.28163266
-    napkinPairChance: 0.16979593
+    clocheChance: 0.29959184
+    napkinPairChance: 0.18775511
     spillSegments: 2
     burnEnabled: 1
     loopsToChar: 2
@@ -47,84 +48,93 @@ MonoBehaviour:
     freeSlotsForTwoStars: 3
   seed: 357355
   spawnList:
-  - cinnamon_roll
-  - coffee_mug
   - skillet_eggs
-  - waffle
+  - skillet_eggs
+  - skillet_eggs
+  - bacon
+  - milkshake
+  - pancakes
   - waffle
   - coffee_mug
+  - bacon
+  - milkshake
+  - waffle
+  - pancakes
+  - waffle
+  - cinnamon_roll
+  - waffle
+  - pancakes
+  - bacon
+  - cinnamon_roll
+  - pancakes
+  - bacon
+  - cinnamon_roll
+  - waffle
+  - bacon
   - coffee_mug
+  - waffle
+  - cinnamon_roll
+  - waffle
+  - milkshake
+  - milkshake
+  - milkshake
+  - waffle
+  - waffle
+  - cinnamon_roll
+  - milkshake
+  - waffle
+  - bacon
+  - milkshake
+  - bacon
   - waffle
   - bacon
   - skillet_eggs
-  - cinnamon_roll
-  - bacon
-  - waffle
-  - cinnamon_roll
-  - cinnamon_roll
-  - skillet_eggs
+  - milkshake
   - coffee_mug
   - waffle
   - waffle
   - milkshake
+  - coffee_mug
+  - pancakes
+  - milkshake
   - cinnamon_roll
+  - coffee_mug
   - bacon
+  - waffle
+  - cinnamon_roll
+  - waffle
+  - milkshake
+  - waffle
+  - milkshake
+  - coffee_mug
+  - waffle
+  - waffle
+  - waffle
+  - cinnamon_roll
+  - skillet_eggs
+  - milkshake
+  - waffle
+  - waffle
+  - coffee_mug
+  - skillet_eggs
+  - pancakes
+  - skillet_eggs
+  - waffle
   - bacon
   - coffee_mug
   - milkshake
+  - skillet_eggs
   - waffle
-  - cinnamon_roll
+  - milkshake
+  - bacon
+  - bacon
   - milkshake
   - cinnamon_roll
   - cinnamon_roll
-  - waffle
   - coffee_mug
   - cinnamon_roll
-  - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
   - milkshake
+  - cinnamon_roll
   - milkshake
   - skillet_eggs
   - waffle
-  - milkshake
-  - skillet_eggs
-  - skillet_eggs
-  - milkshake
-  - milkshake
-  - coffee_mug
-  - cinnamon_roll
-  - bacon
-  - waffle
-  - milkshake
-  - milkshake
-  - skillet_eggs
-  - cinnamon_roll
-  - waffle
-  - coffee_mug
-  - cinnamon_roll
-  - bacon
-  - skillet_eggs
-  - waffle
-  - bacon
-  - cinnamon_roll
-  - cinnamon_roll
-  - bacon
-  - cinnamon_roll
-  - bacon
-  - bacon
-  - coffee_mug
-  - cinnamon_roll
-  - cinnamon_roll
-  - waffle
-  - coffee_mug
-  - waffle
-  - coffee_mug
-  - milkshake
-  - cinnamon_roll
-  - bacon
-  - waffle
-  - milkshake
-  - bacon
-  - coffee_mug

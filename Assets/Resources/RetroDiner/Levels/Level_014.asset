@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 14
   trackShape: 2
-  beltSpeed: 1.12
+  beltSpeed: 1.14
   itemPool:
   - skillet_eggs
   - bacon
   - pancakes
   - waffle
+  - milkshake
+  - cinnamon_roll
   tickets:
   - itemId: waffle
     count: 1
@@ -29,45 +31,48 @@ MonoBehaviour:
     count: 1
   - itemId: skillet_eggs
     count: 2
-  fillerTriples: 4
-  maxItemsOnBelt: 12
+  fillerTriples: 5
+  maxItemsOnBelt: 11
   obstacles:
-    clocheChance: 0.1677551
-    napkinPairChance: 0.106530614
+    clocheChance: 0.17306122
+    napkinPairChance: 0.11183673
     spillSegments: 0
-    burnEnabled: 0
+    burnEnabled: 1
     loopsToChar: 3
   stars:
     freeSlotsForTwoStars: 3
   seed: 111866
   spawnList:
-  - waffle
-  - bacon
   - skillet_eggs
+  - skillet_eggs
+  - pancakes
+  - skillet_eggs
+  - skillet_eggs
+  - waffle
   - bacon
   - pancakes
   - waffle
-  - skillet_eggs
-  - pancakes
-  - waffle
-  - waffle
-  - pancakes
-  - pancakes
   - bacon
-  - bacon
-  - bacon
-  - skillet_eggs
-  - skillet_eggs
-  - bacon
-  - skillet_eggs
-  - bacon
-  - bacon
-  - pancakes
-  - bacon
-  - pancakes
-  - waffle
-  - skillet_eggs
-  - bacon
+  - milkshake
   - bacon
   - waffle
+  - waffle
+  - pancakes
+  - skillet_eggs
+  - pancakes
+  - pancakes
   - bacon
+  - pancakes
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - milkshake
+  - bacon
+  - skillet_eggs
+  - pancakes
+  - pancakes
+  - waffle
+  - pancakes
+  - milkshake
+  - bacon
+  - waffle

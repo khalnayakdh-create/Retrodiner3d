@@ -1,0 +1,68 @@
+{
+    "levelIndex": 7,
+    "trackShape": 1,
+    "beltSpeed": 1.0311111211776733,
+    "itemPool": [
+        "cinnamon_roll",
+        "pancakes",
+        "coffee_mug",
+        "bacon",
+        "milkshake"
+    ],
+    "tickets": [
+        {
+            "itemId": "coffee_mug",
+            "count": 1
+        },
+        {
+            "itemId": "pancakes",
+            "count": 2
+        },
+        {
+            "itemId": "cinnamon_roll",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 4,
+    "maxItemsOnBelt": 10,
+    "obstacles": {
+        "clocheChance": 0.14448979496955872,
+        "napkinPairChance": 0.0,
+        "spillSegments": 0,
+        "burnEnabled": false,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 56433,
+    "spawnList": [
+        "bacon",
+        "pancakes",
+        "bacon",
+        "bacon",
+        "bacon",
+        "pancakes",
+        "pancakes",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "bacon",
+        "coffee_mug",
+        "cinnamon_roll",
+        "pancakes",
+        "pancakes",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "pancakes",
+        "bacon",
+        "pancakes",
+        "cinnamon_roll",
+        "pancakes",
+        "coffee_mug",
+        "bacon",
+        "bacon",
+        "coffee_mug",
+        "pancakes",
+        "bacon"
+    ]
+}

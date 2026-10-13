@@ -45,7 +45,7 @@ for f in sorted(glob.glob(os.path.join(root,'level_*.json'))):
     d=json.load(open(f)); sp=d['spawnList']; w=d['maxItemsOnBelt']; L=d['levelIndex']
     ok,peak=greedy(sp,w,7); wins=sum(rnd(sp,w,7,L*31+i) for i in range(30))/30
     c=collections.Counter(sp); triples=all(v%3==0 for v in c.values())
-    acc = ok and triples and (L<=6 or wins<(0.65 if L<=10 else 0.5))
+    acc = ok and triples and (L<=3 or wins<(0.85 if L<=6 else 0.5 if L<=10 else 0.35))
     if not acc: bad+=1
     print(f"L{L:02d} {'OK ' if acc else 'REJ'} items={len(sp):3d} types={len(c)} belt={w:2d} speed={d['beltSpeed']:.2f} greedy={'win' if ok else 'FAIL'} peak={peak} random={wins*100:.0f}% tickets={[(t['itemId'],t['count']) for t in d['tickets']]}")
 print("rejected:",bad)

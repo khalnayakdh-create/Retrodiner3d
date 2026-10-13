@@ -1,0 +1,32 @@
+{
+    "levelIndex": 1,
+    "trackShape": 0,
+    "beltSpeed": 0.5,
+    "itemPool": [
+        "pancakes"
+    ],
+    "tickets": [
+        {
+            "itemId": "pancakes",
+            "count": 1
+        }
+    ],
+    "fillerTriples": 0,
+    "maxItemsOnBelt": 9,
+    "obstacles": {
+        "clocheChance": 0.0,
+        "napkinPairChance": 0.0,
+        "spillSegments": 0,
+        "burnEnabled": false,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 8919,
+    "spawnList": [
+        "pancakes",
+        "pancakes",
+        "pancakes"
+    ]
+}

@@ -1,0 +1,61 @@
+{
+    "levelIndex": 5,
+    "trackShape": 2,
+    "beltSpeed": 1.0,
+    "itemPool": [
+        "milkshake",
+        "coffee_mug",
+        "cinnamon_roll",
+        "skillet_eggs"
+    ],
+    "tickets": [
+        {
+            "itemId": "coffee_mug",
+            "count": 1
+        },
+        {
+            "itemId": "milkshake",
+            "count": 2
+        },
+        {
+            "itemId": "cinnamon_roll",
+            "count": 1
+        }
+    ],
+    "fillerTriples": 3,
+    "maxItemsOnBelt": 10,
+    "obstacles": {
+        "clocheChance": 0.0,
+        "napkinPairChance": 0.0,
+        "spillSegments": 0,
+        "burnEnabled": false,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 40595,
+    "spawnList": [
+        "skillet_eggs",
+        "coffee_mug",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "skillet_eggs",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "cinnamon_roll",
+        "coffee_mug",
+        "coffee_mug",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "coffee_mug",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "cinnamon_roll"
+    ]
+}

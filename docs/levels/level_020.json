@@ -1,0 +1,94 @@
+{
+    "levelIndex": 20,
+    "trackShape": 2,
+    "beltSpeed": 1.2333333492279053,
+    "itemPool": [
+        "skillet_eggs",
+        "bacon",
+        "milkshake",
+        "pancakes",
+        "coffee_mug",
+        "waffle"
+    ],
+    "tickets": [
+        {
+            "itemId": "pancakes",
+            "count": 2
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        },
+        {
+            "itemId": "milkshake",
+            "count": 2
+        },
+        {
+            "itemId": "skillet_eggs",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 8,
+    "maxItemsOnBelt": 11,
+    "obstacles": {
+        "clocheChance": 0.19755101203918457,
+        "napkinPairChance": 0.12653061747550964,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 159380,
+    "spawnList": [
+        "pancakes",
+        "waffle",
+        "skillet_eggs",
+        "waffle",
+        "milkshake",
+        "bacon",
+        "bacon",
+        "milkshake",
+        "milkshake",
+        "skillet_eggs",
+        "pancakes",
+        "bacon",
+        "milkshake",
+        "waffle",
+        "pancakes",
+        "milkshake",
+        "skillet_eggs",
+        "waffle",
+        "milkshake",
+        "bacon",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "bacon",
+        "skillet_eggs",
+        "waffle",
+        "milkshake",
+        "bacon",
+        "skillet_eggs",
+        "bacon",
+        "skillet_eggs",
+        "milkshake",
+        "bacon",
+        "pancakes",
+        "skillet_eggs",
+        "waffle",
+        "pancakes",
+        "pancakes",
+        "skillet_eggs",
+        "waffle",
+        "bacon",
+        "skillet_eggs",
+        "milkshake",
+        "waffle",
+        "skillet_eggs",
+        "skillet_eggs",
+        "skillet_eggs",
+        "waffle"
+    ]
+}

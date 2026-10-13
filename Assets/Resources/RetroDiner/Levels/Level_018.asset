@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 18
   trackShape: 0
-  beltSpeed: 1.1733334
+  beltSpeed: 1.2022222
   itemPool:
   - pancakes
   - milkshake
   - skillet_eggs
   - coffee_mug
   - waffle
+  - cinnamon_roll
   tickets:
   - itemId: skillet_eggs
     count: 2
@@ -30,54 +31,63 @@ MonoBehaviour:
     count: 2
   - itemId: coffee_mug
     count: 2
-  fillerTriples: 5
-  maxItemsOnBelt: 12
+  fillerTriples: 8
+  maxItemsOnBelt: 11
   obstacles:
-    clocheChance: 0.18244898
-    napkinPairChance: 0.11469388
-    spillSegments: 0
+    clocheChance: 0.18938775
+    napkinPairChance: 0.12163266
+    spillSegments: 1
     burnEnabled: 1
     loopsToChar: 3
   stars:
     freeSlotsForTwoStars: 3
   seed: 143542
   spawnList:
+  - cinnamon_roll
+  - cinnamon_roll
   - milkshake
   - pancakes
   - skillet_eggs
   - coffee_mug
-  - skillet_eggs
-  - coffee_mug
-  - pancakes
-  - coffee_mug
-  - skillet_eggs
-  - skillet_eggs
-  - pancakes
-  - pancakes
-  - coffee_mug
-  - milkshake
-  - coffee_mug
-  - coffee_mug
-  - waffle
-  - skillet_eggs
-  - skillet_eggs
-  - pancakes
-  - pancakes
-  - milkshake
-  - coffee_mug
-  - milkshake
-  - milkshake
-  - waffle
-  - milkshake
-  - skillet_eggs
-  - skillet_eggs
-  - milkshake
-  - coffee_mug
-  - milkshake
-  - coffee_mug
-  - skillet_eggs
-  - coffee_mug
-  - coffee_mug
-  - milkshake
+  - cinnamon_roll
   - waffle
   - coffee_mug
+  - skillet_eggs
+  - milkshake
+  - skillet_eggs
+  - waffle
+  - skillet_eggs
+  - coffee_mug
+  - milkshake
+  - coffee_mug
+  - milkshake
+  - coffee_mug
+  - milkshake
+  - pancakes
+  - milkshake
+  - skillet_eggs
+  - coffee_mug
+  - waffle
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug
+  - pancakes
+  - cinnamon_roll
+  - milkshake
+  - coffee_mug
+  - waffle
+  - milkshake
+  - coffee_mug
+  - milkshake
+  - pancakes
+  - pancakes
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - pancakes
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - waffle
+  - waffle

@@ -14,12 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 8
   trackShape: 2
-  beltSpeed: 1.04
+  beltSpeed: 1.0466666
   itemPool:
   - coffee_mug
   - skillet_eggs
   - milkshake
   - bacon
+  - pancakes
   tickets:
   - itemId: milkshake
     count: 1
@@ -27,10 +28,10 @@ MonoBehaviour:
     count: 2
   - itemId: coffee_mug
     count: 2
-  fillerTriples: 2
+  fillerTriples: 5
   maxItemsOnBelt: 10
   obstacles:
-    clocheChance: 0.14571428
+    clocheChance: 0.14857143
     napkinPairChance: 0
     spillSegments: 0
     burnEnabled: 0
@@ -39,24 +40,33 @@ MonoBehaviour:
     freeSlotsForTwoStars: 3
   seed: 64352
   spawnList:
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
   - coffee_mug
+  - pancakes
+  - milkshake
   - skillet_eggs
-  - bacon
-  - bacon
-  - skillet_eggs
-  - skillet_eggs
+  - coffee_mug
+  - pancakes
   - skillet_eggs
   - milkshake
   - coffee_mug
   - coffee_mug
-  - coffee_mug
-  - bacon
-  - bacon
-  - milkshake
   - skillet_eggs
   - coffee_mug
-  - bacon
+  - coffee_mug
+  - pancakes
+  - pancakes
+  - coffee_mug
+  - coffee_mug
+  - pancakes
+  - coffee_mug
+  - milkshake
   - coffee_mug
   - skillet_eggs
-  - bacon
-  - milkshake
+  - coffee_mug
+  - coffee_mug
+  - skillet_eggs
+  - pancakes

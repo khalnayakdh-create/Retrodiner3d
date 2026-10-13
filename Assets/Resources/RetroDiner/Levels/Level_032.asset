@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 32
   trackShape: 2
-  beltSpeed: 1.36
+  beltSpeed: 1.4200001
   itemPool:
   - skillet_eggs
   - milkshake
@@ -22,6 +22,7 @@ MonoBehaviour:
   - pancakes
   - bacon
   - waffle
+  - cinnamon_roll
   tickets:
   - itemId: bacon
     count: 2
@@ -33,75 +34,84 @@ MonoBehaviour:
     count: 2
   - itemId: skillet_eggs
     count: 3
-  fillerTriples: 9
-  maxItemsOnBelt: 14
+  fillerTriples: 12
+  maxItemsOnBelt: 12
   obstacles:
-    clocheChance: 0.23387755
-    napkinPairChance: 0.1432653
-    spillSegments: 1
+    clocheChance: 0.2465306
+    napkinPairChance: 0.15591837
+    spillSegments: 2
     burnEnabled: 1
     loopsToChar: 2
   stars:
     freeSlotsForTwoStars: 3
   seed: 254408
   spawnList:
-  - waffle
-  - waffle
+  - pancakes
+  - skillet_eggs
   - skillet_eggs
   - waffle
-  - coffee_mug
-  - coffee_mug
   - pancakes
   - milkshake
-  - bacon
-  - skillet_eggs
   - milkshake
-  - waffle
-  - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
-  - bacon
-  - milkshake
-  - coffee_mug
-  - skillet_eggs
-  - bacon
   - waffle
   - pancakes
   - coffee_mug
+  - pancakes
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
   - milkshake
-  - waffle
+  - cinnamon_roll
   - bacon
-  - bacon
-  - waffle
-  - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
-  - bacon
-  - waffle
-  - bacon
-  - skillet_eggs
-  - bacon
-  - skillet_eggs
-  - coffee_mug
-  - waffle
-  - skillet_eggs
-  - milkshake
-  - waffle
   - bacon
   - pancakes
-  - coffee_mug
-  - pancakes
-  - coffee_mug
-  - pancakes
   - skillet_eggs
+  - pancakes
   - milkshake
   - skillet_eggs
-  - waffle
+  - pancakes
+  - milkshake
+  - skillet_eggs
+  - milkshake
   - coffee_mug
+  - milkshake
   - coffee_mug
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - cinnamon_roll
+  - bacon
+  - skillet_eggs
+  - skillet_eggs
   - pancakes
   - skillet_eggs
+  - pancakes
+  - bacon
+  - skillet_eggs
+  - milkshake
+  - pancakes
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - milkshake
+  - bacon
+  - pancakes
+  - milkshake
+  - bacon
+  - pancakes
+  - coffee_mug
+  - skillet_eggs
+  - milkshake
+  - skillet_eggs
+  - coffee_mug
+  - pancakes
+  - pancakes
+  - milkshake
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - cinnamon_roll
   - waffle
-  - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs

@@ -1,0 +1,94 @@
+{
+    "levelIndex": 19,
+    "trackShape": 1,
+    "beltSpeed": 1.2177778482437134,
+    "itemPool": [
+        "bacon",
+        "cinnamon_roll",
+        "coffee_mug",
+        "milkshake",
+        "pancakes",
+        "skillet_eggs"
+    ],
+    "tickets": [
+        {
+            "itemId": "cinnamon_roll",
+            "count": 2
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        },
+        {
+            "itemId": "milkshake",
+            "count": 2
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 8,
+    "maxItemsOnBelt": 11,
+    "obstacles": {
+        "clocheChance": 0.19346939027309418,
+        "napkinPairChance": 0.12408163398504257,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 151461,
+    "spawnList": [
+        "bacon",
+        "milkshake",
+        "bacon",
+        "pancakes",
+        "skillet_eggs",
+        "milkshake",
+        "pancakes",
+        "bacon",
+        "bacon",
+        "coffee_mug",
+        "skillet_eggs",
+        "skillet_eggs",
+        "milkshake",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "coffee_mug",
+        "skillet_eggs",
+        "pancakes",
+        "cinnamon_roll",
+        "bacon",
+        "milkshake",
+        "milkshake",
+        "cinnamon_roll",
+        "coffee_mug",
+        "coffee_mug",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "bacon",
+        "bacon",
+        "bacon",
+        "bacon",
+        "bacon",
+        "bacon",
+        "pancakes",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "pancakes",
+        "milkshake",
+        "pancakes",
+        "cinnamon_roll",
+        "bacon",
+        "coffee_mug",
+        "cinnamon_roll",
+        "coffee_mug"
+    ]
+}

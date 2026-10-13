@@ -13,8 +13,8 @@ namespace RetroDiner.Rules
         public float randomWinRate;
         public int totalItems;
         public bool countsAreTriples;
-        public bool Accepted => greedySolvable && countsAreTriples && (levelIndex <= 6 || randomWinRate < (levelIndex <= 10 ? 0.65f : 0.5f));
-        public float Score => (greedySolvable ? 10f : 0f) + (countsAreTriples ? 5f : 0f) + (levelIndex <= 6 ? 0f : (1f - randomWinRate));
+        public bool Accepted => greedySolvable && countsAreTriples && (levelIndex <= 3 || randomWinRate < (levelIndex <= 6 ? 0.85f : levelIndex <= 10 ? 0.5f : 0.35f));
+        public float Score => (greedySolvable ? 10f : 0f) + (countsAreTriples ? 5f : 0f) + (levelIndex <= 3 ? 0f : (1f - randomWinRate));
 
         public override string ToString()
         {

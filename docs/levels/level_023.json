@@ -1,0 +1,97 @@
+{
+    "levelIndex": 23,
+    "trackShape": 2,
+    "beltSpeed": 1.2799999713897705,
+    "itemPool": [
+        "cinnamon_roll",
+        "bacon",
+        "coffee_mug",
+        "waffle",
+        "skillet_eggs",
+        "milkshake"
+    ],
+    "tickets": [
+        {
+            "itemId": "waffle",
+            "count": 2
+        },
+        {
+            "itemId": "cinnamon_roll",
+            "count": 3
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 8,
+    "maxItemsOnBelt": 12,
+    "obstacles": {
+        "clocheChance": 0.20979590713977814,
+        "napkinPairChance": 0.13387754559516907,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 2
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 183137,
+    "spawnList": [
+        "cinnamon_roll",
+        "bacon",
+        "cinnamon_roll",
+        "bacon",
+        "bacon",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "waffle",
+        "waffle",
+        "waffle",
+        "bacon",
+        "waffle",
+        "cinnamon_roll",
+        "coffee_mug",
+        "milkshake",
+        "waffle",
+        "coffee_mug",
+        "waffle",
+        "cinnamon_roll",
+        "bacon",
+        "waffle",
+        "waffle",
+        "cinnamon_roll",
+        "bacon",
+        "cinnamon_roll",
+        "waffle",
+        "cinnamon_roll",
+        "waffle",
+        "milkshake",
+        "cinnamon_roll",
+        "coffee_mug",
+        "coffee_mug",
+        "coffee_mug",
+        "bacon",
+        "waffle",
+        "milkshake",
+        "waffle",
+        "coffee_mug",
+        "milkshake",
+        "cinnamon_roll",
+        "bacon",
+        "cinnamon_roll",
+        "milkshake",
+        "waffle",
+        "coffee_mug",
+        "bacon",
+        "cinnamon_roll",
+        "waffle",
+        "cinnamon_roll",
+        "waffle"
+    ]
+}

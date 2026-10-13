@@ -1,0 +1,110 @@
+{
+    "levelIndex": 27,
+    "trackShape": 0,
+    "beltSpeed": 1.3422222137451172,
+    "itemPool": [
+        "skillet_eggs",
+        "bacon",
+        "pancakes",
+        "cinnamon_roll",
+        "coffee_mug",
+        "waffle"
+    ],
+    "tickets": [
+        {
+            "itemId": "skillet_eggs",
+            "count": 2
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        },
+        {
+            "itemId": "pancakes",
+            "count": 2
+        },
+        {
+            "itemId": "cinnamon_roll",
+            "count": 2
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 10,
+    "maxItemsOnBelt": 12,
+    "obstacles": {
+        "clocheChance": 0.2261224389076233,
+        "napkinPairChance": 0.14367346465587616,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 2
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 214813,
+    "spawnList": [
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "waffle",
+        "cinnamon_roll",
+        "bacon",
+        "cinnamon_roll",
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "pancakes",
+        "bacon",
+        "skillet_eggs",
+        "waffle",
+        "pancakes",
+        "waffle",
+        "waffle",
+        "bacon",
+        "cinnamon_roll",
+        "coffee_mug",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "pancakes",
+        "waffle",
+        "bacon",
+        "skillet_eggs",
+        "coffee_mug",
+        "cinnamon_roll",
+        "coffee_mug",
+        "pancakes",
+        "waffle",
+        "pancakes",
+        "bacon",
+        "coffee_mug",
+        "coffee_mug",
+        "bacon",
+        "bacon",
+        "waffle",
+        "bacon",
+        "pancakes",
+        "pancakes",
+        "bacon",
+        "bacon",
+        "bacon",
+        "bacon",
+        "bacon",
+        "waffle",
+        "cinnamon_roll",
+        "pancakes",
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "bacon",
+        "bacon",
+        "pancakes",
+        "skillet_eggs",
+        "coffee_mug",
+        "skillet_eggs",
+        "skillet_eggs",
+        "waffle"
+    ]
+}

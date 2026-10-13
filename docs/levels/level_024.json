@@ -1,0 +1,100 @@
+{
+    "levelIndex": 24,
+    "trackShape": 0,
+    "beltSpeed": 1.295555591583252,
+    "itemPool": [
+        "coffee_mug",
+        "waffle",
+        "bacon",
+        "pancakes",
+        "milkshake",
+        "cinnamon_roll"
+    ],
+    "tickets": [
+        {
+            "itemId": "bacon",
+            "count": 2
+        },
+        {
+            "itemId": "waffle",
+            "count": 2
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 3
+        },
+        {
+            "itemId": "pancakes",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 9,
+    "maxItemsOnBelt": 12,
+    "obstacles": {
+        "clocheChance": 0.21387754380702972,
+        "napkinPairChance": 0.13632653653621674,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 2
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 191056,
+    "spawnList": [
+        "waffle",
+        "coffee_mug",
+        "coffee_mug",
+        "milkshake",
+        "milkshake",
+        "coffee_mug",
+        "cinnamon_roll",
+        "waffle",
+        "coffee_mug",
+        "waffle",
+        "bacon",
+        "waffle",
+        "bacon",
+        "pancakes",
+        "pancakes",
+        "waffle",
+        "waffle",
+        "coffee_mug",
+        "cinnamon_roll",
+        "pancakes",
+        "milkshake",
+        "coffee_mug",
+        "cinnamon_roll",
+        "waffle",
+        "bacon",
+        "waffle",
+        "bacon",
+        "pancakes",
+        "waffle",
+        "waffle",
+        "coffee_mug",
+        "milkshake",
+        "waffle",
+        "waffle",
+        "pancakes",
+        "waffle",
+        "waffle",
+        "waffle",
+        "waffle",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "bacon",
+        "waffle",
+        "pancakes",
+        "milkshake",
+        "pancakes",
+        "waffle",
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "bacon",
+        "coffee_mug"
+    ]
+}

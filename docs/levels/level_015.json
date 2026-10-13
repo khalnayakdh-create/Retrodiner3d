@@ -1,0 +1,85 @@
+{
+    "levelIndex": 15,
+    "trackShape": 0,
+    "beltSpeed": 1.1555556058883667,
+    "itemPool": [
+        "coffee_mug",
+        "bacon",
+        "skillet_eggs",
+        "cinnamon_roll",
+        "pancakes",
+        "waffle"
+    ],
+    "tickets": [
+        {
+            "itemId": "cinnamon_roll",
+            "count": 1
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        },
+        {
+            "itemId": "skillet_eggs",
+            "count": 2
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 6,
+    "maxItemsOnBelt": 11,
+    "obstacles": {
+        "clocheChance": 0.17714285850524902,
+        "napkinPairChance": 0.11428571492433548,
+        "spillSegments": 0,
+        "burnEnabled": true,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 119785,
+    "spawnList": [
+        "bacon",
+        "bacon",
+        "skillet_eggs",
+        "pancakes",
+        "skillet_eggs",
+        "bacon",
+        "skillet_eggs",
+        "skillet_eggs",
+        "waffle",
+        "skillet_eggs",
+        "skillet_eggs",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "skillet_eggs",
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "skillet_eggs",
+        "coffee_mug",
+        "waffle",
+        "skillet_eggs",
+        "coffee_mug",
+        "skillet_eggs",
+        "coffee_mug",
+        "skillet_eggs",
+        "coffee_mug",
+        "coffee_mug",
+        "coffee_mug",
+        "bacon",
+        "bacon",
+        "pancakes",
+        "coffee_mug",
+        "coffee_mug",
+        "pancakes",
+        "skillet_eggs",
+        "bacon",
+        "coffee_mug",
+        "skillet_eggs",
+        "waffle",
+        "skillet_eggs"
+    ]
+}

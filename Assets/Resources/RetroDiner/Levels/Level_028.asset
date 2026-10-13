@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 28
   trackShape: 1
-  beltSpeed: 1.3066667
+  beltSpeed: 1.3577778
   itemPool:
   - bacon
   - coffee_mug
   - skillet_eggs
   - pancakes
   - waffle
+  - cinnamon_roll
   tickets:
   - itemId: bacon
     count: 2
@@ -32,11 +33,11 @@ MonoBehaviour:
     count: 2
   - itemId: skillet_eggs
     count: 2
-  fillerTriples: 7
+  fillerTriples: 10
   maxItemsOnBelt: 12
   obstacles:
-    clocheChance: 0.21918367
-    napkinPairChance: 0.13510205
+    clocheChance: 0.23020408
+    napkinPairChance: 0.14612244
     spillSegments: 1
     burnEnabled: 1
     loopsToChar: 2
@@ -44,54 +45,63 @@ MonoBehaviour:
     freeSlotsForTwoStars: 3
   seed: 222732
   spawnList:
+  - bacon
   - pancakes
-  - coffee_mug
-  - bacon
-  - coffee_mug
   - pancakes
-  - skillet_eggs
-  - skillet_eggs
+  - waffle
+  - pancakes
+  - pancakes
   - bacon
-  - skillet_eggs
-  - bacon
+  - pancakes
+  - waffle
+  - pancakes
+  - pancakes
+  - waffle
+  - pancakes
+  - pancakes
   - pancakes
   - waffle
   - skillet_eggs
   - skillet_eggs
-  - skillet_eggs
-  - pancakes
+  - bacon
+  - bacon
   - skillet_eggs
   - coffee_mug
+  - bacon
+  - skillet_eggs
   - coffee_mug
   - waffle
-  - waffle
-  - waffle
-  - bacon
-  - waffle
-  - skillet_eggs
-  - bacon
-  - coffee_mug
-  - skillet_eggs
-  - pancakes
-  - bacon
-  - skillet_eggs
-  - bacon
-  - skillet_eggs
-  - skillet_eggs
-  - waffle
-  - skillet_eggs
   - pancakes
   - coffee_mug
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - waffle
+  - pancakes
+  - pancakes
+  - waffle
   - pancakes
   - bacon
-  - skillet_eggs
   - pancakes
-  - skillet_eggs
+  - waffle
+  - pancakes
+  - coffee_mug
   - bacon
   - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
+  - bacon
   - pancakes
+  - cinnamon_roll
   - skillet_eggs
-  - skillet_eggs
-  - skillet_eggs
+  - bacon
+  - pancakes
+  - coffee_mug
+  - pancakes
+  - cinnamon_roll
+  - waffle
+  - coffee_mug
+  - cinnamon_roll
+  - pancakes
+  - pancakes
+  - pancakes
+  - pancakes
+  - pancakes

@@ -1,0 +1,61 @@
+{
+    "levelIndex": 6,
+    "trackShape": 0,
+    "beltSpeed": 1.015555500984192,
+    "itemPool": [
+        "pancakes",
+        "milkshake",
+        "skillet_eggs",
+        "waffle"
+    ],
+    "tickets": [
+        {
+            "itemId": "milkshake",
+            "count": 1
+        },
+        {
+            "itemId": "pancakes",
+            "count": 2
+        },
+        {
+            "itemId": "skillet_eggs",
+            "count": 1
+        }
+    ],
+    "fillerTriples": 3,
+    "maxItemsOnBelt": 10,
+    "obstacles": {
+        "clocheChance": 0.14040815830230713,
+        "napkinPairChance": 0.0,
+        "spillSegments": 0,
+        "burnEnabled": false,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 48514,
+    "spawnList": [
+        "milkshake",
+        "milkshake",
+        "skillet_eggs",
+        "pancakes",
+        "pancakes",
+        "skillet_eggs",
+        "pancakes",
+        "waffle",
+        "milkshake",
+        "pancakes",
+        "milkshake",
+        "milkshake",
+        "skillet_eggs",
+        "pancakes",
+        "waffle",
+        "pancakes",
+        "milkshake",
+        "skillet_eggs",
+        "skillet_eggs",
+        "skillet_eggs",
+        "waffle"
+    ]
+}

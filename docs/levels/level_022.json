@@ -1,0 +1,97 @@
+{
+    "levelIndex": 22,
+    "trackShape": 1,
+    "beltSpeed": 1.2644444704055786,
+    "itemPool": [
+        "milkshake",
+        "bacon",
+        "skillet_eggs",
+        "coffee_mug",
+        "waffle",
+        "cinnamon_roll"
+    ],
+    "tickets": [
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        },
+        {
+            "itemId": "milkshake",
+            "count": 3
+        },
+        {
+            "itemId": "bacon",
+            "count": 2
+        },
+        {
+            "itemId": "skillet_eggs",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 8,
+    "maxItemsOnBelt": 12,
+    "obstacles": {
+        "clocheChance": 0.20571428537368774,
+        "napkinPairChance": 0.1314285695552826,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 2
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 175218,
+    "spawnList": [
+        "milkshake",
+        "bacon",
+        "milkshake",
+        "coffee_mug",
+        "bacon",
+        "skillet_eggs",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "milkshake",
+        "coffee_mug",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "milkshake",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "milkshake",
+        "milkshake",
+        "bacon",
+        "coffee_mug",
+        "bacon",
+        "milkshake",
+        "coffee_mug",
+        "skillet_eggs",
+        "bacon",
+        "milkshake",
+        "skillet_eggs",
+        "bacon",
+        "coffee_mug",
+        "coffee_mug",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "coffee_mug",
+        "skillet_eggs",
+        "milkshake",
+        "coffee_mug",
+        "skillet_eggs",
+        "coffee_mug",
+        "coffee_mug",
+        "bacon",
+        "milkshake",
+        "milkshake",
+        "skillet_eggs",
+        "bacon",
+        "milkshake",
+        "coffee_mug",
+        "coffee_mug",
+        "bacon"
+    ]
+}

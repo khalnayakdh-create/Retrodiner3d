@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 30
   trackShape: 0
-  beltSpeed: 1.3333334
+  beltSpeed: 1.388889
   itemPool:
   - cinnamon_roll
   - milkshake
   - pancakes
   - coffee_mug
   - skillet_eggs
+  - bacon
   tickets:
   - itemId: skillet_eggs
     count: 2
@@ -32,75 +33,81 @@ MonoBehaviour:
     count: 2
   - itemId: coffee_mug
     count: 2
-  fillerTriples: 9
+  fillerTriples: 11
   maxItemsOnBelt: 12
   obstacles:
-    clocheChance: 0.22653063
-    napkinPairChance: 0.13918369
-    spillSegments: 1
+    clocheChance: 0.23836735
+    napkinPairChance: 0.15102041
+    spillSegments: 2
     burnEnabled: 1
     loopsToChar: 2
   stars:
     freeSlotsForTwoStars: 3
   seed: 238570
   spawnList:
+  - pancakes
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
   - milkshake
+  - cinnamon_roll
   - coffee_mug
-  - cinnamon_roll
-  - cinnamon_roll
   - pancakes
   - pancakes
+  - cinnamon_roll
   - coffee_mug
-  - coffee_mug
+  - cinnamon_roll
+  - skillet_eggs
+  - pancakes
+  - milkshake
+  - cinnamon_roll
+  - skillet_eggs
+  - milkshake
+  - milkshake
+  - milkshake
   - cinnamon_roll
   - milkshake
-  - pancakes
-  - coffee_mug
   - cinnamon_roll
+  - skillet_eggs
   - coffee_mug
-  - cinnamon_roll
-  - pancakes
+  - milkshake
+  - milkshake
+  - skillet_eggs
+  - skillet_eggs
   - coffee_mug
-  - cinnamon_roll
-  - coffee_mug
-  - coffee_mug
+  - skillet_eggs
   - cinnamon_roll
   - cinnamon_roll
   - milkshake
   - skillet_eggs
   - milkshake
-  - milkshake
-  - milkshake
+  - cinnamon_roll
   - skillet_eggs
   - milkshake
   - cinnamon_roll
+  - skillet_eggs
+  - pancakes
+  - cinnamon_roll
+  - skillet_eggs
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - skillet_eggs
+  - pancakes
+  - milkshake
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - pancakes
+  - cinnamon_roll
+  - milkshake
   - milkshake
   - cinnamon_roll
   - pancakes
-  - coffee_mug
-  - pancakes
-  - skillet_eggs
-  - skillet_eggs
-  - cinnamon_roll
-  - coffee_mug
-  - coffee_mug
-  - coffee_mug
   - milkshake
   - skillet_eggs
-  - coffee_mug
-  - milkshake
-  - milkshake
-  - milkshake
-  - coffee_mug
-  - coffee_mug
-  - milkshake
-  - milkshake
-  - cinnamon_roll
-  - milkshake
-  - coffee_mug
-  - cinnamon_roll
-  - coffee_mug
-  - cinnamon_roll
-  - coffee_mug
-  - skillet_eggs
-  - cinnamon_roll

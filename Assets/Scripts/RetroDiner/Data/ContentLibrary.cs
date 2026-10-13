@@ -60,11 +60,11 @@ namespace RetroDiner.Data
             lv.trackShape = index <= 3 ? TrackShape.Ring : (TrackShape)(index % 3);
 
             // Belt speed: 0.8 -> 1.0 by level 5, then up to 1.6x by level 50.
-            lv.beltSpeed = index <= 5 ? Mathf.Lerp(0.5f, 1.0f, (index - 1) / 4f) : Mathf.Lerp(1.0f, 1.6f, (index - 5) / 45f);
+            lv.beltSpeed = index <= 5 ? Mathf.Lerp(0.5f, 1.0f, (index - 1) / 4f) : Mathf.Lerp(1.0f, 1.7f, (index - 5) / 45f);
 
-            // Type count: 1,2,3 teach; 3 until 6; 4 from 7 (with 3 types a 7-slot tray can never lock,
-            // so real difficulty starts at 4); 5 from 15; 6 from 31.
-            int typeCount = index == 1 ? 1 : index == 2 ? 2 : index <= 6 ? 3 : index <= 14 ? 4 : index <= 30 ? 5 : 6;
+            // Type count: 1,2,3 teach; 4 from level 4 (with 3 types a 7-slot tray can never lock, so
+            // real difficulty needs 4+); 5 from 7; 6 from 13; all 7 from 31.
+            int typeCount = index == 1 ? 1 : index == 2 ? 2 : index == 3 ? 3 : index <= 6 ? 4 : index <= 12 ? 5 : index <= 30 ? 6 : 7;
             var ids = new List<string>();
             foreach (var it in Items) ids.Add(it.id);
             if (index > 3) rng.Shuffle(ids); else { /* teaching levels use pancakes, eggs, coffee in order */ }
@@ -81,17 +81,17 @@ namespace RetroDiner.Data
             if (index > 3) rng.Shuffle(tickets);
             lv.tickets = tickets.ToArray();
 
-            lv.fillerTriples = index <= 3 ? 0 : Mathf.RoundToInt(ticketTriples * 0.5f) + index / 10;
-            lv.maxItemsOnBelt = index <= 3 ? 9 : index <= 10 ? 10 : index <= 30 ? 12 : 14;
+            lv.fillerTriples = index <= 3 ? 0 : Mathf.RoundToInt(ticketTriples * 0.7f) + index / 8;
+            lv.maxItemsOnBelt = index <= 3 ? 9 : index <= 8 ? 10 : index <= 20 ? 11 : 12;   // smaller window = fewer visible choices = harder
 
             // Obstacles per the curve.
             lv.obstacles = new ObstacleSettings
             {
-                clocheChance = index >= 8 ? Mathf.Lerp(0.12f, 0.30f, t) : 0f,
-                napkinPairChance = index >= 11 ? Mathf.Lerp(0.08f, 0.18f, t) : 0f,
-                burnEnabled = index >= 15,
-                loopsToChar = index >= 26 ? 2 : 3,
-                spillSegments = index >= 35 ? 2 : index >= 20 ? 1 : 0,
+                clocheChance = index >= 6 ? Mathf.Lerp(0.12f, 0.32f, t) : 0f,
+                napkinPairChance = index >= 9 ? Mathf.Lerp(0.08f, 0.2f, t) : 0f,
+                burnEnabled = index >= 12,
+                loopsToChar = index >= 22 ? 2 : 3,
+                spillSegments = index >= 30 ? 2 : index >= 16 ? 1 : 0,
             };
             lv.stars = new StarThresholds { freeSlotsForTwoStars = 3 };
             return lv;

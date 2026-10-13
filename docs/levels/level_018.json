@@ -1,0 +1,94 @@
+{
+    "levelIndex": 18,
+    "trackShape": 0,
+    "beltSpeed": 1.202222228050232,
+    "itemPool": [
+        "pancakes",
+        "milkshake",
+        "skillet_eggs",
+        "coffee_mug",
+        "waffle",
+        "cinnamon_roll"
+    ],
+    "tickets": [
+        {
+            "itemId": "skillet_eggs",
+            "count": 2
+        },
+        {
+            "itemId": "milkshake",
+            "count": 2
+        },
+        {
+            "itemId": "pancakes",
+            "count": 2
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 2
+        }
+    ],
+    "fillerTriples": 8,
+    "maxItemsOnBelt": 11,
+    "obstacles": {
+        "clocheChance": 0.1893877536058426,
+        "napkinPairChance": 0.1216326579451561,
+        "spillSegments": 1,
+        "burnEnabled": true,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 143542,
+    "spawnList": [
+        "cinnamon_roll",
+        "cinnamon_roll",
+        "milkshake",
+        "pancakes",
+        "skillet_eggs",
+        "coffee_mug",
+        "cinnamon_roll",
+        "waffle",
+        "coffee_mug",
+        "skillet_eggs",
+        "milkshake",
+        "skillet_eggs",
+        "waffle",
+        "skillet_eggs",
+        "coffee_mug",
+        "milkshake",
+        "coffee_mug",
+        "milkshake",
+        "coffee_mug",
+        "milkshake",
+        "pancakes",
+        "milkshake",
+        "skillet_eggs",
+        "coffee_mug",
+        "waffle",
+        "coffee_mug",
+        "cinnamon_roll",
+        "coffee_mug",
+        "pancakes",
+        "cinnamon_roll",
+        "milkshake",
+        "coffee_mug",
+        "waffle",
+        "milkshake",
+        "coffee_mug",
+        "milkshake",
+        "pancakes",
+        "pancakes",
+        "skillet_eggs",
+        "skillet_eggs",
+        "skillet_eggs",
+        "pancakes",
+        "coffee_mug",
+        "cinnamon_roll",
+        "coffee_mug",
+        "skillet_eggs",
+        "waffle",
+        "waffle"
+    ]
+}

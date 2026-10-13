@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
   levelIndex: 15
   trackShape: 0
-  beltSpeed: 1.1333333
+  beltSpeed: 1.1555556
   itemPool:
   - coffee_mug
   - bacon
   - skillet_eggs
   - cinnamon_roll
   - pancakes
+  - waffle
   tickets:
   - itemId: cinnamon_roll
     count: 1
@@ -30,11 +31,11 @@ MonoBehaviour:
     count: 2
   - itemId: bacon
     count: 2
-  fillerTriples: 5
-  maxItemsOnBelt: 12
+  fillerTriples: 6
+  maxItemsOnBelt: 11
   obstacles:
-    clocheChance: 0.17142858
-    napkinPairChance: 0.10857143
+    clocheChance: 0.17714286
+    napkinPairChance: 0.114285715
     spillSegments: 0
     burnEnabled: 1
     loopsToChar: 3
@@ -43,38 +44,41 @@ MonoBehaviour:
   seed: 119785
   spawnList:
   - bacon
+  - bacon
+  - skillet_eggs
+  - pancakes
   - skillet_eggs
   - bacon
+  - skillet_eggs
+  - skillet_eggs
+  - waffle
+  - skillet_eggs
+  - skillet_eggs
   - cinnamon_roll
-  - bacon
-  - coffee_mug
-  - pancakes
   - skillet_eggs
-  - pancakes
   - skillet_eggs
   - cinnamon_roll
   - cinnamon_roll
   - skillet_eggs
+  - coffee_mug
+  - waffle
+  - skillet_eggs
+  - coffee_mug
+  - skillet_eggs
+  - coffee_mug
+  - skillet_eggs
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
   - bacon
-  - skillet_eggs
-  - pancakes
-  - coffee_mug
-  - coffee_mug
-  - coffee_mug
-  - coffee_mug
   - bacon
-  - skillet_eggs
-  - pancakes
-  - skillet_eggs
-  - skillet_eggs
-  - coffee_mug
   - pancakes
   - coffee_mug
   - coffee_mug
+  - pancakes
   - skillet_eggs
   - bacon
   - coffee_mug
   - skillet_eggs
-  - pancakes
-  - skillet_eggs
+  - waffle
   - skillet_eggs

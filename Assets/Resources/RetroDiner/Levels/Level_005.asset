@@ -19,6 +19,7 @@ MonoBehaviour:
   - milkshake
   - coffee_mug
   - cinnamon_roll
+  - skillet_eggs
   tickets:
   - itemId: coffee_mug
     count: 1
@@ -26,7 +27,7 @@ MonoBehaviour:
     count: 2
   - itemId: cinnamon_roll
     count: 1
-  fillerTriples: 2
+  fillerTriples: 3
   maxItemsOnBelt: 10
   obstacles:
     clocheChance: 0
@@ -38,21 +39,24 @@ MonoBehaviour:
     freeSlotsForTwoStars: 3
   seed: 40595
   spawnList:
+  - skillet_eggs
+  - coffee_mug
+  - cinnamon_roll
+  - skillet_eggs
+  - skillet_eggs
+  - milkshake
+  - coffee_mug
   - coffee_mug
   - cinnamon_roll
   - coffee_mug
   - coffee_mug
+  - milkshake
+  - milkshake
+  - milkshake
   - coffee_mug
-  - coffee_mug
-  - coffee_mug
+  - milkshake
+  - milkshake
+  - milkshake
+  - milkshake
+  - milkshake
   - cinnamon_roll
-  - milkshake
-  - milkshake
-  - milkshake
-  - milkshake
-  - milkshake
-  - cinnamon_roll
-  - milkshake
-  - milkshake
-  - milkshake
-  - milkshake

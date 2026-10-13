@@ -1,0 +1,48 @@
+{
+    "levelIndex": 3,
+    "trackShape": 0,
+    "beltSpeed": 0.75,
+    "itemPool": [
+        "pancakes",
+        "skillet_eggs",
+        "coffee_mug"
+    ],
+    "tickets": [
+        {
+            "itemId": "pancakes",
+            "count": 1
+        },
+        {
+            "itemId": "skillet_eggs",
+            "count": 1
+        },
+        {
+            "itemId": "coffee_mug",
+            "count": 1
+        }
+    ],
+    "fillerTriples": 0,
+    "maxItemsOnBelt": 9,
+    "obstacles": {
+        "clocheChance": 0.0,
+        "napkinPairChance": 0.0,
+        "spillSegments": 0,
+        "burnEnabled": false,
+        "loopsToChar": 3
+    },
+    "stars": {
+        "freeSlotsForTwoStars": 3
+    },
+    "seed": 24757,
+    "spawnList": [
+        "pancakes",
+        "skillet_eggs",
+        "pancakes",
+        "pancakes",
+        "coffee_mug",
+        "coffee_mug",
+        "skillet_eggs",
+        "coffee_mug",
+        "skillet_eggs"
+    ]
+}
