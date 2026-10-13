@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_011
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 11
+  trackShape: 2
+  beltSpeed: 1.08
+  itemPool:
+  - coffee_mug
+  - skillet_eggs
+  - cinnamon_roll
+  - waffle
+  tickets:
+  - itemId: coffee_mug
+    count: 2
+  - itemId: waffle
+    count: 1
+  - itemId: skillet_eggs
+    count: 2
+  - itemId: cinnamon_roll
+    count: 1
+  fillerTriples: 4
+  maxItemsOnBelt: 12
+  obstacles:
+    clocheChance: 0.15673469
+    napkinPairChance: 0.10040817
+    spillSegments: 0
+    burnEnabled: 0
+    loopsToChar: 3
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 88109
+  spawnList:
+  - coffee_mug
+  - coffee_mug
+  - waffle
+  - coffee_mug
+  - waffle
+  - cinnamon_roll
+  - coffee_mug
+  - waffle
+  - skillet_eggs
+  - waffle
+  - waffle
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - coffee_mug
+  - waffle
+  - waffle
+  - waffle
+  - cinnamon_roll
+  - cinnamon_roll
+  - waffle
+  - coffee_mug
+  - skillet_eggs
+  - cinnamon_roll
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug

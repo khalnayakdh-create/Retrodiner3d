@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_048
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 48
+  trackShape: 0
+  beltSpeed: 1.5733334
+  itemPool:
+  - waffle
+  - milkshake
+  - bacon
+  - pancakes
+  - coffee_mug
+  - cinnamon_roll
+  tickets:
+  - itemId: cinnamon_roll
+    count: 2
+  - itemId: waffle
+    count: 3
+  - itemId: bacon
+    count: 3
+  - itemId: pancakes
+    count: 2
+  - itemId: milkshake
+    count: 3
+  - itemId: coffee_mug
+    count: 2
+  fillerTriples: 12
+  maxItemsOnBelt: 14
+  obstacles:
+    clocheChance: 0.29265308
+    napkinPairChance: 0.17591837
+    spillSegments: 2
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 381112
+  spawnList:
+  - bacon
+  - waffle
+  - coffee_mug
+  - coffee_mug
+  - bacon
+  - waffle
+  - coffee_mug
+  - bacon
+  - cinnamon_roll
+  - milkshake
+  - cinnamon_roll
+  - waffle
+  - bacon
+  - bacon
+  - pancakes
+  - milkshake
+  - waffle
+  - bacon
+  - cinnamon_roll
+  - cinnamon_roll
+  - coffee_mug
+  - milkshake
+  - waffle
+  - waffle
+  - waffle
+  - bacon
+  - bacon
+  - cinnamon_roll
+  - waffle
+  - milkshake
+  - waffle
+  - milkshake
+  - coffee_mug
+  - coffee_mug
+  - milkshake
+  - bacon
+  - waffle
+  - pancakes
+  - milkshake
+  - waffle
+  - pancakes
+  - cinnamon_roll
+  - milkshake
+  - pancakes
+  - bacon
+  - milkshake
+  - milkshake
+  - waffle
+  - milkshake
+  - bacon
+  - cinnamon_roll
+  - milkshake
+  - bacon
+  - pancakes
+  - coffee_mug
+  - bacon
+  - milkshake
+  - bacon
+  - cinnamon_roll
+  - coffee_mug
+  - waffle
+  - cinnamon_roll
+  - bacon
+  - bacon
+  - coffee_mug
+  - milkshake
+  - milkshake
+  - bacon
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug
+  - pancakes
+  - milkshake
+  - coffee_mug
+  - waffle
+  - cinnamon_roll
+  - milkshake
+  - bacon
+  - waffle
+  - milkshake

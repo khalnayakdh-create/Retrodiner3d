@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_027
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 27
+  trackShape: 0
+  beltSpeed: 1.2933333
+  itemPool:
+  - skillet_eggs
+  - bacon
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  tickets:
+  - itemId: skillet_eggs
+    count: 2
+  - itemId: coffee_mug
+    count: 2
+  - itemId: pancakes
+    count: 2
+  - itemId: cinnamon_roll
+    count: 2
+  - itemId: bacon
+    count: 2
+  fillerTriples: 7
+  maxItemsOnBelt: 12
+  obstacles:
+    clocheChance: 0.2155102
+    napkinPairChance: 0.13306123
+    spillSegments: 1
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 214813
+  spawnList:
+  - pancakes
+  - coffee_mug
+  - skillet_eggs
+  - coffee_mug
+  - pancakes
+  - coffee_mug
+  - bacon
+  - bacon
+  - cinnamon_roll
+  - pancakes
+  - skillet_eggs
+  - bacon
+  - bacon
+  - skillet_eggs
+  - cinnamon_roll
+  - bacon
+  - pancakes
+  - bacon
+  - coffee_mug
+  - coffee_mug
+  - bacon
+  - pancakes
+  - coffee_mug
+  - cinnamon_roll
+  - pancakes
+  - pancakes
+  - pancakes
+  - bacon
+  - cinnamon_roll
+  - pancakes
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - cinnamon_roll
+  - bacon
+  - pancakes
+  - pancakes
+  - skillet_eggs
+  - coffee_mug
+  - bacon
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - skillet_eggs
+  - bacon
+  - bacon
+  - skillet_eggs
+  - coffee_mug

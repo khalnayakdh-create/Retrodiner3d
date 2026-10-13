@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_038
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 38
+  trackShape: 2
+  beltSpeed: 1.44
+  itemPool:
+  - pancakes
+  - skillet_eggs
+  - bacon
+  - waffle
+  - milkshake
+  - cinnamon_roll
+  tickets:
+  - itemId: skillet_eggs
+    count: 3
+  - itemId: waffle
+    count: 2
+  - itemId: bacon
+    count: 3
+  - itemId: milkshake
+    count: 2
+  - itemId: pancakes
+    count: 3
+  fillerTriples: 9
+  maxItemsOnBelt: 14
+  obstacles:
+    clocheChance: 0.25591838
+    napkinPairChance: 0.1555102
+    spillSegments: 2
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 301922
+  spawnList:
+  - milkshake
+  - pancakes
+  - waffle
+  - skillet_eggs
+  - waffle
+  - milkshake
+  - skillet_eggs
+  - bacon
+  - milkshake
+  - milkshake
+  - bacon
+  - milkshake
+  - skillet_eggs
+  - pancakes
+  - milkshake
+  - milkshake
+  - bacon
+  - skillet_eggs
+  - bacon
+  - pancakes
+  - pancakes
+  - bacon
+  - bacon
+  - pancakes
+  - milkshake
+  - pancakes
+  - skillet_eggs
+  - waffle
+  - waffle
+  - waffle
+  - skillet_eggs
+  - milkshake
+  - milkshake
+  - pancakes
+  - milkshake
+  - skillet_eggs
+  - skillet_eggs
+  - pancakes
+  - pancakes
+  - bacon
+  - pancakes
+  - bacon
+  - waffle
+  - pancakes
+  - skillet_eggs
+  - milkshake
+  - bacon
+  - waffle
+  - bacon
+  - pancakes
+  - bacon
+  - waffle
+  - bacon
+  - milkshake
+  - bacon
+  - waffle
+  - waffle
+  - milkshake
+  - pancakes
+  - pancakes
+  - waffle
+  - pancakes
+  - waffle
+  - bacon
+  - milkshake
+  - bacon

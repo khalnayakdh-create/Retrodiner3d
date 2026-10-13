@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_012
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 12
+  trackShape: 0
+  beltSpeed: 1.0933334
+  itemPool:
+  - coffee_mug
+  - milkshake
+  - waffle
+  - bacon
+  tickets:
+  - itemId: milkshake
+    count: 2
+  - itemId: waffle
+    count: 1
+  - itemId: coffee_mug
+    count: 2
+  - itemId: bacon
+    count: 1
+  fillerTriples: 4
+  maxItemsOnBelt: 12
+  obstacles:
+    clocheChance: 0.16040817
+    napkinPairChance: 0.10244898
+    spillSegments: 0
+    burnEnabled: 0
+    loopsToChar: 3
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 96028
+  spawnList:
+  - coffee_mug
+  - coffee_mug
+  - waffle
+  - coffee_mug
+  - waffle
+  - bacon
+  - coffee_mug
+  - bacon
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - milkshake
+  - milkshake
+  - coffee_mug
+  - coffee_mug
+  - milkshake
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - milkshake
+  - coffee_mug
+  - milkshake
+  - bacon
+  - coffee_mug
+  - milkshake
+  - coffee_mug
+  - waffle
+  - coffee_mug

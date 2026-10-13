@@ -26,3 +26,7 @@ crashlytics-build.properties
 .DS_Store
 Thumbs.db
 # Source art stays outside Assets; imported copies live in Assets/Resources/RetroDiner/Art
+
+# Source PNG pack lives outside Assets; imported copies are committed under Assets/Resources/RetroDiner/Art
+Chat Gpt Images/
+_to_delete/

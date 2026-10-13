@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_040
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 40
+  trackShape: 1
+  beltSpeed: 1.4666667
+  itemPool:
+  - skillet_eggs
+  - coffee_mug
+  - waffle
+  - cinnamon_roll
+  - pancakes
+  - milkshake
+  tickets:
+  - itemId: cinnamon_roll
+    count: 2
+  - itemId: coffee_mug
+    count: 3
+  - itemId: skillet_eggs
+    count: 3
+  - itemId: pancakes
+    count: 2
+  - itemId: waffle
+    count: 3
+  fillerTriples: 10
+  maxItemsOnBelt: 14
+  obstacles:
+    clocheChance: 0.2632653
+    napkinPairChance: 0.15959184
+    spillSegments: 2
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 317760
+  spawnList:
+  - skillet_eggs
+  - skillet_eggs
+  - cinnamon_roll
+  - coffee_mug
+  - coffee_mug
+  - skillet_eggs
+  - pancakes
+  - coffee_mug
+  - pancakes
+  - coffee_mug
+  - coffee_mug
+  - waffle
+  - skillet_eggs
+  - pancakes
+  - coffee_mug
+  - skillet_eggs
+  - waffle
+  - coffee_mug
+  - waffle
+  - pancakes
+  - cinnamon_roll
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - cinnamon_roll
+  - coffee_mug
+  - waffle
+  - coffee_mug
+  - waffle
+  - coffee_mug
+  - waffle
+  - pancakes
+  - cinnamon_roll
+  - waffle
+  - cinnamon_roll
+  - coffee_mug
+  - coffee_mug
+  - cinnamon_roll
+  - skillet_eggs
+  - waffle
+  - coffee_mug
+  - skillet_eggs
+  - coffee_mug
+  - waffle
+  - pancakes
+  - coffee_mug
+  - coffee_mug
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  - coffee_mug
+  - skillet_eggs
+  - waffle
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - waffle
+  - waffle
+  - pancakes
+  - coffee_mug
+  - coffee_mug
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - skillet_eggs
+  - coffee_mug

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55e49cdd8e4f8ff4fa1e3e6e1cf557e4, type: 3}
+  m_Name: Item_bacon
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.ItemDefinition
+  id: bacon
+  displayName: Wavy Bacon
+  placeholderColor: {r: 0.7, g: 0.25, b: 0.18, a: 1}
+  prefab: {fileID: 0}
+  icon: {fileID: 21300000, guid: 0b3e52f09892dcc4b90526e38c1c285d, type: 3}
+  charredIcon: {fileID: 21300000, guid: c9e25d78e76a42d41869400c40196e1b, type: 3}
+  canBurn: 1
+  pickupSfx: {fileID: 0}
+  pickupSfxKey: pickup_snap
+  pickupHaptic: 1
+  particleColor: {r: 0.7, g: 0.25, b: 0.18, a: 1}

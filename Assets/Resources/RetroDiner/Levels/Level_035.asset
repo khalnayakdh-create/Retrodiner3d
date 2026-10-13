@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_035
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 35
+  trackShape: 2
+  beltSpeed: 1.4
+  itemPool:
+  - cinnamon_roll
+  - pancakes
+  - coffee_mug
+  - bacon
+  - waffle
+  - milkshake
+  tickets:
+  - itemId: cinnamon_roll
+    count: 3
+  - itemId: waffle
+    count: 2
+  - itemId: bacon
+    count: 2
+  - itemId: pancakes
+    count: 3
+  - itemId: coffee_mug
+    count: 2
+  fillerTriples: 9
+  maxItemsOnBelt: 14
+  obstacles:
+    clocheChance: 0.24489798
+    napkinPairChance: 0.14938776
+    spillSegments: 2
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 278165
+  spawnList:
+  - pancakes
+  - pancakes
+  - waffle
+  - coffee_mug
+  - waffle
+  - milkshake
+  - coffee_mug
+  - bacon
+  - coffee_mug
+  - coffee_mug
+  - cinnamon_roll
+  - waffle
+  - bacon
+  - cinnamon_roll
+  - waffle
+  - bacon
+  - coffee_mug
+  - cinnamon_roll
+  - cinnamon_roll
+  - bacon
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - bacon
+  - coffee_mug
+  - pancakes
+  - waffle
+  - waffle
+  - bacon
+  - waffle
+  - bacon
+  - milkshake
+  - coffee_mug
+  - bacon
+  - bacon
+  - coffee_mug
+  - coffee_mug
+  - coffee_mug
+  - pancakes
+  - cinnamon_roll
+  - cinnamon_roll
+  - pancakes
+  - waffle
+  - waffle
+  - waffle
+  - bacon
+  - pancakes
+  - pancakes
+  - bacon
+  - waffle
+  - milkshake
+  - bacon
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - cinnamon_roll
+  - waffle
+  - cinnamon_roll
+  - bacon
+  - pancakes
+  - bacon
+  - bacon
+  - coffee_mug

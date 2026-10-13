@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7a29dea84648314e84aec5fa5810035, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.GameConfig
+  items:
+  - {fileID: 11400000, guid: b0364f86bcfcf34469750fcc66093547, type: 2}
+  - {fileID: 11400000, guid: 6056890557646e845a12031b4ac77351, type: 2}
+  - {fileID: 11400000, guid: f0dacd7acb3e5bc46be576a31f1d4b08, type: 2}
+  - {fileID: 11400000, guid: 96c3ba3b2b0a3754988015637d783f5c, type: 2}
+  - {fileID: 11400000, guid: 66eefd9d9b8dcc74cb7f9225c96d7bf1, type: 2}
+  - {fileID: 11400000, guid: 24d2b209ab70a5d4a9afca42937b839d, type: 2}
+  - {fileID: 11400000, guid: f71c5dfe1c76a0a459cde09dd616bab6, type: 2}
+  levels:
+  - {fileID: 11400000, guid: e9784a30eb6b1f547b7e6b8265427cfe, type: 2}
+  - {fileID: 11400000, guid: b04ff72c4408ec84da050c69ba402b49, type: 2}
+  - {fileID: 11400000, guid: fac41899dce8b9446aeb82f96374da0e, type: 2}
+  - {fileID: 11400000, guid: 36262b15a6f64eb4e89d7512559a1b2f, type: 2}
+  - {fileID: 11400000, guid: 75b87070e29b69a4b8b1dbe2f89bf87b, type: 2}
+  - {fileID: 11400000, guid: a81b85b6af7d651479e336b8919022bb, type: 2}
+  - {fileID: 11400000, guid: d219e63654c048d4f99dd6a1477c7119, type: 2}
+  - {fileID: 11400000, guid: 39ba72ab7641ede4abbd8017ae40e33a, type: 2}
+  - {fileID: 11400000, guid: b97a47799539398439ae912c4691e097, type: 2}
+  - {fileID: 11400000, guid: 042cfc3dcd577404b9e860ea79cc01ff, type: 2}
+  - {fileID: 11400000, guid: a1bdf2ca0a5c06148ab3dc252dda9ae2, type: 2}
+  - {fileID: 11400000, guid: 37ab45dd86813164baac6e382120d9a1, type: 2}
+  - {fileID: 11400000, guid: d19a2375144f64a48a490cb527bce83b, type: 2}
+  - {fileID: 11400000, guid: 24a3a9741a4c36144a488ec739c5d6d2, type: 2}
+  - {fileID: 11400000, guid: e250da7a85c6df8418b99c180132a30f, type: 2}
+  - {fileID: 11400000, guid: a034312f9312a424c8a3a34f5f7a5292, type: 2}
+  - {fileID: 11400000, guid: a409a217b1891114c8809c7998bbabe7, type: 2}
+  - {fileID: 11400000, guid: ac4b922e51793064b9e7020780da0f60, type: 2}
+  - {fileID: 11400000, guid: c9273e2db873ddf43bfd3534e4516af0, type: 2}
+  - {fileID: 11400000, guid: ac9648415610d9042b9c32b8fb4779ea, type: 2}
+  - {fileID: 11400000, guid: 8afb450bd835e1248a960d1f343c27f6, type: 2}
+  - {fileID: 11400000, guid: 07e440d4848521942acbe20c686387d3, type: 2}
+  - {fileID: 11400000, guid: 84f1af062d94edb48a2c86c77c774bf8, type: 2}
+  - {fileID: 11400000, guid: fbfb7515575c83a408ad526f06f97576, type: 2}
+  - {fileID: 11400000, guid: 6d0e5d00f3007574bba9475862120783, type: 2}
+  - {fileID: 11400000, guid: 3aee0cd8dd4274f43afb974065008fa3, type: 2}
+  - {fileID: 11400000, guid: 760fc40abd8c92d4e8a86eddb83b3ff8, type: 2}
+  - {fileID: 11400000, guid: 784b39d6ed122ac45bae2ca6a742fb2f, type: 2}
+  - {fileID: 11400000, guid: 745ada6d58740ce41a4590dd9588aedc, type: 2}
+  - {fileID: 11400000, guid: b1307fa312d655c468e538ea60185497, type: 2}
+  - {fileID: 11400000, guid: f10e97a35d4415e49a642b86349a397e, type: 2}
+  - {fileID: 11400000, guid: fa6113c3085374f45a91c2bf22278062, type: 2}
+  - {fileID: 11400000, guid: b7b9f8b272f13764294f998924d03dde, type: 2}
+  - {fileID: 11400000, guid: 58bd8eae2f8353a4da07a0b0d67071a4, type: 2}
+  - {fileID: 11400000, guid: 8bc966cf9a23a8a46a32b0bcfc69c938, type: 2}
+  - {fileID: 11400000, guid: 636ba3586a962344a924e2b7c83591de, type: 2}
+  - {fileID: 11400000, guid: 48ae5f090bb36aa4ca5e0569aaaf69bf, type: 2}
+  - {fileID: 11400000, guid: 2f043b1ffb0c91c40b714cb0386b2a77, type: 2}
+  - {fileID: 11400000, guid: d4f32fb223bc8dc4aa97cce24d57c80c, type: 2}
+  - {fileID: 11400000, guid: 35b18210d038fda47b6a7e013933ef29, type: 2}
+  - {fileID: 11400000, guid: 819a1a48ee996054ea9d19dcbd5589aa, type: 2}
+  - {fileID: 11400000, guid: 8281fd4c6d3bfc6448da7c0eecb0dc23, type: 2}
+  - {fileID: 11400000, guid: 4ef0b86aafc28ff44991ee44418f3f2b, type: 2}
+  - {fileID: 11400000, guid: fe9ad029767cf04478b6964311200b1f, type: 2}
+  - {fileID: 11400000, guid: b0b6816e8bb14cc4abcacc04f82f2cf1, type: 2}
+  - {fileID: 11400000, guid: d2e05d420df7195448dc3bba94c02749, type: 2}
+  - {fileID: 11400000, guid: a1494992546371e419449570d5c29c07, type: 2}
+  - {fileID: 11400000, guid: 031d03dfad1175d4cbf3f3217a65ed06, type: 2}
+  - {fileID: 11400000, guid: 709a6b465b3a1bd45927d165be0cf143, type: 2}
+  - {fileID: 11400000, guid: b0e2e97ec3962df4eb635901fa70f87d, type: 2}
+  trayCapacity: 7
+  ticketsVisible: 3
+  tokensPerTicket: 3
+  nearMissSeconds: 5
+  nearMissTimeScale: 0.2
+  continueCostCoins: 90
+  continueCostTokens: 10
+  continueClearItems: 3
+  coinsBase: 50
+  coinsPerStar: 25
+  spatulaUnlockLevel: 4
+  bellUnlockLevel: 5
+  rewindUnlockLevel: 7
+  boostersGrantedOnUnlock: 3
+  bellFreezeSeconds: 15
+  rewindDistance: 5
+  rewindDuration: 1
+  trackRadius: 2.6
+  itemWorldSize: 0.95
+  itemSpacing: 1.05
+  spillSpeedMultiplier: 1.8
+  cameraPitchDegrees: 35
+  cameraDistance: 10.5
+  cameraViewportBand: {x: 0.3, y: 0.76}
+  gameplayBackground: {fileID: 21300000, guid: 952281dc95038724a96759355df2a08c, type: 3}
+  mainMenuBackground: {fileID: 21300000, guid: 6aa81b7ba36a0b54cade563d89ac66cb, type: 3}
+  levelSelectBackground: {fileID: 21300000, guid: c672f869fc234894aa8b877aa9a51d32, type: 3}
+  tray7: {fileID: 21300000, guid: b8ebeb9573d5cf44bb3d446bdb1980ed, type: 3}
+  tray8: {fileID: 21300000, guid: c14b45ef136e7e94da7e74c4d54c1aba, type: 3}
+  ticketNormal: {fileID: 21300000, guid: c9b2e42c6500fdf4db25653e2e0aef7a, type: 3}
+  ticketActive: {fileID: 21300000, guid: 9665b1ce1fe10df46b79d0b1c3fa33e5, type: 3}
+  ticketComplete: {fileID: 21300000, guid: cffc54063db2060429bf20888e51ff63, type: 3}
+  buttonRed: {fileID: 21300000, guid: 63f12f6e4fbb7cc4baebe6294298e45c, type: 3}
+  buttonMint: {fileID: 21300000, guid: f4d7b45d071410c4eb4a62e56d666f55, type: 3}
+  buttonGold: {fileID: 21300000, guid: d9235f722b458034196378b269ec57ca, type: 3}
+  popupPanel: {fileID: 21300000, guid: b760d575d427e3247a2e687938806928, type: 3}
+  pauseButton: {fileID: 21300000, guid: 14df81a84fe82614d90b310d2eeacd42, type: 3}
+  closeButton: {fileID: 21300000, guid: 3a806aa0c831c3145bd44924f90eb98f, type: 3}
+  confirmButton: {fileID: 21300000, guid: e8ccf39c4a5c2d648afb27b513cdded3, type: 3}
+  starFilled: {fileID: 21300000, guid: 5584b8cf64b873f489f6bff372e70470, type: 3}
+  starEmpty: {fileID: 21300000, guid: 36d41e2302edfb54495de0a192bec885, type: 3}
+  coinIcon: {fileID: 21300000, guid: deaf3f30aa6764142b2fea572ff5d502, type: 3}
+  tokenIcon: {fileID: 21300000, guid: 98b5e2a488e961240a0aea3ec9d7fecf, type: 3}
+  heartIcon: {fileID: 21300000, guid: 128125619caeed048b891dae9278e607, type: 3}
+  tipJar10: {fileID: 21300000, guid: f973521e3dbb9c74f9c9f27032284f5f, type: 3}
+  tipJar50: {fileID: 21300000, guid: a0e6b0ee12b3ed341b4f11be1fcee845, type: 3}
+  tipJar100: {fileID: 21300000, guid: 2177efca65fdbbe42aa83f80a95fa56b, type: 3}
+  boosterSpatula: {fileID: 21300000, guid: 08dd060385014054d891ef711ca08d64, type: 3}
+  boosterBell: {fileID: 21300000, guid: 2d0ce65deece81f4b8e323d6caccfd9f, type: 3}
+  boosterRewind: {fileID: 21300000, guid: 1383d600846d638439e89239404b25c9, type: 3}
+  boosterExtraPlate: {fileID: 21300000, guid: 8f26dfc830ea6534ca44f50d3dfbd160, type: 3}
+  clocheClosed: {fileID: 21300000, guid: 9a888028bbbedf04c84283e2547e094a, type: 3}
+  clocheOpen: {fileID: 21300000, guid: bb8f490ffc1f0ef459393bd4c57be57b, type: 3}
+  napkin: {fileID: 21300000, guid: dd601fdc2aead8b458b6b9f0a4f08101, type: 3}
+  syrupSpill: {fileID: 21300000, guid: efaa2c18c9c548d449b83e6afd763673, type: 3}
+  ketchupSpill: {fileID: 21300000, guid: 7cd1f840ac201004e9aef7b7a925b751, type: 3}
+  shiftFinishedBanner: {fileID: 21300000, guid: be313ff47ab7756408a747532bd866a3, type: 3}
+  confettiSheet: {fileID: 2800000, guid: f720d80a4018aee4f8b9105e49039c95, type: 3}

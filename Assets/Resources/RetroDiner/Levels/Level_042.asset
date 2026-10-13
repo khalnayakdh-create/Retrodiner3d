@@ -1,0 +1,124 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8494677c444629e468991d3fb8e54b73, type: 3}
+  m_Name: Level_042
+  m_EditorClassIdentifier: Assembly-CSharp::RetroDiner.Data.LevelDefinition
+  levelIndex: 42
+  trackShape: 0
+  beltSpeed: 1.4933333
+  itemPool:
+  - skillet_eggs
+  - pancakes
+  - cinnamon_roll
+  - coffee_mug
+  - milkshake
+  - bacon
+  tickets:
+  - itemId: bacon
+    count: 2
+  - itemId: skillet_eggs
+    count: 3
+  - itemId: coffee_mug
+    count: 2
+  - itemId: cinnamon_roll
+    count: 2
+  - itemId: pancakes
+    count: 3
+  - itemId: milkshake
+    count: 2
+  fillerTriples: 11
+  maxItemsOnBelt: 14
+  obstacles:
+    clocheChance: 0.27061227
+    napkinPairChance: 0.16367348
+    spillSegments: 2
+    burnEnabled: 1
+    loopsToChar: 2
+  stars:
+    freeSlotsForTwoStars: 3
+  seed: 333598
+  spawnList:
+  - bacon
+  - skillet_eggs
+  - milkshake
+  - bacon
+  - pancakes
+  - skillet_eggs
+  - pancakes
+  - milkshake
+  - skillet_eggs
+  - milkshake
+  - cinnamon_roll
+  - skillet_eggs
+  - milkshake
+  - milkshake
+  - pancakes
+  - milkshake
+  - skillet_eggs
+  - skillet_eggs
+  - cinnamon_roll
+  - bacon
+  - bacon
+  - milkshake
+  - cinnamon_roll
+  - pancakes
+  - milkshake
+  - cinnamon_roll
+  - skillet_eggs
+  - pancakes
+  - skillet_eggs
+  - pancakes
+  - milkshake
+  - milkshake
+  - milkshake
+  - coffee_mug
+  - coffee_mug
+  - milkshake
+  - bacon
+  - milkshake
+  - cinnamon_roll
+  - coffee_mug
+  - cinnamon_roll
+  - pancakes
+  - cinnamon_roll
+  - bacon
+  - bacon
+  - coffee_mug
+  - milkshake
+  - pancakes
+  - bacon
+  - pancakes
+  - skillet_eggs
+  - skillet_eggs
+  - cinnamon_roll
+  - bacon
+  - bacon
+  - skillet_eggs
+  - cinnamon_roll
+  - milkshake
+  - milkshake
+  - milkshake
+  - coffee_mug
+  - skillet_eggs
+  - skillet_eggs
+  - milkshake
+  - milkshake
+  - skillet_eggs
+  - bacon
+  - coffee_mug
+  - milkshake
+  - bacon
+  - coffee_mug
+  - skillet_eggs
+  - milkshake
+  - coffee_mug
+  - coffee_mug
