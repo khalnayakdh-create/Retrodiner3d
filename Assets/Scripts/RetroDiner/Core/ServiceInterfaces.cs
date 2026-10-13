@@ -76,7 +76,7 @@ namespace RetroDiner.Core
             onDone?.Invoke(true);
         }
 
-        public bool Owns(string sku) => owned.Contains(sku);
+        public bool Owns(string sku) => owned.Contains(sku) || (GameServices.Profile != null && GameServices.Profile.purchasedSkus.Contains(sku));
     }
 
     /// <summary>

@@ -25,6 +25,14 @@ namespace RetroDiner.Data
         public int coinsBase = 50;
         public int coinsPerStar = 25;
 
+        [Header("Meta")]
+        public StoreCatalog storeCatalog;
+        public AdPolicy adPolicy;
+        public int energyMax = 5;
+        public float energyRegenMinutes = 30f;
+        public int energyRefillTokens = 10;
+        public int tipJarCrackThreshold = 1200;
+
         [Header("Boosters")]
         public int spatulaUnlockLevel = 4;
         public int bellUnlockLevel = 5;

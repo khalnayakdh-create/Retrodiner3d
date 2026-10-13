@@ -106,6 +106,38 @@ namespace RetroDiner.Gameplay
             hud.SetTips(GameServices.Profile.tipJarTokens);
             hud.SetNearMiss(false);
             State = ShiftState.Playing;
+            OfferPreShiftExtraPlate();
+        }
+
+        /// <summary>Pre-shift pick: spend an owned Extra Plate for an 8th slot this shift (level 7+).</summary>
+        void OfferPreShiftExtraPlate()
+        {
+            var p = GameServices.Profile;
+            if (level.levelIndex < cfg.rewindUnlockLevel || p.extraPlate <= 0) return;
+            belt.Running = false;
+            input.Enabled = false;
+            Popups.Show("EXTRA PLATE?", "Start this shift with an 8th tray slot?\n\nYou have " + p.extraPlate + " Extra Plate" + (p.extraPlate == 1 ? "" : "s") + ".",
+                new List<PanelButton>
+                {
+                    new PanelButton("USE ONE", () =>
+                    {
+                        p.AddBooster(BoosterType.ExtraPlate, -1);
+                        GameServices.SaveProfile();
+                        tray.SetCapacity(cfg.trayCapacity + 1);
+                        hud.Tray.SetCapacity(tray.Capacity);
+                        hud.Tray.Refresh(tray);
+                        ResumeAfterPreShift();
+                    }, UIBuilder.Gold),
+                    new PanelButton("NOT NOW", ResumeAfterPreShift, UIBuilder.Red),
+                }, true, null, 900f);
+        }
+
+        void ResumeAfterPreShift()
+        {
+            Popups.Close();
+            if (State != ShiftState.Playing) return;
+            belt.Running = true;
+            input.Enabled = true;
         }
 
         void GrantBoosterIntros(int index)
@@ -349,23 +381,27 @@ namespace RetroDiner.Gameplay
             Time.timeScale = 0f;
             failsThisLevel++;
             var p = GameServices.Profile;
-            var buttons = new List<HudView.PanelButton>();
+            var buttons = new List<PanelButton>();
             string body;
             if (failsThisLevel == 1)
             {
                 body = "Short on counter space?\n\nGrab an Extra Plate (8th slot)\n+ clear " + cfg.continueClearItems + " items.";
-                buttons.Add(new HudView.PanelButton(cfg.continueCostCoins + " COINS  (have " + p.coins + ")", () => ApplyContinue(true, false), UIBuilder.Gold) { interactable = p.coins >= cfg.continueCostCoins });
-                buttons.Add(new HudView.PanelButton(cfg.continueCostTokens + " TOKENS  (have " + p.tokens + ")", () => ApplyContinue(false, true), UIBuilder.Mint) { interactable = p.tokens >= cfg.continueCostTokens });
+                buttons.Add(new PanelButton(cfg.continueCostCoins + " COINS  (have " + p.coins + ")", () => ApplyContinue(true, false), UIBuilder.Gold) { interactable = p.coins >= cfg.continueCostCoins });
+                buttons.Add(new PanelButton(cfg.continueCostTokens + " TOKENS  (have " + p.tokens + ")", () => ApplyContinue(false, true), UIBuilder.Mint) { interactable = p.tokens >= cfg.continueCostTokens });
             }
             else
             {
                 body = "Counter's full again!\n\nWatch a short ad for an Extra Plate\n+ clear " + cfg.continueClearItems + " items.";
-                buttons.Add(new HudView.PanelButton("WATCH AD", () =>
+                buttons.Add(new PanelButton("WATCH AD", () =>
                 {
-                    GameServices.Ads.ShowRewarded(AdPlacement.RewardedContinue, ok => { if (ok) ApplyContinue(false, false); else Lose(); });
+                    GameServices.Ads.ShowRewarded(AdPlacement.RewardedContinue, ok =>
+                    {
+                        GameServices.AdPolicy.RewardedWatchedThisLevelEnd = true;
+                        if (ok) ApplyContinue(false, false); else Lose();
+                    });
                 }, UIBuilder.Gold));
             }
-            buttons.Add(new HudView.PanelButton("NO THANKS", Lose, UIBuilder.Red));
+            buttons.Add(new PanelButton("NO THANKS", Lose, UIBuilder.Red));
             hud.ShowPanel("COUNTER FULL!", body, buttons);
         }
 
@@ -428,16 +464,40 @@ namespace RetroDiner.Gameplay
             var result = new ShiftResult { levelIndex = level.levelIndex, stars = stars, coins = coins, freeSlotsAtFinish = tray.FreeSlots, charredMatched = charredMatched };
             GameEvents.RaiseLevelWon(result);
 
-            Tween.Delay(0.9f, () =>
-            {
-                var buttons = new List<HudView.PanelButton>
+            Tween.Delay(0.9f, () => MaybeInterstitial(() => ShowWinPanel(stars, coins, false)), true);
+        }
+
+        void ShowWinPanel(int stars, int coins, bool doubled)
+        {
+            var buttons = new List<PanelButton>();
+            if (!doubled && GameServices.Ads.IsRewardedReady(AdPlacement.RewardedDoubleCoins))
+                buttons.Add(new PanelButton("DOUBLE COINS  (watch ad)", () =>
                 {
-                    new HudView.PanelButton("NEXT SHIFT", NextLevel, UIBuilder.Red),
-                    new HudView.PanelButton("REPLAY", Restart, UIBuilder.Mint),
-                    new HudView.PanelButton("MENU", ToMenu, UIBuilder.Gold),
-                };
-                hud.ShowPanel("SHIFT FINISHED!", "\n\n\n\n+" + coins + " coins\nTip jar: " + GameServices.Profile.tipJarTokens + " tokens", buttons, true, c => hud.DecorateStars(c, stars));
-            }, true);
+                    GameServices.Ads.ShowRewarded(AdPlacement.RewardedDoubleCoins, ok =>
+                    {
+                        if (!ok) { ShowWinPanel(stars, coins, false); return; }
+                        GameServices.Economy.Grant(coins, 0);
+                        GameServices.Audio.Play("coin");
+                        ShowWinPanel(stars, coins * 2, true);
+                    });
+                }, UIBuilder.Mint));
+            buttons.Add(new PanelButton("NEXT SHIFT", NextLevel, UIBuilder.Red));
+            buttons.Add(new PanelButton(doubled ? "MENU" : "REPLAY", doubled ? (System.Action)ToMenu : Restart, UIBuilder.Gold));
+            hud.ShowPanel("SHIFT FINISHED!", "\n\n\n\n+" + coins + " coins" + (doubled ? "  (doubled!)" : "") + "\nTip jar: " + GameServices.Profile.tipJarTokens + " tokens", buttons, true, c => hud.DecorateStars(c, stars));
+        }
+
+        /// <summary>Interstitial gate for Win/Lose screens: shows one only when AdPolicy allows, then continues.</summary>
+        void MaybeInterstitial(System.Action then)
+        {
+            var policy = GameServices.AdPolicy;
+            bool show = policy.ShouldShowInterstitial(level.levelIndex, false, false);
+            policy.RecordLevelEnd(show);
+            if (!show) { then(); return; }
+            GameServices.Ads.ShowInterstitial(() =>
+            {
+                then();
+                Popups.RemoveAdsLink(policy.Policy.removeAdsLinkSeconds, () => { ToMenu(); menu.ShowStore(); });
+            });
         }
 
         void Lose()
@@ -449,17 +509,16 @@ namespace RetroDiner.Gameplay
             belt.Running = false;
             input.Enabled = false;
             hud.SetNearMiss(false);
-            var p = GameServices.Profile;
-            p.energy = Mathf.Max(0, p.energy - 1);
-            GameServices.SaveProfile();
+            GameServices.Economy.ConsumeEnergy();
             GameServices.Audio.Play("lose");
             GameEvents.RaiseLevelLost();
-            hud.ShowPanel("SHIFT OVER", "The counter locked up.\n\nTip: keep an eye on how many\ndifferent dishes are waiting on the tray.",
-                new List<HudView.PanelButton>
-                {
-                    new HudView.PanelButton("RETRY", Restart, UIBuilder.Red),
-                    new HudView.PanelButton("MENU", ToMenu, UIBuilder.Gold),
-                });
+            MaybeInterstitial(() =>
+                hud.ShowPanel("SHIFT OVER", "The counter locked up.\n\nTip: keep an eye on how many\ndifferent dishes are waiting on the tray.",
+                    new List<PanelButton>
+                    {
+                        new PanelButton("RETRY", () => { if (GameServices.Economy.HasEnergy) Restart(); else { ToMenu(); menu.ShowEnergyPanel(); } }, UIBuilder.Red),
+                        new PanelButton("MENU", ToMenu, UIBuilder.Gold),
+                    }));
         }
 
         public void TogglePause()
@@ -479,11 +538,11 @@ namespace RetroDiner.Gameplay
             State = ShiftState.Paused;
             Time.timeScale = 0f;
             input.Enabled = false;
-            hud.ShowPanel("PAUSED", "Level " + level.levelIndex, new List<HudView.PanelButton>
+            hud.ShowPanel("PAUSED", "Level " + level.levelIndex, new List<PanelButton>
             {
-                new HudView.PanelButton("RESUME", Resume, UIBuilder.Red),
-                new HudView.PanelButton("RESTART", Restart, UIBuilder.Mint),
-                new HudView.PanelButton("MENU", ToMenu, UIBuilder.Gold),
+                new PanelButton("RESUME", Resume, UIBuilder.Red),
+                new PanelButton("RESTART", Restart, UIBuilder.Mint),
+                new PanelButton("MENU", ToMenu, UIBuilder.Gold),
             });
         }
 
@@ -510,7 +569,7 @@ namespace RetroDiner.Gameplay
             var p = GameServices.Profile;
             if (p.GetBooster(type) <= 0)
             {
-                GameEvents.RaiseToast("Out of " + Name(type) + " — refills arrive with the Store (M5)");
+                OfferBoosterRefill(type);
                 return;
             }
 
@@ -575,6 +634,35 @@ namespace RetroDiner.Gameplay
             }
             GameServices.Audio.Play("spatula");
             return true;
+        }
+
+        /// <summary>Out of a booster mid-shift: buy +1 with coins/tokens or watch a rewarded ad. Pauses the belt meanwhile.</summary>
+        void OfferBoosterRefill(BoosterType type)
+        {
+            var eco = GameServices.Economy;
+            var offer = eco.RefillOfferFor(type);
+            if (offer == null) { GameEvents.RaiseToast("No refill available"); return; }
+            var p = GameServices.Profile;
+            bool wasRunning = belt.Running;
+            belt.Running = false;
+            System.Action resume = () => { Popups.Close(); belt.Running = wasRunning; hud.Boosters.Refresh(level.levelIndex); };
+            var buttons = new List<PanelButton>
+            {
+                new PanelButton(offer.coinPrice + " COINS  (have " + p.coins + ")", () => { if (eco.BuyRefill(offer, false)) { GameServices.Audio.Play("coin"); resume(); UseBooster(type); } }, UIBuilder.Gold) { interactable = eco.CanAffordCoins(offer.coinPrice) },
+                new PanelButton(offer.tokenPrice + " TOKENS  (have " + p.tokens + ")", () => { if (eco.BuyRefill(offer, true)) { GameServices.Audio.Play("coin"); resume(); UseBooster(type); } }, UIBuilder.Mint) { interactable = eco.CanAffordTokens(offer.tokenPrice) },
+            };
+            if (GameServices.Ads.IsRewardedReady(AdPlacement.RewardedBoosterRefill))
+                buttons.Add(new PanelButton("WATCH AD  (+1)", () =>
+                {
+                    GameServices.Ads.ShowRewarded(AdPlacement.RewardedBoosterRefill, ok =>
+                    {
+                        if (ok) { p.AddBooster(type, 1); GameServices.SaveProfile(); }
+                        resume();
+                        if (ok) UseBooster(type);
+                    });
+                }, UIBuilder.Mint));
+            buttons.Add(new PanelButton("NOT NOW", resume, UIBuilder.Red));
+            Popups.Show("OUT OF " + Name(type).ToUpper(), "Grab one more " + offer.title + "?", buttons, true, null, 1150f);
         }
 
         static string Name(BoosterType t)

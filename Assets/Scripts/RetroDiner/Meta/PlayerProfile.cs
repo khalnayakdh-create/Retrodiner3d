@@ -30,6 +30,11 @@ namespace RetroDiner.Meta
         public long lastInterstitialTicks = 0;
         public int levelEndsSinceInterstitial = 0;
         public long lastPurchaseTicks = 0;
+        public long firstLaunchTicks = 0;
+        public System.Collections.Generic.List<string> purchasedSkus = new System.Collections.Generic.List<string>();
+        public bool neonSignOwned = false;
+        public string lastDailySpinDate = "";
+        public int lastStreakFreezeWeek = 0;
 
         public int GetStars(int level) => (level >= 0 && level < stars.Length) ? stars[level] : 0;
 

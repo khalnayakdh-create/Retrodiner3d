@@ -28,7 +28,7 @@ namespace RetroDiner.UI
         RectTransform toastRect;
         TweenHandle toastTween;
         GameConfig cfg;
-        Sprite starFilledSprite, starEmptySprite, panelSprite, btnRed, btnMint, btnGold;
+        Sprite starFilledSprite, starEmptySprite;
         float vignetteTarget;
 
         public void Build(Canvas canvas, GameConfig config, Func<string, ItemDefinition> lookup, Action onPause, Action<BoosterType> onBooster)
@@ -39,10 +39,6 @@ namespace RetroDiner.UI
 
             starFilledSprite = ArtCatalog.Pick(cfg.starFilled, ArtCatalog.StarFilled);
             starEmptySprite = ArtCatalog.Pick(cfg.starEmpty, ArtCatalog.StarEmpty);
-            panelSprite = ArtCatalog.Pick(cfg.popupPanel, ArtCatalog.PopupPanel);
-            btnRed = ArtCatalog.Pick(cfg.buttonRed, ArtCatalog.ButtonRed);
-            btnMint = ArtCatalog.Pick(cfg.buttonMint, ArtCatalog.ButtonMint);
-            btnGold = ArtCatalog.Pick(cfg.buttonGold, ArtCatalog.ButtonGold);
 
             // ---- vignette (below everything else in the HUD) ----
             vignette = UIBuilder.Panel(Root, "Vignette", new Color(0.9f, 0.1f, 0.1f, 0f), null, false);
@@ -184,90 +180,14 @@ namespace RetroDiner.UI
 
         // ------------------------------------------------------------------ panels
 
-        public class PanelButton
-        {
-            public string label; public Action onClick; public Color color; public bool interactable = true;
-            public PanelButton(string label, Action onClick, Color color) { this.label = label; this.onClick = onClick; this.color = color; }
-        }
-
-        RectTransform currentPanel;
-
-        public void ClosePanel()
-        {
-            if (currentPanel != null) Destroy(currentPanel.gameObject);
-            currentPanel = null;
-        }
+        public void ClosePanel() { Popups.Close(); }
 
         public RectTransform ShowPanel(string title, string body, List<PanelButton> buttons, bool dim = true, Action<RectTransform> decorate = null)
         {
-            ClosePanel();
-            var overlay = UIBuilder.Panel(panelLayer, "Overlay", new Color(0f, 0f, 0f, dim ? 0.55f : 0f), null, true);
-            UIBuilder.Stretch(overlay.rectTransform);
-            currentPanel = overlay.rectTransform;
-
-            var panel = UIBuilder.Panel(overlay.transform, "Panel", panelSprite != null ? Color.white : UIBuilder.Cream, panelSprite, true);
-            panel.preserveAspect = panelSprite != null;
-            UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(920f, 1150f), new Vector2(0f, 40f));
-            if (panelSprite == null)
-            {
-                UIBuilder.Shadow(panel, 10f);
-                UIBuilder.Outline(panel, UIBuilder.Chrome, 6f);
-                var header = UIBuilder.Panel(panel.transform, "Header", UIBuilder.Red, null, false);
-                header.rectTransform.anchorMin = new Vector2(0f, 1f); header.rectTransform.anchorMax = new Vector2(1f, 1f);
-                header.rectTransform.pivot = new Vector2(0.5f, 1f); header.rectTransform.sizeDelta = new Vector2(0f, 110f);
-                header.rectTransform.anchoredPosition = Vector2.zero;
-            }
-
-            var titleLbl = UIBuilder.Label(panel.transform, "Title", title, 56, Color.white);
-            titleLbl.rectTransform.anchorMin = new Vector2(0f, 1f); titleLbl.rectTransform.anchorMax = new Vector2(1f, 1f);
-            titleLbl.rectTransform.pivot = new Vector2(0.5f, 1f); titleLbl.rectTransform.sizeDelta = new Vector2(-80f, 110f);
-            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, panelSprite != null ? -80f : -40f);
-            UIBuilder.Outline(titleLbl, new Color(0f, 0f, 0f, 0.6f), 3f);
-
-            var content = UIBuilder.Rect(panel.transform, "Content");
-            UIBuilder.Place(content.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(760f, 420f), new Vector2(0f, 120f));
-            if (!string.IsNullOrEmpty(body))
-            {
-                var bodyLbl = UIBuilder.Label(content, "Body", body, 38, UIBuilder.Dark, TextAnchor.UpperCenter, FontStyle.Normal);
-                UIBuilder.Stretch(bodyLbl.rectTransform);
-            }
-            decorate?.Invoke(content);
-
-            float y = panelSprite != null ? -120f : -170f;
-            foreach (var b in buttons)
-            {
-                var sprite = b.color == UIBuilder.Red ? btnRed : b.color == UIBuilder.Mint ? btnMint : b.color == UIBuilder.Gold ? btnGold : null;
-                Vector2 bsize = sprite != null ? new Vector2(600f, 180f) : new Vector2(560f, 130f);
-                var btn = UIBuilder.Button(panel.transform, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, bsize, 38, b.color == UIBuilder.Gold || b.color == UIBuilder.Mint ? UIBuilder.Dark : Color.white);
-                UIBuilder.Place(btn.image.rectTransform, new Vector2(0.5f, 0.5f), bsize, new Vector2(0f, y));
-                btn.interactable = b.interactable;
-                y -= 150f;
-            }
-
-            panel.rectTransform.localScale = Vector3.one * 0.7f;
-            Tween.Scale(panel.rectTransform, Vector3.one, 0.3f, Ease.OutBack, null, true);
-            return panel.rectTransform;
+            return Popups.Show(title, body, buttons, dim, decorate);
         }
 
-        /// <summary>Full-screen fake ad with a countdown; used by FakeAdService.</summary>
-        public void ShowFakeAd(string title, float seconds, Action onFinished)
-        {
-            ClosePanel();
-            var overlay = UIBuilder.Panel(panelLayer, "FakeAd", new Color(0.05f, 0.05f, 0.08f, 0.97f), null, true);
-            UIBuilder.Stretch(overlay.rectTransform);
-            currentPanel = overlay.rectTransform;
-            var t = UIBuilder.Label(overlay.transform, "Title", title, 44, Color.white);
-            UIBuilder.Place(t.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 200f), new Vector2(0f, 120f));
-            var count = UIBuilder.Label(overlay.transform, "Count", "", 120, UIBuilder.Gold);
-            UIBuilder.Place(count.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(400f, 200f), new Vector2(0f, -80f));
-            var sub = UIBuilder.Label(overlay.transform, "Sub", "Real ad SDK is swapped in behind IAdService before soft launch.", 26, new Color(0.7f, 0.7f, 0.75f), TextAnchor.MiddleCenter, FontStyle.Normal);
-            UIBuilder.Place(sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(900f, 100f), new Vector2(0f, -260f));
-            Tween.To(seconds, p => { if (count != null) count.text = Mathf.CeilToInt(seconds * (1f - p)).ToString(); }, Ease.Linear, () =>
-            {
-                ClosePanel();
-                onFinished?.Invoke();
-            }, true);
-        }
+        public void ShowFakeAd(string title, float seconds, Action onFinished) { Popups.FakeAd(title, seconds, onFinished); }
 
         /// <summary>Star row used on the win panel.</summary>
         public void DecorateStars(RectTransform content, int earned)

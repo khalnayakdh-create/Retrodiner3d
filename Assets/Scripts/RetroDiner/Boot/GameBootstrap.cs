@@ -116,6 +116,8 @@ namespace RetroDiner.Boot
             // ---- Canvases ----
             var hudCanvas = UIBuilder.CreateCanvas("HUDCanvas", 10);
             var menuCanvas = UIBuilder.CreateCanvas("MenuCanvas", 20);
+            var popupCanvas = UIBuilder.CreateCanvas("PopupCanvas", 30);
+            Popups.Init(popupCanvas, cfg);
 
             var controllerGo = new GameObject("GameplayController");
             var controller = controllerGo.AddComponent<GameplayController>();

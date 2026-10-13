@@ -18,6 +18,8 @@ namespace RetroDiner.Core
         public static IAdService Ads { get; private set; }
         public static IIAPService IAP { get; private set; }
         public static IShareService Share { get; private set; }
+        public static EconomyService Economy { get; private set; }
+        public static AdPolicyService AdPolicy { get; private set; }
         public static bool Initialized { get; private set; }
 
         public static void Initialize(GameConfig config, Transform audioParent)
@@ -30,6 +32,10 @@ namespace RetroDiner.Core
             Ads = new FakeAdService();
             IAP = new FakeIAPService();
             Share = new StubShareService();
+            if (config.storeCatalog == null) { config.storeCatalog = ScriptableObject.CreateInstance<StoreCatalog>(); config.storeCatalog.offers = StoreCatalog.DefaultOffers(); }
+            if (config.adPolicy == null) config.adPolicy = ScriptableObject.CreateInstance<AdPolicy>();
+            Economy = new EconomyService(config, config.storeCatalog);
+            AdPolicy = new AdPolicyService(config.adPolicy);
             Audio.SfxEnabled = Profile.soundOn;
             Audio.MusicEnabled = Profile.musicOn;
             Initialized = true;
@@ -41,6 +47,7 @@ namespace RetroDiner.Core
             if (Save == null) Save = new SaveService();
             Save.Delete();
             Profile = Save.Load();
+            if (Config != null) Economy = new EconomyService(Config, Config.storeCatalog);
             GameEvents.RaiseProfileChanged();
         }
 

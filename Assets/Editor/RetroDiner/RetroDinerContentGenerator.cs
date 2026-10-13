@@ -105,6 +105,21 @@ namespace RetroDiner.EditorTools
             }
             cfg.items = items.ToArray();
             cfg.levels = levels.ToArray();
+            var catalog = AssetDatabase.LoadAssetAtPath<StoreCatalog>(ResRoot + "/StoreCatalog.asset");
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<StoreCatalog>();
+                catalog.offers = StoreCatalog.DefaultOffers();
+                AssetDatabase.CreateAsset(catalog, ResRoot + "/StoreCatalog.asset");
+            }
+            var policy = AssetDatabase.LoadAssetAtPath<AdPolicy>(ResRoot + "/AdPolicy.asset");
+            if (policy == null)
+            {
+                policy = ScriptableObject.CreateInstance<AdPolicy>();
+                AssetDatabase.CreateAsset(policy, ResRoot + "/AdPolicy.asset");
+            }
+            cfg.storeCatalog = catalog;
+            cfg.adPolicy = policy;
             AssignArt(cfg);
             EditorUtility.SetDirty(cfg);
 

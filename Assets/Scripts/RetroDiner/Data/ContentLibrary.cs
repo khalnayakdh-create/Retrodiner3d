@@ -107,6 +107,9 @@ namespace RetroDiner.Data
             var levels = new List<LevelDefinition>();
             for (int i = 1; i <= LevelCount; i++) levels.Add(CreateLevel(i));
             cfg.levels = levels.ToArray();
+            cfg.storeCatalog = ScriptableObject.CreateInstance<StoreCatalog>();
+            cfg.storeCatalog.offers = StoreCatalog.DefaultOffers();
+            cfg.adPolicy = ScriptableObject.CreateInstance<AdPolicy>();
             return cfg;
         }
     }
