@@ -207,7 +207,7 @@ namespace RetroDiner.UI
 
             var panel = UIBuilder.Panel(overlay.transform, "Panel", panelSprite != null ? Color.white : UIBuilder.Cream, panelSprite, true);
             panel.preserveAspect = panelSprite != null;
-            UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(860f, 1080f), new Vector2(0f, 40f));
+            UIBuilder.Place(panel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(920f, 1150f), new Vector2(0f, 40f));
             if (panelSprite == null)
             {
                 UIBuilder.Shadow(panel, 10f);
@@ -218,11 +218,11 @@ namespace RetroDiner.UI
                 header.rectTransform.anchoredPosition = Vector2.zero;
             }
 
-            var titleLbl = UIBuilder.Label(panel.transform, "Title", title, 56, panelSprite != null ? UIBuilder.Dark : Color.white);
+            var titleLbl = UIBuilder.Label(panel.transform, "Title", title, 56, Color.white);
             titleLbl.rectTransform.anchorMin = new Vector2(0f, 1f); titleLbl.rectTransform.anchorMax = new Vector2(1f, 1f);
             titleLbl.rectTransform.pivot = new Vector2(0.5f, 1f); titleLbl.rectTransform.sizeDelta = new Vector2(-80f, 110f);
-            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, -40f);
-            if (panelSprite == null) UIBuilder.Outline(titleLbl, new Color(0f, 0f, 0f, 0.5f), 2f);
+            titleLbl.rectTransform.anchoredPosition = new Vector2(0f, panelSprite != null ? -80f : -40f);
+            UIBuilder.Outline(titleLbl, new Color(0f, 0f, 0f, 0.6f), 3f);
 
             var content = UIBuilder.Rect(panel.transform, "Content");
             UIBuilder.Place(content.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(760f, 420f), new Vector2(0f, 120f));
@@ -233,12 +233,13 @@ namespace RetroDiner.UI
             }
             decorate?.Invoke(content);
 
-            float y = -170f;
+            float y = panelSprite != null ? -120f : -170f;
             foreach (var b in buttons)
             {
                 var sprite = b.color == UIBuilder.Red ? btnRed : b.color == UIBuilder.Mint ? btnMint : b.color == UIBuilder.Gold ? btnGold : null;
-                var btn = UIBuilder.Button(panel.transform, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, new Vector2(560f, 130f), 38, b.color == UIBuilder.Gold || b.color == UIBuilder.Mint ? UIBuilder.Dark : Color.white);
-                UIBuilder.Place(btn.image.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(560f, 130f), new Vector2(0f, y));
+                Vector2 bsize = sprite != null ? new Vector2(600f, 180f) : new Vector2(560f, 130f);
+                var btn = UIBuilder.Button(panel.transform, "Btn_" + b.label, b.label, b.onClick, b.color, sprite, bsize, 38, b.color == UIBuilder.Gold || b.color == UIBuilder.Mint ? UIBuilder.Dark : Color.white);
+                UIBuilder.Place(btn.image.rectTransform, new Vector2(0.5f, 0.5f), bsize, new Vector2(0f, y));
                 btn.interactable = b.interactable;
                 y -= 150f;
             }

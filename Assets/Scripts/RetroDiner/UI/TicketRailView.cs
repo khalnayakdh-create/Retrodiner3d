@@ -59,14 +59,14 @@ namespace RetroDiner.UI
 
                 c.icon = UIBuilder.Panel(back.transform, "Icon", Color.white, null, false);
                 c.icon.preserveAspect = true;
-                UIBuilder.Place(c.icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(150f, 150f), new Vector2(20f, 10f));
+                UIBuilder.Place(c.icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(130f, 130f), new Vector2(18f, 30f));
 
-                c.count = UIBuilder.Label(back.transform, "Count", "3", 72, UIBuilder.Dark, TextAnchor.MiddleLeft);
-                UIBuilder.Place(c.count.rectTransform, new Vector2(0f, 0.5f), new Vector2(90f, 100f), new Vector2(60f, 10f));
+                c.count = UIBuilder.Label(back.transform, "Count", "3", 60, UIBuilder.Dark, TextAnchor.MiddleLeft);
+                UIBuilder.Place(c.count.rectTransform, new Vector2(0f, 0.5f), new Vector2(80f, 100f), new Vector2(45f, 30f));
                 UIBuilder.Outline(c.count, new Color(1f, 1f, 1f, 0.7f), 2f);
 
                 var well = UIBuilder.Panel(back.transform, "Well", new Color(0f, 0f, 0f, 0.15f), null, false);
-                UIBuilder.Place(well.rectTransform, new Vector2(0.5f, 0f), new Vector2(170f, 18f), new Vector2(0f, 48f));
+                UIBuilder.Place(well.rectTransform, new Vector2(0.5f, 0f), new Vector2(140f, 18f), new Vector2(0f, 38f));
                 c.fill = UIBuilder.Panel(well.transform, "Fill", new Color(0.35f, 0.78f, 0.35f), null, false);
                 c.fill.rectTransform.anchorMin = new Vector2(0f, 0f);
                 c.fill.rectTransform.anchorMax = new Vector2(0f, 1f);
@@ -110,7 +110,7 @@ namespace RetroDiner.UI
             var def = lookup(t.itemId);
             TrayView.ApplyIcon(c.icon, def, false);
             c.count.text = t.remaining.ToString();
-            c.fill.rectTransform.sizeDelta = new Vector2(170f * t.Progress, 0f);
+            c.fill.rectTransform.sizeDelta = new Vector2(140f * t.Progress, 0f);
             c.check.gameObject.SetActive(false);
             bool active = t.remaining < t.total;
             var sprite = active ? (activeSprite != null ? activeSprite : normalSprite) : normalSprite;
@@ -137,7 +137,7 @@ namespace RetroDiner.UI
             var c = cards[railSlot];
             c.animating = true;
             c.count.text = "0";
-            c.fill.rectTransform.sizeDelta = new Vector2(170f, 0f);
+            c.fill.rectTransform.sizeDelta = new Vector2(140f, 0f);
             if (completeSprite != null) { c.back.sprite = completeSprite; c.back.color = Color.white; }
             c.check.gameObject.SetActive(true);
             c.check.rectTransform.localScale = Vector3.one * 1.8f;

@@ -34,7 +34,7 @@ namespace RetroDiner.Boot
             GameEvents.ClearAll();
 
             // ---- EventSystem ----
-            if (Object.FindFirstObjectByType<EventSystem>() == null)
+            if (Object.FindAnyObjectByType<EventSystem>() == null)
             {
                 var es = new GameObject("EventSystem");
                 es.AddComponent<EventSystem>();

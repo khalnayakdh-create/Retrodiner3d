@@ -35,23 +35,36 @@ namespace RetroDiner.UI
             lookup = defLookup;
             this.flightLayer = flightLayer;
             root = UIBuilder.Rect(parent, "Tray");
-            UIBuilder.Place(root, new Vector2(0.5f, 0f), new Vector2(1040f, 230f), new Vector2(0f, 420f));
-
             var traySprite = ArtCatalog.Pick(cfg.tray7, ArtCatalog.Tray7);
-            trayImage = UIBuilder.Panel(root, "TrayArt", traySprite != null ? Color.white : UIBuilder.Chrome, traySprite, false);
-            UIBuilder.Stretch(trayImage.rectTransform);
-            trayImage.preserveAspect = false;
-            if (traySprite == null)
+            hasArt = traySprite != null;
+
+            if (hasArt)
             {
+                // The tray PNG is 3:2 with the tray band in the middle ~36-62% of its height and the
+                // 7 wells on a 13.1% pitch. Keep the aspect and lay the slots over the wells.
+                UIBuilder.Place(root, new Vector2(0.5f, 0f), new Vector2(ArtWidth, ArtWidth * 2f / 3f), new Vector2(0f, 400f));
+                trayImage = UIBuilder.Panel(root, "TrayArt", Color.white, traySprite, false);
+                UIBuilder.Stretch(trayImage.rectTransform);
+                trayImage.preserveAspect = true;
+                slotsRow = UIBuilder.Rect(root, "Slots");
+                UIBuilder.Place(slotsRow, new Vector2(0.5f, 0.5f), new Vector2(ArtWidth, 200f), new Vector2(0f, ArtWidth * 2f / 3f * 0.04f));
+            }
+            else
+            {
+                UIBuilder.Place(root, new Vector2(0.5f, 0f), new Vector2(1040f, 230f), new Vector2(0f, 420f));
+                trayImage = UIBuilder.Panel(root, "TrayArt", UIBuilder.Chrome, null, false);
+                UIBuilder.Stretch(trayImage.rectTransform);
                 UIBuilder.Shadow(trayImage, 8f);
                 var inner = UIBuilder.Panel(root, "TrayInner", new Color(0.55f, 0.57f, 0.6f), null, false);
                 UIBuilder.Stretch(inner.rectTransform, 14, 14, 14, 14);
+                slotsRow = UIBuilder.Rect(root, "Slots");
+                UIBuilder.Stretch(slotsRow, 20, 20, 20, 20);
             }
-
-            slotsRow = UIBuilder.Rect(root, "Slots");
-            UIBuilder.Stretch(slotsRow, 20, 20, 20, 20);
             SetCapacity(cfg.trayCapacity);
         }
+
+        bool hasArt;
+        const float ArtWidth = 1060f;
 
         public void SetCapacity(int newCapacity)
         {
@@ -64,10 +77,17 @@ namespace RetroDiner.UI
             float totalW = capacity * SlotSize + (capacity - 1) * SlotGap;
             float scale = Mathf.Min(1f, 1000f / totalW);
             float size = SlotSize * scale, gap = SlotGap * scale;
+            if (hasArt)
+            {
+                // Wells span ~92% of the art width.
+                float pitch = ArtWidth * 0.92f / capacity;
+                size = pitch * 0.72f;
+                gap = pitch - size;
+            }
             float startX = -(capacity * size + (capacity - 1) * gap) * 0.5f + size * 0.5f;
             for (int i = 0; i < capacity; i++)
             {
-                var back = UIBuilder.Panel(slotsRow, "Slot" + i, new Color(0f, 0f, 0f, 0.22f), null, false);
+                var back = UIBuilder.Panel(slotsRow, "Slot" + i, hasArt ? new Color(0f, 0f, 0f, 0f) : new Color(0f, 0f, 0f, 0.22f), null, false);
                 UIBuilder.Place(back.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(size, size), new Vector2(startX + i * (size + gap), 0f));
                 slotRects[i] = back.rectTransform;
                 slotBacks[i] = back;
@@ -98,12 +118,12 @@ namespace RetroDiner.UI
                     var def = lookup(e.id);
                     ApplyIcon(slotIcons[i], def, e.charred);
                     slotIcons[i].enabled = true;
-                    slotBacks[i].color = new Color(0f, 0f, 0f, 0.1f);
+                    slotBacks[i].color = hasArt ? new Color(0f, 0f, 0f, 0f) : new Color(0f, 0f, 0f, 0.1f);
                 }
                 else
                 {
                     slotIcons[i].enabled = false;
-                    slotBacks[i].color = new Color(0f, 0f, 0f, 0.22f);
+                    slotBacks[i].color = hasArt ? new Color(0f, 0f, 0f, 0f) : new Color(0f, 0f, 0f, 0.22f);
                 }
             }
             // Warning tint when nearly full.

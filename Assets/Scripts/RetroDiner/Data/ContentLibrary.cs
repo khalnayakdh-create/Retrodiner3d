@@ -60,7 +60,7 @@ namespace RetroDiner.Data
             lv.trackShape = index <= 3 ? TrackShape.Ring : (TrackShape)(index % 3);
 
             // Belt speed: 0.8 -> 1.0 by level 5, then up to 1.6x by level 50.
-            lv.beltSpeed = index <= 5 ? Mathf.Lerp(0.8f, 1.0f, (index - 1) / 4f) : Mathf.Lerp(1.0f, 1.6f, (index - 5) / 45f);
+            lv.beltSpeed = index <= 5 ? Mathf.Lerp(0.5f, 1.0f, (index - 1) / 4f) : Mathf.Lerp(1.0f, 1.6f, (index - 5) / 45f);
 
             // Type count: 1,2,3 teach; 3 until 10; 4 until 20; 5 until 35; 6 after.
             int typeCount = index == 1 ? 1 : index == 2 ? 2 : index <= 10 ? 3 : index <= 20 ? 4 : index <= 35 ? 5 : 6;

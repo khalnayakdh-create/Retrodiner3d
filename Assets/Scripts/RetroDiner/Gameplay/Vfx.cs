@@ -27,6 +27,8 @@ namespace RetroDiner.Gameplay
             var go = new GameObject("Burst");
             go.transform.SetParent(transform, false);
             var ps = go.AddComponent<ParticleSystem>();
+            // A freshly added system is already playing; stop it before touching duration etc.
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = ps.main;
             main.playOnAwake = false;
             main.loop = false;
